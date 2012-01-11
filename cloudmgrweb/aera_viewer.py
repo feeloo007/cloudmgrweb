@@ -25,5 +25,5 @@ def render(self, h, comp, *args):
    with self.cloudmap_resolver:
       with h.div( class_='aera_viewer %s' % ( self.aera ) ):
          h << h.div( self.aera_resolver.get_aera_desc( self.aera ), class_ = 'description' )
-         h << h.div( component.Component( KnownDiv( self._cp_envs_viewer ) ), class_ = 'aera' )
+         h << h.div( component.Component( KnownDiv( self._cp_envs_viewer ) ), class_ = 'aera %s' % ( self.aera ) )
    return h.root
