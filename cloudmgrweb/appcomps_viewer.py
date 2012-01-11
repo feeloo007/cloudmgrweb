@@ -30,7 +30,7 @@ class AppCompsViewer( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGet
 @presentation.render_for( AppCompsViewer )
 def render(self, h, comp, *args):
    
-   with h.div( class_ = 'appcomps_viewer' ):
+   with h.div( class_ = 'appcomps_viewer %s %s' % ( self.aera, self.env ) ):
       if not self.appcode:
          h << h.div( u'Veuillez selectionner un code application', class_ = 'appcodes message' )
       if not self.aera:
@@ -41,7 +41,7 @@ def render(self, h, comp, *args):
          with self.cloudmap_resolver:
             d_order = self.appcomp_resolver.order_for_appcomps.copy()
             for appcomp, cp_appcomp in sorted( self.cp_appcomps.items(), key = lambda e: d_order[ e[ 0 ] ], reverse = False ):
-               h << h.div( component.Component( KnownDiv( cp_appcomp ) ), class_ = 'appcomps_viewer_struct %s' % appcomp )
+               h << h.div( component.Component( KnownDiv( cp_appcomp ) ), class_ = 'appcomps_viewer_struct appcomp %s %s %s' % ( self.aera, self.env, appcomp ) )
                h << h.div( h.div, class_ = 'appcomps_viewer_struct spacer' )
 
    return h.root
