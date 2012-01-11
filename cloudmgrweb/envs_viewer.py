@@ -28,7 +28,7 @@ class EnvsViewer( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters ):
 
 @presentation.render_for( EnvsViewer )
 def render(self, h, comp, *args):
-   with h.div( class_ = 'envs_viewer' ): 
+   with h.div( class_ = 'envs_viewer %s' % ( self.aera ) ): 
       if not self.appcode:
          h << h.div( u'Veuillez selectionner un code application', class_ = 'appcodes message' )
       if not self.aera:
@@ -38,7 +38,7 @@ def render(self, h, comp, *args):
             d_order = self.env_resolver.order_for_envs.copy()
             for env, cp_env in sorted( self.cp_envs.items(), key = lambda e: d_order[ e[ 0 ] ], reverse = False ):
                with h.td():
-                  h << h.div( component.Component( KnownDiv( cp_env ) ), class_ = 'envs_viewer_struct %s' %  env )
+                  h << h.div( component.Component( KnownDiv( cp_env ) ), class_ = 'envs_viewer_struct aera %s %s' %  ( self.aera, env ) )
                   h << h.div( h.div, class_ = 'envs_viewer_struct spacer' )
 
    return h.root
