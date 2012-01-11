@@ -39,7 +39,7 @@ class ServerViewer( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGette
 @presentation.render_for( ServerViewer )
 def render(self, h, comp, *args):
    with self.cloudmap_resolver as cloudmap_resolver:
-      with h.div( class_='component %s' % ( self.servername ) ):
+      with h.div( class_='component %s %s %s %s' % ( self.aera, self.env, self.appcomp, self.servername ) ):
          with h.table():
             with h.tr():
                with h.td(): 
