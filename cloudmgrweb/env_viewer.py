@@ -24,7 +24,7 @@ class EnvViewer( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGetters 
 @presentation.render_for( EnvViewer )
 def render(self, h, comp, *args):
    with self.cloudmap_resolver:
-      with h.div( class_='env_viewer %s' % ( self.env ) ):
+      with h.div( class_='env_viewer %s %s' % ( self.aera, self.env ) ):
          h << h.div( self.env_resolver.get_env_desc( self.env ), class_ = 'description' )
-         h << h.div( component.Component( KnownDiv( self._cp_appcomps_viewer ) ), class_ = 'env' )
+         h << h.div( component.Component( KnownDiv( self._cp_appcomps_viewer ) ), class_ = 'env %s %s' % ( self.aera, self.env ) )
    return h.root

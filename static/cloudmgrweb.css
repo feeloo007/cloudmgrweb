@@ -196,11 +196,11 @@ html {
    padding: 0em ;
 }
 
-.aera_viewer.DMZ .env_viewer.PR {
+.env_viewer.DMZ.PR {
    background-color: #FF2020 ;
 }
 
-.aera_viewer.VILLE .env_viewer.PR {
+.env_viewer.PR {
    background-color: #2020FF ;
 }
 
