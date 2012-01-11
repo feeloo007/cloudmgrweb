@@ -1,0 +1,365 @@
+* {
+   font-family: "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+}
+
+html {
+   font-size: 100% ;
+   font-size: 0.75em ;
+   background-color: #E0E0E0 ;
+}
+
+.app {
+   display: table ; 
+   border-spacing: 1em ;
+   padding: 0em ;
+}
+
+.app>#appcode_selector_struct {
+   display: table-cell ;
+   vertical-align: top ;
+}
+
+.app>#aeras_viewer_struct {
+   display: table-cell ;
+   vertical-align: baseline ;
+}
+
+.appcode_selector {
+   background-color: #757575 ;
+   width: 16em ;
+   height: 16em ;
+   padding: 1em ;
+   margin: 0em ;
+   border-spacing: 0.5em ;
+}
+
+.appcode_selector .message {
+   display: table-cell ;
+   color: #E0E0E0 ;
+}
+
+.appcode_selector .message.default {
+   text-align: left ;
+   vertical-align: bottom ;
+   font-weight: bold ;
+   height: 11.5em ;
+   width: 15em ;
+   padding: 0em ;
+   margin: 0em ;
+}
+
+.appcode_selector .message.current {
+   text-align: center ;
+   vertical-align: bottom ;
+   font-size: 8em ;
+   height: 1.4375em ;
+   width: 1.875em ;
+   padding: 0em ;
+   margin: 0em ;
+}
+
+.appcode_selector .form {
+   display: table-cell ;
+   height: 2em ;
+   width: 15em ;
+   border-spacing: 0em ;
+}
+
+.appcode_selector .input_appcode {
+   display: table-cell ;
+   background-color: #959595 ;
+   color: #E0E0E0 ;
+   text-align: center ;
+   font-size: 2em ;
+   width: 2em ;
+   border: medium none ;
+   margin: 0em ;
+   padding: 0em ;
+}
+
+.appcode_selector .submit_appcode {
+   display: table-cell ;
+   text-align: center ;
+   font-size: 2em ;
+   width: 5.5em ;
+   border: medium none ;
+   background-color: #555555 ;
+   color: #E0E0E0 ;
+   margin: 0em ;
+   padding: 0em ;
+}
+
+.aeras_viewer {
+   display: table ;
+   font-family: "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+   padding: 0em ;
+   margin: 0em ;
+   border-spacing: 0em ;
+}
+
+.aeras_viewer>.aeras_viewer_struct {
+   display: table-row ;
+}
+
+.aeras_viewer>.spacer {
+   /* background-color: red ; */
+}
+
+.aeras_viewer>.spacer>div {
+   height: 1em ;
+   width: 1em ;
+}
+
+.aeras_viewer>.spacer:last-child {
+   display: none ;
+}
+
+.aeras_viewer>.DMZ {
+   background-color: #FF9090 ;
+}
+
+.aeras_viewer>.VILLE {
+   background-color: #9090FF ;
+}
+
+.aera_viewer {
+   display: table ;
+   font-family: "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+   padding: 0em ;
+   margin: 0em ;
+   border-spacing: 0.5em ;
+}
+
+.aera_viewer>.description {
+   display: table-row ;
+   color: #E0E0E0 ;
+   text-align: left ;
+   font-size: 2em ;
+   border: medium none ;
+   margin: 0em ;
+   padding: 0em ;
+}
+
+/* Style de description spécial pour la DMZ */
+.aera_viewer.DMZ>.description {
+   color: #E0E0E0 ;
+   font-weight: bold ;
+}
+
+.aera_viewer>.aera {
+   display: table-row ;
+   border: medium none ;
+   margin: 0em ;
+   padding: 0em ;
+}
+
+.envs_viewer {
+   display: table ;
+   font-family: "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+   padding: 0em ;
+   margin: 0em ;
+   border-spacing: 0em ;
+}
+
+.envs_viewer>.envs_viewer_struct {
+   display: table-cell ;
+}
+
+.envs_viewer>.spacer {
+   /* background-color: yellow ; */
+}
+
+.envs_viewer>.spacer>div {
+   height: 0.5em ;   
+   width: 0.5em ;
+}
+
+.envs_viewer>.spacer:last-child {
+   display: none ;
+}
+
+.env_viewer {
+   display: table ;
+   font-family: "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+   padding: 0em ;
+   margin: 0em ;
+   border-spacing: 0.5em ;
+}
+
+.env_viewer>.description {
+   display: table-row ;
+   color: #E0E0E0 ;
+   text-align: center ;
+   font-size: 1.5em ;
+   border: medium none ;
+   margin: 0em ;
+   padding: 0em ;
+}
+
+.aera_viewer.DMZ .env_viewer.PR {
+   background-color: #FF2020 ;
+}
+
+.aera_viewer.VILLE .env_viewer.PR {
+   background-color: #2020FF ;
+}
+
+.env_viewer>.env {
+   display: table-row ;
+   border: medium none ;
+   margin: 0em ;
+   padding: 0em ;
+}
+
+.appcomps_viewer {
+   display: table ;
+   font-family: "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+   padding: 0em ;
+   margin: 0em ;
+   border-spacing: 0em ;
+   width: 100% ;
+}
+
+.appcomps_viewer>.appcomps_viewer_struct {
+   display: table-row ;
+}
+
+.appcomps_viewer>.spacer {
+   /* background-color: green ; */
+}
+
+.appcomps_viewer>.spacer>div {
+   height: 0.5em ;
+   width: 0.5em ;
+}
+
+.appcomps_viewer>.spacer:last-child {
+   display: none ;
+}
+
+.appcomp_viewer {
+   display: table ;
+   font-family: "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+   padding: 0em ;
+   margin: 0em ;
+   border-spacing: 0.5em ;
+   width: 100% ;
+}
+
+.appcomp_viewer>.description {
+   display: table-row ;
+   color: #E0E0E0 ;
+   text-align: center ;
+   font-size: 1.25em ;
+   border: medium none ;
+   margin: 0em ;
+   padding: 0em ;
+}
+
+.appcomp_viewer>.appcomp {
+   display: table-row ;
+   border: medium none ;
+   margin: 0em ;
+   padding: 0em ;
+}
+
+
+.servers_viewer {
+   display: table ;
+   font-family: "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+   padding: 0em ;
+   margin: 0em ;
+   border-spacing: 0em ;
+   width: 100% ;
+}
+
+.servers_viewer>.spacer>div {
+   height: 0.5em ;
+   width: 0.5em ;
+}
+
+.servers_viewer>.spacer:last-child {
+   display: none ;
+}
+
+.servers_viewer>.servers_viewer_struct.create_server_task_struct {
+   display: table-row ;
+}
+
+.servers_viewer .servers_viewer_struct.create_server_task_struct.spacer {
+   /* background-color: black ; */
+}
+
+.servers_viewer>.servers_viewer_struct.servers {
+   display: table-row ;
+}
+
+.servers_viewer_struct.servers>.servers_viewer_struct.scroll {
+   overflow: auto ;
+   height: 9em ;
+}
+
+.servers_viewer_struct.scroll .servers_viewer_struct.blocks {
+   display: table ;
+}
+
+.servers_viewer_struct.blocks .servers_viewer_struct.block {
+   display: table-row ;
+}
+
+.servers_viewer_struct.block>.servers_viewer_struct.component {
+   display: table-cell ;
+}
+
+.create_server_form {
+   display: table ;
+   font-family: "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+   padding: 0em ;
+   margin: 0em ;
+   border-spacing: 0em ;
+   width: 100% ;
+}
+
+.create_server_form form {
+   width: 100% ;
+}
+
+
+.create_server_form .message {
+   display: table-cell ;
+   color: #E0E0E0 ;
+   text-align: center ;
+   font-size: 1.125em;
+   border: medium none ;
+   margin: 0em ;
+   padding: 0.5em ;
+   border-spacing: 0em ;
+}
+
+.create_server_form .message.DMZ {
+   background-color: #FF5050 ;
+}
+
+.create_server_form .message.valid.DMZ {
+   background-color: #A60000 ;
+   width: 50% ;
+}
+
+.create_server_form .message.cancel.DMZ {
+   background-color: #BF3030 ;
+   width: 50% ;
+}
+
+.create_server_form .message.VILLE {
+   background-color: #5050FF ;
+}
+
+.create_server_form .message.valid.VILLE {
+   background-color: #0000A6 ;
+   width: 50% ;
+}
+
+.create_server_form .message.cancel.VILLE {
+   background-color: #3030BF ;
+   width: 50% ;
+}

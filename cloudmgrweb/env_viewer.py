@@ -1,0 +1,30 @@
+# -*- coding: UTF-8 -*-
+from __future__ import with_statement
+
+from nagare                                     import presentation, component
+from ajax_x_components				import KnownDiv
+from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
+from i_controllers                              import IAppcodeGetters, IAeraGetters, IEnvGetters
+from appcomps_viewer				import AppCompsViewer
+
+###########################
+# Vision des zones
+###########################
+class EnvViewer( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGetters ):
+
+   def __init__( self, appcode = '', le_appcode_provider = None, aera = '', le_aera_provider = None, env = '', le_env_provider = None, resolvers = None ):
+      ICloudMgrResolvers.__init__( self, resolvers )
+      IAppcodeGetters.__init__( self, appcode = appcode, le_appcode_provider = le_appcode_provider )
+      IAeraGetters.__init__( self, aera = aera, le_aera_provider = le_aera_provider )
+      IEnvGetters.__init__( self, env = env, le_env_provider = le_env_provider )
+
+      with self.cloudmap_resolver:
+         self._cp_appcomps_viewer = component.Component( AppCompsViewer( le_appcode_provider = lambda: self.appcode, le_aera_provider = lambda: self.aera, le_env_provider = lambda: self.env, resolvers = self ) )
+
+@presentation.render_for( EnvViewer )
+def render(self, h, comp, *args):
+   with self.cloudmap_resolver:
+      with h.div( class_='env_viewer %s' % ( self.env ) ):
+         h << h.div( self.env_resolver.get_env_desc( self.env ), class_ = 'description' )
+         h << h.div( component.Component( KnownDiv( self._cp_appcomps_viewer ) ), class_ = 'env' )
+   return h.root
