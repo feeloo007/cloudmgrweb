@@ -22,9 +22,6 @@ class ServersViewer( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGett
       IEnvGetters.__init__( self, env = env, le_env_provider = le_env_provider)
       IAppCompGetters.__init__( self, appcomp = appcomp, le_appcomp_provider = le_appcomp_provider )
 
-      #self._cp_create_server_form = component.Component( CreateServerForm( le_appcode_provider = lambda: self.appcode, le_aera_provider = lambda: self.aera, le_env_provider = lambda: self.env, le_appcomp_provider = lambda: self.appcomp, resolvers = resolvers ) )
-      #self._cp_create_server_form.o.register_le_known_div_for_change( lambda: self.le_get_knowndiv() )
-
       self._cp_create_server_task = component.Component( CreateServerTask( le_appcode_provider = lambda: self.appcode, le_aera_provider = lambda: self.aera, le_env_provider = lambda: self.env, le_appcomp_provider = lambda: self.appcomp, resolvers = resolvers ) )
       self._cp_create_server_task.o.register_le_known_div_for_change( lambda: self.le_get_knowndiv() )
 
@@ -36,7 +33,6 @@ class ServersViewer( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGett
                 self._d_cp_servers[ num_component ] = component.Component( ServerViewer( le_appcode_provider = lambda: self.appcode, le_aera_provider = lambda: self.aera, le_env_provider = lambda: self.env, le_appcomp_provider = lambda: self.appcomp, num_component = num_component, d_component_status = d_component_status, resolvers = self ) )
          except Exception, e:
             pass
-            #print e
       return self._d_cp_servers   
    cp_servers = property( get_cp_servers )
 
@@ -57,7 +53,6 @@ def render(self, h, comp, *args):
          with self.cloudmap_resolver as cloudmap_resolver:
             colspan = 4
             i = 0
-            #h << component.Component( KnownDiv( self._cp_create_server_form ) )
             h << h.div( component.Component( KnownDiv( self._cp_create_server_task ) ), class_ = 'servers_viewer_struct create_server_task_struct %s' % self.appcomp )
             h << h.div( h.div, class_ = 'servers_viewer_struct create_server_task_struct spacer' )
             div_block = None
