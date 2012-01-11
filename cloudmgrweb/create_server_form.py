@@ -49,7 +49,7 @@ class CreateServerForm( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvG
 @presentation.render_for( CreateServerForm )
 def render(self, h, comp, *args):
 
-   with h.div( '', class_ = 'create_server_form' ):
+   with h.div( '', class_ = 'create_server_form %s %s %s' % ( self.aera, self.env, self.appcomp ) ):
       if not self.appcode:
          h << h.div( u'Veuillez selectionner un code application', class_ = 'appcodes message' )
       if not self.aera:
@@ -66,14 +66,14 @@ def render(self, h, comp, *args):
                     comp.answer()
                  except:
                     pass
-              h << h.input( type='submit', class_ = 'message %s %s' % ( self.aera, self.env ), value=u'Créer un serveur %s en %s pour %s' % ( self.appcomp_resolver.get_appcomp_desc( self.appcomp ), self.env_resolver.get_env_desc( self.env ).lower(), self.appcode ) ).action( lambda: to_validation_step() )
+              h << h.input( type='submit', class_ = 'message %s %s %s' % ( self.aera, self.env, self.appcomp ), value=u'Créer un serveur %s en %s pour %s' % ( self.appcomp_resolver.get_appcomp_desc( self.appcomp ), self.env_resolver.get_env_desc( self.env ).lower(), self.appcode ) ).action( lambda: to_validation_step() )
 
    return h.root
 
 @presentation.render_for( CreateServerForm, model = 'validate' )
 def render(self, h, comp, *args):
    
-   with h.div( '', class_ = 'create_server_form' ):
+   with h.div( '', class_ = 'create_server_form %s %s %s' % ( self.aera, self.env, self.appcomp ) ):
       if not self.appcode:
          h << h.div( u'Veuillez selectionner un code application', class_ = 'appcodes message' )
       if not self.aera:
@@ -92,14 +92,14 @@ def render(self, h, comp, *args):
                   except:
                      pass
 
-               h << h.input( type='submit', class_ = 'message valid %s %s' % ( self.aera, self.env ), value=u'Confirmer' ).action( XComponentsUpdates( le_l_knowndiv = lambda: self.get_l_known_div_for_change(), update_himself = False, action = lambda: create_and_get_next_dhcp_file() ) )
+               h << h.input( type='submit', class_ = 'message valid %s %s %s' % ( self.aera, self.env, self.appcomp ), value=u'Confirmer' ).action( XComponentsUpdates( le_l_knowndiv = lambda: self.get_l_known_div_for_change(), update_himself = False, action = lambda: create_and_get_next_dhcp_file() ) )
 
                def cancel():
                   try:
                      comp.answer( False )
                   except:
                      pass
-               h << h.input( type='submit', class_ = 'message cancel %s %s' % ( self.aera, self.env ), value=u'Annuler' ).action( lambda: cancel() )
+               h << h.input( type='submit', class_ = 'message cancel %s %s %s' % ( self.aera, self.env, self.appcomp ), value=u'Annuler' ).action( lambda: cancel() )
 
    return h.root
 
@@ -117,7 +117,7 @@ def render(self, h, comp, *args):
        h << h.div( u'Veuillez selectionner un composant applicatif', class_ = 'appcomps message' )
    else:
        with self.cloudmap_resolver as cloudmap_resolver:
-          with h.div( class_ = 'servers create' ):
+          with h.div( class_ = 'servers create %s %s %s' % ( self.aera, self.env, self.appcomp ) ):
             with h.form():
                def createvm_for_hostname():
                   self._hw_address_created = create_vm( hostname = self._creating_hostname, appcomp = self.appcomp, aera = self.aera )
