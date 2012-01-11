@@ -25,8 +25,8 @@ class AppCompViewer( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGett
 @presentation.render_for( AppCompViewer )
 def render(self, h, comp, *args):
    with self.cloudmap_resolver as cloudmap_resolver:
-      with h.div( class_='appcomp_viewer %s' % ( self.appcomp ) ):
+      with h.div( class_='appcomp_viewer %s %s %s' % ( self.aera, self.env, self.appcomp ) ):
          h << h.div( self.appcomp_resolver.get_appcomp_desc( self.appcomp ), class_ = 'description' )
-         h << h.div( component.Component( KnownDiv( self._cp_servers_viewer ) ), class_ = 'appcomp' )
+         h << h.div( component.Component( KnownDiv( self._cp_servers_viewer ) ), class_ = 'appcomp %s %s %s' % ( self.aera, self.env, self.appcomp ) )
 
    return h.root
