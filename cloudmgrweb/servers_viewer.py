@@ -40,7 +40,7 @@ class ServersViewer( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGett
 @presentation.render_for( ServersViewer )
 def render(self, h, comp, *args):
    
-   with h.div( class_ = 'servers_viewer' ):
+   with h.div( class_ = 'servers_viewer %s %s %s' % ( self.aera, self.env, self.appcomp ) ):
       if not self.appcode:
          h << h.div( u'Veuillez selectionner un code application', class_ = 'appcodes message' )
       if not self.aera:
@@ -53,16 +53,16 @@ def render(self, h, comp, *args):
          with self.cloudmap_resolver as cloudmap_resolver:
             colspan = 4
             i = 0
-            h << h.div( component.Component( KnownDiv( self._cp_create_server_task ) ), class_ = 'servers_viewer_struct create_server_task_struct %s' % self.appcomp )
+            h << h.div( component.Component( KnownDiv( self._cp_create_server_task ) ), class_ = 'servers_viewer_struct create_server_task_struct %s %s %s' % ( self.aera, self.env, self.appcomp ) )
             h << h.div( h.div, class_ = 'servers_viewer_struct create_server_task_struct spacer' )
             div_block = None
-            with h.div( '', class_ = 'servers_viewer_struct servers' ):
-               with h.div( '', class_ = 'servers_viewer_struct scroll' ):
+            with h.div( '', class_ = 'servers_viewer_struct servers %s %s %s' % ( self.aera, self.env, self.appcomp ) ):
+               with h.div( '', class_ = 'servers_viewer_struct scroll %s %s %s' % ( self.aera, self.env, self.appcomp ) ):
                   with h.div( '', class_ = 'servers_viewer_struct blocks' ):
                      for server, cp_server in sorted( self.cp_servers.items(), key = lambda e: e[ 0 ], reverse = False ):
                         if i % colspan == 0: 
-                           div_block = h.div( '', class_ = 'servers_viewer_struct block' )
+                           div_block = h.div( '', class_ = 'servers_viewer_struct block %s %s %s' % ( self.aera, self.env, self.appcomp ) )
                            h << div_block
-                        div_block.append( h.div( component.Component( KnownDiv( cp_server ) ), class_ = 'servers_viewer_struct component %s' % server ) )
+                        div_block.append( h.div( component.Component( KnownDiv( cp_server ) ), class_ = 'servers_viewer_struct component %s %s %s %s' % ( self.aera, self.env, self.appcomp, server  ) ) )
                         i = i + 1
    return h.root
