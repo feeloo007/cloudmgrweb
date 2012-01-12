@@ -110,33 +110,6 @@ def render(self, h, comp, *args):
    return h.root
 
 
-@presentation.render_for( CreateServerForm, model = 'create' )
-def render(self, h, comp, *args):
-
-   if not self.appcode:
-       h << h.div( u'Veuillez selectionner un code application', class_ = 'appcodes message' )
-   if not self.aera:
-       h << h.div( u'Veuillez selectionner une zone', class_ = 'aeras message' )
-   if not self.env:
-       h << h.div( u'Veuillez selectionner un environnement', class_ = 'envs message' )
-   if not self.appcomp:
-       h << h.div( u'Veuillez selectionner un composant applicatif', class_ = 'appcomps message' )
-   else:
-       with self.cloudmap_resolver as cloudmap_resolver:
-          with h.div( class_ = 'servers create %s %s %s' % ( self.aera, self.env, self.appcomp ) ):
-            with h.form():
-               def createvm_for_hostname():
-                  self._hw_address_created = create_vm( hostname = self._creating_hostname, appcomp = self.appcomp, aera = self.aera )
-                  try:
-                     comp.answer( True )
-                  except:
-                     pass
-
-               h << h.input( type='submit', value=u'Création en cours' ).action( XComponentsUpdates( le_l_knowndiv = lambda: self.get_l_known_div_for_change(), update_himself = False, action = lambda: createvm_for_hostname() ) )
-
-   return h.root
-
-
 class CreateServerTask( component.Task, ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters ):
 
    def __init__( self, appcode = '', le_appcode_provider = None, aera = '', le_aera_provider = None, env = '', le_env_provider = None, appcomp = '', le_appcomp_provider = None, resolvers = None ):
