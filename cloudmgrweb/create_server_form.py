@@ -94,7 +94,6 @@ def render(self, h, comp, *args):
                def create_and_get_next_dhcp_file():
                   self._creating_hostname = create_next_dhcp_file_for( appcode = self.appcode, aera = self.aera, env = self.env, appcomp = self.appcomp )
                   try:
-                     self.comet_channel.send( 'REFRESH_ON_CREATED_SERVER %s %s %s %s' % ( self.appcode, self.aera, self.env, self.appcomp ) )
                      comp.answer( True )
                   except:
                      pass
@@ -166,9 +165,8 @@ class CreateServerTask( component.Task, ICloudMgrResolvers, IAppcodeGetters, IAe
 
       while True:
 
-     	 comp.call( self._cp_create_server_form )
-     	 if comp.call( self._cp_create_server_form, model='validate' ):
-            comp.call( self._cp_create_server_form, model='create' )
+         comp.call( self._cp_create_server_form )
+         if comp.call( self._cp_create_server_form, model='validate' ):
+            self._cp_create_server_form.o.comet_channel.send( 'REFRESH_ON_CREATED_SERVER %s %s %s %s' % ( self.appcode, self.aera, self.env, self.appcomp ) )
          else:
             continue
-
