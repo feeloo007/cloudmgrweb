@@ -23,7 +23,9 @@ class ServersViewer( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGett
       IAppCompGetters.__init__( self, appcomp = appcomp, le_appcomp_provider = le_appcomp_provider )
 
       self._cp_create_server_task = component.Component( CreateServerTask( le_appcode_provider = lambda: self.appcode, le_aera_provider = lambda: self.aera, le_env_provider = lambda: self.env, le_appcomp_provider = lambda: self.appcomp, resolvers = resolvers ) )
-      self._cp_create_server_task.o.register_le_known_div_for_change( lambda: self.le_get_knowndiv() )
+      # Suppression du lien de mise à jour des div lié à la demande de création
+      # d'un serveur
+      #self._cp_create_server_task.o.register_le_known_div_for_change( lambda: self.le_get_knowndiv() )
 
    def get_cp_servers( self ):
       with self.cloudmap_resolver as cloudmap_resolver:
