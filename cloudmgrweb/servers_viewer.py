@@ -41,7 +41,7 @@ class ServersViewer( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGett
 def render(self, h, comp, *args):
    def fake():
       pass
-   with h.form( name = 'REFRESH_ON_CREATED_SERVER', class_ = '%s %s %s %s' % ( self.appcode, self.aera, self.env, self.appcomp ) ):
+   with h.form( name = 'REFRESH_ON_CREATION_SERVER_DEMAND', class_ = '%s %s %s %s' % ( self.appcode, self.aera, self.env, self.appcomp ) ):
       h << h.input( type = 'submit', style = 'display: none ;' ).action( fake )
 
    with h.div( class_ = 'servers_viewer %s %s %s' % ( self.aera, self.env, self.appcomp ) ):

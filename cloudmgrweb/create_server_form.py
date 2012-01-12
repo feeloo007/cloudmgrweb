@@ -167,6 +167,6 @@ class CreateServerTask( component.Task, ICloudMgrResolvers, IAppcodeGetters, IAe
 
          comp.call( self._cp_create_server_form )
          if comp.call( self._cp_create_server_form, model='validate' ):
-            self._cp_create_server_form.o.comet_channel.send( 'REFRESH_ON_CREATED_SERVER %s %s %s %s' % ( self.appcode, self.aera, self.env, self.appcomp ) )
+            self._cp_create_server_form.o.comet_channel.send( 'REFRESH_ON_CREATION_SERVER_DEMAND %s %s %s %s' % ( self.appcode, self.aera, self.env, self.appcomp ) )
          else:
             continue
