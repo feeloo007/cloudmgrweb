@@ -30,7 +30,6 @@ class CreateServerForm( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvG
       self._known_component_for_answer = None
 
    def get_l_known_div_for_change( self ):
-       print 'get_l_known_div_for_change %s' % self._l_le_known_div_for_change
        return [ le() for le in self._l_le_known_div_for_change ]
 
    def register_le_known_div_for_change( self, le_kd ):
@@ -41,7 +40,6 @@ class CreateServerForm( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvG
           .o.component
        """
        self._l_le_known_div_for_change.append( le_kd )
-       print 'register_le_known_div_for_change %s' % self._l_le_known_div_for_change
 
 
    def get_known_component_for_answer( self ):
