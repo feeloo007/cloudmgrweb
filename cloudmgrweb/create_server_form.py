@@ -8,10 +8,13 @@ from i_controllers                              import IAppcodeGetters, IAeraGet
 from cloudmgrlib.m_cmgr_manage_virtual_stack    import create_next_dhcp_file_for, create_vm
 from ajax_x_components                          import XComponentsUpdates
 
+# Interaction comet
+from i_comet					import ICloudMgrComet
+
 ###########################
 # Vision des zones
 ###########################
-class CreateServerForm( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters ):
+class CreateServerForm( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters, ICloudMgrComet ):
 
    def __init__( self, appcode = '', le_appcode_provider = None, aera = '', le_aera_provider = None, env = '', le_env_provider = None, appcomp = '', le_appcomp_provider = None, resolvers = None ):
       ICloudMgrResolvers.__init__( self, resolvers )
@@ -19,6 +22,9 @@ class CreateServerForm( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvG
       IAeraGetters.__init__( self, aera = aera, le_aera_provider = le_aera_provider )
       IEnvGetters.__init__( self, env = env, le_env_provider = le_env_provider )
       IAppCompGetters.__init__( self, appcomp = appcomp, le_appcomp_provider = le_appcomp_provider )
+
+      # Interaction comet
+      ICloudMgrComet.__init__( self )
 
       self._l_le_known_div_for_change = []
       self._known_component_for_answer = None
@@ -88,6 +94,7 @@ def render(self, h, comp, *args):
                def create_and_get_next_dhcp_file():
                   self._creating_hostname = create_next_dhcp_file_for( appcode = self.appcode, aera = self.aera, env = self.env, appcomp = self.appcomp )
                   try:
+                     self.comet_channel.send( 'REFRESH_ON_CREATED_SERVER %s %s %s %s' % ( self.appcode, self.aera, self.env, self.appcomp ) )
                      comp.answer( True )
                   except:
                      pass

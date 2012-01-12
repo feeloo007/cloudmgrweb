@@ -8,12 +8,20 @@ from aeras_viewer				import AerasViewer
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
 
-class Cloudmgrweb( ICloudMgrResolvers ):
+# Interactino comet
+from i_comet					import ICloudMgrComet
+from nagare					import ajax
+
+
+class Cloudmgrweb( ICloudMgrResolvers, ICloudMgrComet ):
    def __init__( self ):
       ICloudMgrResolvers.__init__( self )
+
+      # Interactino comet
+      ICloudMgrComet.__init__( self )
       with self.cloudmap_resolver:
          self._cp_appcode_selector 	= component.Component( AppcodeSelector() )
-         self._cp_aeras_viewer	= component.Component( AerasViewer( le_appcode_provider = lambda: self._cp_appcode_selector.o.appcode, resolvers = self ) )
+         self._cp_aeras_viewer		= component.Component( AerasViewer( le_appcode_provider = lambda: self._cp_appcode_selector.o.appcode, resolvers = self ) )
 
 @presentation.render_for(Cloudmgrweb)
 def render(self, h, *args):
@@ -23,6 +31,10 @@ def render(self, h, *args):
    self._cp_appcode_selector.o.register_known_div_for_appcode_change( cp_div_aeras_viewer.o )
 
    h.head.css_url( 'cloudmgrweb.css' )
+
+   # Interaction comet
+   h.head.javascript_url( 'cloudmgrweb_comet.js' )
+   h << component.Component( self.comet_channel )
 
    with self.cloudmap_resolver:
 
