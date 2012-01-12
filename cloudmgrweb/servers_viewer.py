@@ -38,12 +38,15 @@ class ServersViewer( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGett
 
 @presentation.render_for( ServersViewer )
 def render(self, h, comp, *args):
-   def fake():
-      pass
-   with h.form( name = 'REFRESH_ON_CREATION_SERVER_DEMAND', class_ = '%s %s %s %s' % ( self.appcode, self.aera, self.env, self.appcomp ) ):
-      h << h.input( type = 'submit', style = 'display: none ;' ).action( fake )
 
    with h.div( class_ = 'servers_viewer %s %s %s' % ( self.aera, self.env, self.appcomp ) ):
+
+      # Gestion des mises à jour via comet
+      def fake():
+         pass
+      with h.form( name = 'REFRESH_ON_CREATION_SERVER_DEMAND', class_ = '%s %s %s %s' % ( self.appcode, self.aera, self.env, self.appcomp ) ):
+         h << h.input( type = 'submit', style = 'display: none ;' ).action( fake )
+
       if not self.appcode:
          h << h.div( u'Veuillez selectionner un code application', class_ = 'appcodes message' )
       if not self.aera:
