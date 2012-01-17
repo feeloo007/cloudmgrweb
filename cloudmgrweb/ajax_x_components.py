@@ -90,11 +90,9 @@ class XComponentsUpdates( ajax.Update ):
                 renders.pop()
             if self._le_l_knowndiv:
                 for kd in self._le_l_knowndiv():
-                    print kd.id
                     def le_render( r, kd ):
                        return kd.component.render( r )
-                    renders.append( ajax.Update( lambda r, kd=kd: le_render( r, kd ), lambda: None, kd.id )._generate_render( r ) )
-            print ajax.ViewsToJs( [ render( r ) for render in renders ] )
+                    renders.append( ajax.Update( lambda r, kd = kd: le_render( r, kd ), lambda: None, kd.id )._generate_render( r ) )
             return ajax.ViewsToJs( [ render( r ) for render in renders ] )
 
         return lambda r: ViewsToJs( r )
