@@ -15,8 +15,11 @@ from nagare					import ajax
 # cache de component
 from i_cache_components				import ICacheComponents, FormRefreshOnComet
 
+# Mise en place d'un DOM pour la gestion comet
+from i_dom					import IDom
 
-class Cloudmgrweb( ICloudMgrResolvers, ICloudMgrComet, ICacheComponents ):
+
+class Cloudmgrweb( ICloudMgrResolvers, ICloudMgrComet, ICacheComponents, IDom ):
    def __init__( self ):
       ICloudMgrResolvers.__init__( self )
 
@@ -25,6 +28,9 @@ class Cloudmgrweb( ICloudMgrResolvers, ICloudMgrComet, ICacheComponents ):
 
       # cache de components
       ICacheComponents.__init__( self, cache_components = None )
+
+      # Mise en place d'un DOM pour la gestion comet
+      IDom.__init__( self, father = None, dom_element_name = Cloudmgrweb.__name__ )
 
       with self.cloudmap_resolver:
          self._cp_menu_control 		= component.Component( MenuControl() )
