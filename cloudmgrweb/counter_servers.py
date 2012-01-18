@@ -10,20 +10,26 @@ from cloudmgrlib.sequential_ops			import SequentialOps
 # cache de component
 from i_cache_components                         import ICacheComponents
 
-from pprint					import pprint
+# Mise en place d'un DOM pour la gestion comet
+from i_dom                                      import IDom
 
 ###########################
 # Vision des zones
 ###########################
-class CounterServers( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters, ICacheComponents, SequentialOps ):
+class CounterServers( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters, ICacheComponents, SequentialOps, IDom ):
 
-   def __init__( self, appcode = '', le_appcode_provider = None, aera = '', le_aera_provider = None, env = '', le_env_provider = None, appcomp = '', le_appcomp_provider = None, resolvers = None, cache_components = None ):
+   def __init__( self, appcode = '', le_appcode_provider = None, aera = '', le_aera_provider = None, env = '', le_env_provider = None, appcomp = '', le_appcomp_provider = None, resolvers = None, cache_components = None, dom_father = None, dom_complement_element_name = '' ):
       ICloudMgrResolvers.__init__( self, resolvers )
       IAppcodeGetters.__init__( self, appcode = appcode, le_appcode_provider = le_appcode_provider )
       IAeraGetters.__init__( self, aera = aera, le_aera_provider = le_aera_provider)
       IEnvGetters.__init__( self, env = env, le_env_provider = le_env_provider)
       IAppCompGetters.__init__( self, appcomp = appcomp, le_appcomp_provider = le_appcomp_provider )
       ICacheComponents.__init__( self, cache_components = cache_components )
+
+      # Mise en place d'un DOM pour la gestion comet
+      IDom.__init__( self, dom_father = dom_father, dom_element_name = '%s!%s!%s!%s!%s' % ( CounterServers.__name__, self.appcode, self.aera, self.env, self.appcomp ), dom_complement_element_name = dom_complement_element_name )
+
+      print self.full_dom_element_name
 
       def get_cloudmap_in_a_list( cmr ):
          result = None
