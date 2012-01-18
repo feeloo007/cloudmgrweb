@@ -8,7 +8,7 @@ from aeras_viewer				import AerasViewer
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
 
-# Interactino comet
+# Interaction comet
 from i_comet					import ICloudMgrComet
 from nagare					import ajax
 
@@ -20,7 +20,7 @@ class Cloudmgrweb( ICloudMgrResolvers, ICloudMgrComet, ICacheComponents ):
    def __init__( self ):
       ICloudMgrResolvers.__init__( self )
 
-      # Interactino comet
+      # Interaction comet
       ICloudMgrComet.__init__( self )
 
       # cache de components
