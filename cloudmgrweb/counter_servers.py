@@ -17,6 +17,8 @@ from i_cache_components                         import ICacheComponents, FormRef
 # Mise en place d'un DOM pour la gestion comet
 from i_dom                                      import IDom
 
+from pprint					import pprint
+
 ###########################
 # Vision des zones
 ###########################
@@ -47,7 +49,7 @@ class CounterServers( ICloudMgrResolvers, ICloudMgrComet, IAppcodeGetters, IAera
          for e in l:
             result = []
 
-            if getattr( self, attribute ):
+            if getattr( self, attribute ) and getattr( self, attribute ) <> '*' :
             	result = e.get( getattr( self, attribute ), [] )
             else:
                result = e.values()
@@ -57,6 +59,11 @@ class CounterServers( ICloudMgrResolvers, ICloudMgrComet, IAppcodeGetters, IAera
 
             l_result.extend( result )
          return l_result 
+
+      def print_struct( x ):
+         pprint( x )
+         print
+         return x
 
       def sum_element_on_list( l ):
          result = 0
