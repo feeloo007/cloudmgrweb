@@ -116,6 +116,10 @@ html {
    width: 100% ;
 }
 
+.menu_control_envs>.menu_control_envs_struct.SUM {
+   font-weight: bold ;
+}
+
 .menu_control_envs>.menu_control_envs_struct.spacer>div {
    height: 1em ;
    width: 1em ;

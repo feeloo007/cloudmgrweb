@@ -42,7 +42,7 @@ def render(self, h, comp, *args):
          for env, cp_env in sorted( self.cp_envs.items(), key = lambda e: d_order[ e[ 0 ] ], reverse = False ):
             h << h.div( component.Component( KnownDiv( cp_env ) ), class_ = 'menu_control_envs_struct %s' %  ( env ) )
             h << h.div( h.div, class_ = 'menu_control_envs_struct spacer' )
-         h << h.div( component.Component( KnownDiv( self._cp_env_all_envs ) ), class_ = 'menu_control_envs_struct %s' %  ( '*' ) )
+         h << h.div( component.Component( KnownDiv( self._cp_env_all_envs ) ), class_ = 'menu_control_envs_struct SUM' )
          h << h.div( h.div, class_ = 'menu_control_envs_struct spacer' )
 
    return h.root
