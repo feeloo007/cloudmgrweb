@@ -79,7 +79,9 @@ class CounterServers( ICloudMgrResolvers, ICloudMgrComet, IAppcodeGetters, IAera
 
 @presentation.render_for( CounterServers )
 def render(self, h, comp, *args):
-   with h.div( class_ = 'er_appcomps' ):
+   self.set_knowndiv_for( 'REFRESH_ON_CREATION_SERVER_DEMAND', self, appcode = self.appcode, env = self.env )
+
+   with h.div( class_ = 'counter_appcomps' ):
 
       with self.cloudmap_resolver as cloudmap_resolver:
          h << repr( self.operate() )
