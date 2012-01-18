@@ -18,7 +18,7 @@ from i_cache_components				import ICacheComponents, FormRefreshOnComet
 from i_dom                                      import IDom
 
 class MenuControl( ICloudMgrResolvers, ICloudMgrComet, ICacheComponents, IDom ):
-   def __init__( self, dom_father = None, dom_element_name = '' ):
+   def __init__( self, dom_father = None ):
       ICloudMgrResolvers.__init__( self )
 
       # Interaction comet
@@ -28,11 +28,11 @@ class MenuControl( ICloudMgrResolvers, ICloudMgrComet, ICacheComponents, IDom ):
       ICacheComponents.__init__( self, cache_components = None )
 
       # Mise en place d'un DOM pour la gestion comet
-      IDom.__init__( self, dom_father = dom_father, dom_element_name = dom_element_name  )
+      IDom.__init__( self, dom_father = dom_father, dom_element_name = MenuControl.__name__ )
 
       with self.cloudmap_resolver:
          self._cp_appcode_selector 	= component.Component( AppcodeSelector() )
-         self._cp_menu_control_envs 	= component.Component( MenuControlEnvs( le_appcode_provider = lambda: self.cp_appcode_selector.o.appcode, resolvers = self, cache_components = self, dom_father = self, dom_element_name = '%s' % MenuControlEnvs.__name__ ) )
+         self._cp_menu_control_envs 	= component.Component( MenuControlEnvs( le_appcode_provider = lambda: self.cp_appcode_selector.o.appcode, resolvers = self, cache_components = self, dom_father = self ) )
 
    def get_cp_appcode_selector( self ):
       return self._cp_appcode_selector

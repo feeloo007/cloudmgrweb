@@ -33,7 +33,7 @@ class Cloudmgrweb( ICloudMgrResolvers, ICloudMgrComet, ICacheComponents, IDom ):
       IDom.__init__( self, dom_father = None, dom_element_name = Cloudmgrweb.__name__ )
 
       with self.cloudmap_resolver:
-         self._cp_menu_control 		= component.Component( MenuControl( dom_father = self, dom_element_name = '%s' % ( MenuControl.__name__ )  ) )
+         self._cp_menu_control 		= component.Component( MenuControl( dom_father = self ) )
          self._cp_aeras_viewer		= component.Component( AerasViewer( le_appcode_provider = lambda: self._cp_menu_control.o.cp_appcode_selector.o.appcode, resolvers = self, cache_components = self ) )
          self._cp_form_refresh_on_comet	= component.Component( FormRefreshOnComet( cache_components = self ) )
 
