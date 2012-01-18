@@ -10,17 +10,22 @@ from counter_servers				import CounterServers
 # cache de component
 from i_cache_components                         import ICacheComponents
 
+# Mise en place d'un DOM pour la gestion comet
+from i_dom                                      import IDom
 
 ###########################
 # Vision des zones
 ###########################
-class MenuControlEnv( ICloudMgrResolvers, IAppcodeGetters, IEnvGetters, ICacheComponents ):
+class MenuControlEnv( ICloudMgrResolvers, IAppcodeGetters, IEnvGetters, ICacheComponents, IDom ):
 
-   def __init__( self, appcode = '', le_appcode_provider = None, env = '', le_env_provider = None, resolvers = None, cache_components = None ):
+   def __init__( self, appcode = '', le_appcode_provider = None, env = '', le_env_provider = None, resolvers = None, cache_components = None, dom_father = None, dom_element_name = '' ):
       ICloudMgrResolvers.__init__( self, resolvers )
       IAppcodeGetters.__init__( self, appcode = appcode, le_appcode_provider = le_appcode_provider )
       IEnvGetters.__init__( self, env = env, le_env_provider = le_env_provider )
       ICacheComponents.__init__( self, cache_components = cache_components )
+
+      # Mise en place d'un DOM pour la gestion comet
+      IDom.__init__( self, dom_father = dom_father, dom_element_name = dom_element_name  )
 
       self._cp_counter_by_appcode_by_env = component.Component( CounterServers( le_appcode_provider = lambda: self.appcode, le_env_provider = lambda: self.env, resolvers = self, cache_components = self ) )
       self._cp_counter_by_env = component.Component( CounterServers( le_env_provider = lambda: self.env, resolvers = self, cache_components = self ) )
