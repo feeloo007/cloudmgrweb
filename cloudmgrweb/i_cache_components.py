@@ -41,6 +41,15 @@ class ICacheComponents( object ):
 
 
    def get_l_known_div_for_change( self, event_name, appcode = '*', aera = '*', env = '*', appcomp = '*' ):
+
+      pprint( u'event_name: %s' % event_name )  
+      pprint( u'appcode: %s' % appcode )  
+      pprint( u'aera: %s' % aera )  
+      pprint( u'env: %s' % env )  
+      pprint( u'appcomp: %s' % appcomp )  
+
+      pprint( self.cache_components )
+
       return [ le() for le in self.cache_components.get(
             event_name
          ).get(
@@ -51,8 +60,6 @@ class ICacheComponents( object ):
            env
          ).get( appcomp ).values()
       ]
-
-      return []
 
 class FormRefreshOnComet( ICacheComponents ):
    def __init__( self, cache_components = None ):

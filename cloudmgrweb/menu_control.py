@@ -14,11 +14,11 @@ from i_cache_components				import ICacheComponents
 from i_dom                                      import IDom
 
 class MenuControl( ICloudMgrResolvers, ICacheComponents, IDom ):
-   def __init__( self, dom_father = None, dom_complement_element_name = '' ):
+   def __init__( self, dom_father = None, dom_complement_element_name = '', cache_components = None ):
       ICloudMgrResolvers.__init__( self )
 
       # cache de components
-      ICacheComponents.__init__( self, cache_components = None )
+      ICacheComponents.__init__( self, cache_components = cache_components )
 
       # Mise en place d'un DOM pour la gestion comet
       IDom.__init__( self, dom_father = dom_father, dom_element_name = MenuControl.__name__, dom_complement_element_name = dom_complement_element_name )
