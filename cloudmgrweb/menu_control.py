@@ -29,7 +29,6 @@ class MenuControl( ICloudMgrResolvers, ICloudMgrComet, ICacheComponents, IDom ):
 
       # Mise en place d'un DOM pour la gestion comet
       IDom.__init__( self, dom_father = dom_father, dom_element_name = dom_element_name  )
-      print self.full_dom_element_name
 
       with self.cloudmap_resolver:
          self._cp_appcode_selector 	= component.Component( AppcodeSelector() )
