@@ -32,7 +32,7 @@ class MenuControl( ICloudMgrResolvers, ICloudMgrComet, ICacheComponents, IDom ):
 
       with self.cloudmap_resolver:
          self._cp_appcode_selector 	= component.Component( AppcodeSelector() )
-         self._cp_menu_control_envs 	= component.Component( MenuControlEnvs( le_appcode_provider = lambda: self.cp_appcode_selector.o.appcode, resolvers = self, cache_components = self ) )
+         self._cp_menu_control_envs 	= component.Component( MenuControlEnvs( le_appcode_provider = lambda: self.cp_appcode_selector.o.appcode, resolvers = self, cache_components = self, dom_father = self, dom_element_name = '%s' % MenuControlEnvs.__name__ ) )
 
    def get_cp_appcode_selector( self ):
       return self._cp_appcode_selector

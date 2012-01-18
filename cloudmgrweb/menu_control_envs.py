@@ -11,15 +11,23 @@ from i_controllers                              import IAppcodeGetters
 # cache de component
 from i_cache_components                         import ICacheComponents
 
+# Mise en place d'un DOM pour la gestion comet
+from i_dom                                      import IDom
+
 ###########################
 # Vision des zones
 ###########################
-class MenuControlEnvs( ICloudMgrResolvers, IAppcodeGetters, ICacheComponents ):
+class MenuControlEnvs( ICloudMgrResolvers, IAppcodeGetters, ICacheComponents, IDom ):
 
-   def __init__( self, appcode = '', le_appcode_provider = None, resolvers = None, cache_components = None ):
+   def __init__( self, appcode = '', le_appcode_provider = None, resolvers = None, cache_components = None, dom_father = None, dom_element_name = '' ):
       ICloudMgrResolvers.__init__( self, resolvers )
       IAppcodeGetters.__init__( self, appcode = appcode, le_appcode_provider = le_appcode_provider )
       ICacheComponents.__init__( self, cache_components = cache_components )
+
+      # Mise en place d'un DOM pour la gestion comet
+      IDom.__init__( self, dom_father = dom_father, dom_element_name = dom_element_name  )
+
+      print self.full_dom_element_name
 
       # Filtre uniquement sur le code application
       self._cp_env_all_envs = component.Component( MenuControlEnv( le_appcode_provider = lambda: self.appcode, resolvers = self, cache_components = self ), model = '*' )
