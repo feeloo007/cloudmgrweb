@@ -28,7 +28,7 @@ class MenuControlEnvs( ICloudMgrResolvers, IAppcodeGetters, ICacheComponents, ID
       IDom.__init__( self, dom_father = dom_father, dom_element_name = MenuControlEnvs.__name__, dom_complement_element_name = dom_complement_element_name )
 
       # Filtre uniquement sur le code application
-      self._cp_env_all_envs = component.Component( MenuControlEnv( le_appcode_provider = lambda: self.appcode, resolvers = self, cache_components = self, dom_father = self, dom_complement_element_name = 'by_appcode' ), model = '*' )
+      self._cp_env_all_envs = component.Component( MenuControlEnv( env = '*', le_appcode_provider = lambda: self.appcode, resolvers = self, cache_components = self, dom_father = self, dom_complement_element_name = 'by_appcode' ), model = '*' )
 
    def get_cp_envs( self ):
       with self.cloudmap_resolver:
