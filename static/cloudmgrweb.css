@@ -14,14 +14,29 @@ html {
    padding: 0em ;
 }
 
-.app>#appcode_selector_struct {
+.app>.menu_control_struct {
    display: table-cell ;
    vertical-align: top ;
 }
 
-.app>#aeras_viewer_struct {
+.app>.aeras_viewer_struct {
    display: table-cell ;
    vertical-align: baseline ;
+}
+
+.menu_control {
+   display: table ;
+   border-spacing: 0em ;
+   padding: 0em ;
+}
+
+.menu_control>.menu_control_struct {
+   display: table-row ;
+}
+
+.menu_control>.menu_control_struct.spacer {
+   display: table-row ;
+   height: 1em ;
 }
 
 .appcode_selector {
@@ -87,6 +102,54 @@ html {
    color: #E0E0E0 ;
    margin: 0em ;
    padding: 0em ;
+}
+
+.menu_control_envs {
+   display: table ;
+   border-spacing: 0em ;
+   padding: 0em ;
+   width: 100% ;
+}
+
+.menu_control_envs>.menu_control_envs_struct {
+   display: table-row ;
+   width: 100% ;
+}
+
+.menu_control_envs>.menu_control_envs_struct.spacer>div {
+   height: 1em ;
+   width: 1em ;
+}
+
+.menu_control_env {
+   display: table ;
+   background-color: #757575 ;
+   color: #E0E0E0 ;
+   text-align: left ;
+   border-spacing: 0em ;
+   padding: 0em ;
+   width: 100% ;
+}
+
+.menu_control_env>.description {
+   display: table-cell ;
+   padding: 0.5em ;
+}
+
+.menu_control_env>.counter_appcomps_struct {
+   display: table-cell ;
+   padding: 0em ;
+   text-align: right ;
+   width: 2em ;
+   padding-right: 0.5em ;
+}
+
+.menu_control_env>.counter_appcomps_struct.separator {
+   display: table-cell ;
+   padding: 0em ;
+   text-align: right ;
+   width: 0.5em ;
+   padding-right: 0.5em ;
 }
 
 .aeras_viewer {
