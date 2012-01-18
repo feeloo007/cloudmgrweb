@@ -13,18 +13,24 @@ from create_server_form				import CreateServerTask
 # cache de component
 from i_cache_components                         import ICacheComponents
 
+# Mise en place d'un DOM pour la gestion comet
+from i_dom                                      import IDom
+
 ###########################
 # Vision des zones
 ###########################
-class ServersViewer( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters, ICacheComponents ):
+class ServersViewer( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters, ICacheComponents, IDom ):
 
-   def __init__( self, appcode = '', le_appcode_provider = None, aera = '', le_aera_provider = None, env = '', le_env_provider = None, appcomp = '', le_appcomp_provider = None, resolvers = None, cache_components = None ):
+   def __init__( self, appcode = '', le_appcode_provider = None, aera = '', le_aera_provider = None, env = '', le_env_provider = None, appcomp = '', le_appcomp_provider = None, resolvers = None, cache_components = None, dom_father = None, dom_complement_element_name = '' ):
       ICloudMgrResolvers.__init__( self, resolvers )
       IAppcodeGetters.__init__( self, appcode = appcode, le_appcode_provider = le_appcode_provider )
       IAeraGetters.__init__( self, aera = aera, le_aera_provider = le_aera_provider)
       IEnvGetters.__init__( self, env = env, le_env_provider = le_env_provider)
       IAppCompGetters.__init__( self, appcomp = appcomp, le_appcomp_provider = le_appcomp_provider )
       ICacheComponents.__init__( self, cache_components = cache_components )
+
+      # Mise en place d'un DOM pour la gestion comet
+      IDom.__init__( self, dom_father = dom_father, dom_element_name = ServersViewer.__name__, dom_complement_element_name = dom_complement_element_name )
 
       self._cp_create_server_task = component.Component( CreateServerTask( le_appcode_provider = lambda: self.appcode, le_aera_provider = lambda: self.aera, le_env_provider = lambda: self.env, le_appcomp_provider = lambda: self.appcomp, resolvers = self, cache_components = self ) )
 
@@ -42,7 +48,6 @@ class ServersViewer( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGett
 
 @presentation.render_for( ServersViewer )
 def render(self, h, comp, *args):
-   self.uid = 'ServersViewer %s %s %s %s' % ( self.appcode, self.aera, self.env, self.appcomp )
    self.set_knowndiv_for( 'REFRESH_ON_CREATION_SERVER_DEMAND', self, appcode = self.appcode, aera = self.aera, env = self.env, appcomp = self.appcomp )
 
    with h.div( class_ = 'servers_viewer %s %s %s' % ( self.aera, self.env, self.appcomp ) ):
