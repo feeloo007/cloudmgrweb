@@ -15,7 +15,7 @@ from pprint					import pprint
 ###########################
 # Vision des zones
 ###########################
-class CounterAppComps( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters, ICacheComponents, SequentialOps ):
+class CounterServers( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters, ICacheComponents, SequentialOps ):
 
    def __init__( self, appcode = '', le_appcode_provider = None, aera = '', le_aera_provider = None, env = '', le_env_provider = None, appcomp = '', le_appcomp_provider = None, resolvers = None, cache_components = None ):
       ICloudMgrResolvers.__init__( self, resolvers )
@@ -66,7 +66,7 @@ class CounterAppComps( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGe
          ] 
       )
 
-@presentation.render_for( CounterAppComps )
+@presentation.render_for( CounterServers )
 def render(self, h, comp, *args):
    with h.div( class_ = 'er_appcomps' ):
 
