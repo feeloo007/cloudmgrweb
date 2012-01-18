@@ -84,6 +84,6 @@ def render(self, h, comp, *args):
    with h.div( class_ = 'counter_appcomps' ):
 
       with self.cloudmap_resolver as cloudmap_resolver:
-         h << repr( self.operate() )
+         h << repr( self.process() )
 
    return h.root
