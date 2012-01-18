@@ -7,19 +7,24 @@ from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
 from i_controllers                              import IAppcodeGetters, IAeraGetters, IEnvGetters
 from appcomps_viewer				import AppCompsViewer
 
+# cache de component
+from i_cache_components                         import ICacheComponents
+
+
 ###########################
 # Vision des zones
 ###########################
-class EnvViewer( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGetters ):
+class EnvViewer( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGetters, ICacheComponents):
 
-   def __init__( self, appcode = '', le_appcode_provider = None, aera = '', le_aera_provider = None, env = '', le_env_provider = None, resolvers = None ):
+   def __init__( self, appcode = '', le_appcode_provider = None, aera = '', le_aera_provider = None, env = '', le_env_provider = None, resolvers = None, cache_components = None ):
       ICloudMgrResolvers.__init__( self, resolvers )
       IAppcodeGetters.__init__( self, appcode = appcode, le_appcode_provider = le_appcode_provider )
       IAeraGetters.__init__( self, aera = aera, le_aera_provider = le_aera_provider )
       IEnvGetters.__init__( self, env = env, le_env_provider = le_env_provider )
+      ICacheComponents.__init__( self, cache_components = cache_components )
 
       with self.cloudmap_resolver:
-         self._cp_appcomps_viewer = component.Component( AppCompsViewer( le_appcode_provider = lambda: self.appcode, le_aera_provider = lambda: self.aera, le_env_provider = lambda: self.env, resolvers = self ) )
+         self._cp_appcomps_viewer = component.Component( AppCompsViewer( le_appcode_provider = lambda: self.appcode, le_aera_provider = lambda: self.aera, le_env_provider = lambda: self.env, resolvers = self, cache_components = self ) )
 
 @presentation.render_for( EnvViewer )
 def render(self, h, comp, *args):

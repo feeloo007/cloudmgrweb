@@ -7,22 +7,27 @@ from cloudmgrlib.i_cmgr_resolvers		import ICloudMgrResolvers
 from i_controllers                              import IAppcodeGetters, IAeraGetters, IEnvGetters
 from appcomp_viewer 				import AppCompViewer
 
+# cache de component
+from i_cache_components                         import ICacheComponents
+
+
 ###########################
 # Vision des zones
 ###########################
-class AppCompsViewer( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGetters ):
+class AppCompsViewer( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGetters, ICacheComponents ):
 
-   def __init__( self, appcode = '', le_appcode_provider = None, aera = '', le_aera_provider = None, env = '', le_env_provider = None, resolvers = None ):
+   def __init__( self, appcode = '', le_appcode_provider = None, aera = '', le_aera_provider = None, env = '', le_env_provider = None, resolvers = None, cache_components = None ):
       ICloudMgrResolvers.__init__( self, resolvers )
       IAppcodeGetters.__init__( self, appcode = appcode, le_appcode_provider = le_appcode_provider )
-      IAeraGetters.__init__( self, aera = aera, le_aera_provider= le_aera_provider)
-      IEnvGetters.__init__( self, env = env, le_env_provider= le_env_provider)
+      IAeraGetters.__init__( self, aera = aera, le_aera_provider = le_aera_provider)
+      IEnvGetters.__init__( self, env = env, le_env_provider = le_env_provider)
+      ICacheComponents.__init__( self, cache_components = cache_components )
 
    def get_cp_appcomps( self ):
       with self.cloudmap_resolver:
          self._d_cp_appcomps = {}
          for appcomp in self.appcomp_resolver.get_all_appcomps_for_aera( self.aera ):
-            self._d_cp_appcomps[ appcomp ] = component.Component( AppCompViewer( le_appcode_provider = lambda: self.appcode, le_aera_provider = lambda: self.aera, le_env_provider = lambda: self.env, appcomp = appcomp, resolvers = self ) )
+            self._d_cp_appcomps[ appcomp ] = component.Component( AppCompViewer( le_appcode_provider = lambda: self.appcode, le_aera_provider = lambda: self.aera, le_env_provider = lambda: self.env, appcomp = appcomp, resolvers = self, cache_components = self ) )
       return self._d_cp_appcomps
    cp_appcomps = property( get_cp_appcomps )
 

@@ -11,17 +11,22 @@ from ajax_x_components                          import XComponentsUpdates
 # Interaction comet
 from i_comet					import ICloudMgrComet
 
+# cache de component
+from i_cache_components                         import ICacheComponents
+
+
 ###########################
 # Vision des zones
 ###########################
-class CreateServerForm( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters, ICloudMgrComet ):
+class CreateServerForm( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters, ICloudMgrComet, ICacheComponents ):
 
-   def __init__( self, appcode = '', le_appcode_provider = None, aera = '', le_aera_provider = None, env = '', le_env_provider = None, appcomp = '', le_appcomp_provider = None, resolvers = None ):
+   def __init__( self, appcode = '', le_appcode_provider = None, aera = '', le_aera_provider = None, env = '', le_env_provider = None, appcomp = '', le_appcomp_provider = None, resolvers = None, cache_components = None ):
       ICloudMgrResolvers.__init__( self, resolvers )
       IAppcodeGetters.__init__( self, appcode = appcode, le_appcode_provider = le_appcode_provider )
       IAeraGetters.__init__( self, aera = aera, le_aera_provider = le_aera_provider )
       IEnvGetters.__init__( self, env = env, le_env_provider = le_env_provider )
       IAppCompGetters.__init__( self, appcomp = appcomp, le_appcomp_provider = le_appcomp_provider )
+      ICacheComponents.__init__( self, cache_components = cache_components )
 
       # Interaction comet
       ICloudMgrComet.__init__( self )
@@ -96,7 +101,7 @@ def render(self, h, comp, *args):
                   except:
                      pass
 
-               h << h.input( type='submit', class_ = 'message valid %s %s %s' % ( self.aera, self.env, self.appcomp ), value=u'Confirmer' ).action( XComponentsUpdates( le_l_knowndiv = lambda: self.get_l_known_div_for_change(), update_himself = False, action = lambda: create_and_get_next_dhcp_file() ) )
+               h << h.input( type='submit', class_ = 'message valid %s %s %s' % ( self.aera, self.env, self.appcomp ), value=u'Confirmer' ).action( XComponentsUpdates( le_l_knowndiv = lambda: self.get_l_known_div_for_change(), update_himself = True, action = lambda: create_and_get_next_dhcp_file() ) )
 
                def cancel():
                   try:
@@ -108,16 +113,17 @@ def render(self, h, comp, *args):
    return h.root
 
 
-class CreateServerTask( component.Task, ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters ):
+class CreateServerTask( component.Task, ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters, ICacheComponents ):
 
-   def __init__( self, appcode = '', le_appcode_provider = None, aera = '', le_aera_provider = None, env = '', le_env_provider = None, appcomp = '', le_appcomp_provider = None, resolvers = None ):
+   def __init__( self, appcode = '', le_appcode_provider = None, aera = '', le_aera_provider = None, env = '', le_env_provider = None, appcomp = '', le_appcomp_provider = None, resolvers = None, cache_components = None ):
       ICloudMgrResolvers.__init__( self, resolvers )
       IAppcodeGetters.__init__( self, appcode = appcode, le_appcode_provider = le_appcode_provider )
       IAeraGetters.__init__( self, aera = aera, le_aera_provider = le_aera_provider )
       IEnvGetters.__init__( self, env = env, le_env_provider = le_env_provider )
       IAppCompGetters.__init__( self, appcomp = appcomp, le_appcomp_provider = le_appcomp_provider )
+      ICacheComponents.__init__( self, cache_components = cache_components )
 
-      self._cp_create_server_form = component.Component( CreateServerForm( le_appcode_provider = lambda: self.appcode, le_aera_provider = lambda: self.aera, le_env_provider = lambda: self.env, le_appcomp_provider = lambda: self.appcomp, resolvers = resolvers ) )
+      self._cp_create_server_form = component.Component( CreateServerForm( le_appcode_provider = lambda: self.appcode, le_aera_provider = lambda: self.aera, le_env_provider = lambda: self.env, le_appcomp_provider = lambda: self.appcomp, resolvers = self, cache_components = self ) )
 
    def get_l_known_div_for_change( self ):
        return [ le() for le in self._cp_create_server_form.o.get_l_known_div_for_change() ]
@@ -138,6 +144,6 @@ class CreateServerTask( component.Task, ICloudMgrResolvers, IAppcodeGetters, IAe
 
          comp.call( self._cp_create_server_form )
          if comp.call( self._cp_create_server_form, model='validate' ):
-            self._cp_create_server_form.o.comet_channel.send( 'REFRESH_ON_CREATION_SERVER_DEMAND %s %s %s %s' % ( self.appcode, self.aera, self.env, self.appcomp ) )
+            self._cp_create_server_form.o.comet_channel.send( 'REFRESH_ON_CREATION_SERVER_DEMAND appcode:%s aera:%s env:%s appcomp:%s' % ( self.appcode, self.aera, self.env, self.appcomp ) )
          else:
             continue

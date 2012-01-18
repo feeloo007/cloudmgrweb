@@ -7,21 +7,26 @@ from aera_viewer				import AeraViewer
 from cloudmgrlib.i_cmgr_resolvers		import ICloudMgrResolvers
 from i_controllers				import IAppcodeGetters
 
+# cache de component
+from i_cache_components                         import ICacheComponents
+
 
 ###########################
 # Vision des zones
 ###########################
-class AerasViewer( ICloudMgrResolvers, IAppcodeGetters ):
+class AerasViewer( ICloudMgrResolvers, IAppcodeGetters, ICacheComponents ):
 
-   def __init__( self, appcode = '', le_appcode_provider = None, resolvers = None ):
+   def __init__( self, appcode = '', le_appcode_provider = None, resolvers = None, cache_components = None ):
       ICloudMgrResolvers.__init__( self, resolvers )
       IAppcodeGetters.__init__( self, appcode = appcode, le_appcode_provider = le_appcode_provider ) 
+      ICacheComponents.__init__( self, cache_components = cache_components )
+
 
    def get_cp_aeras( self ):
       with self.cloudmap_resolver:
          self._d_cp_aeras = {}
          for aera in self.aera_resolver.all_aeras:
-            self._d_cp_aeras[ aera ] = component.Component( AeraViewer( aera = aera, le_appcode_provider = lambda: self.appcode, resolvers = self ) )
+            self._d_cp_aeras[ aera ] = component.Component( AeraViewer( aera = aera, le_appcode_provider = lambda: self.appcode, resolvers = self, cache_components = self ) )
       return self._d_cp_aeras
        
    cp_aeras = property( get_cp_aeras )
