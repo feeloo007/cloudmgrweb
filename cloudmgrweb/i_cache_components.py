@@ -35,7 +35,7 @@ class ICacheComponents( object ):
           appcomp, 
           {}                                  
       ).setdefault( 
-           cp_div.uid,
+           cp_div.full_dom_element_name,
            lambda: cp_div.le_get_knowndiv()
       )
 
