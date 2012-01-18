@@ -7,22 +7,34 @@ from pprint	import pprint
 ###########################
 class IDom( object ):
 
-   def __init__( self, dom_father = None, dom_element_name = '' ):
-      self._dom_father 		= dom_father
-      self._dom_element_name 	= dom_element_name
+   def __init__( self, dom_father = None, dom_element_name = '', dom_complement_element_name = '' ):
+      self._dom_father 			= dom_father
+      self._dom_element_name 		= dom_element_name
+      self._dom_complement_element_name = dom_complement_element_name
 
    def get_dom_element_name( self ):
       return self._dom_element_name
    dom_element_name = property( get_dom_element_name )
+
+   def get_dom_complement_element_name( self ):
+      return self._dom_complement_element_name
+   dom_complement_element_name = property( get_dom_complement_element_name )
 
    def get_full_dom_element_name( self ):
       result = None
       f = self.dom_father
 
       if f:
-         result = '%s/%s' % ( f.full_dom_element_name, self.dom_element_name )
+         if not self.dom_complement_element_name:
+            result = '%s/%s' % ( f.full_dom_element_name, self.dom_element_name )
+         else:
+            result = '%s/%s#%s' % ( f.full_dom_element_name, self.dom_element_name, self.dom_complement_element_name )
       else:
-         result = '/%s' % ( self.dom_element_name )
+         if not self.dom_complement_element_name:
+            result = '/%s' % ( self.dom_element_name )
+         else:
+            result = '/%s#%s' % ( self.dom_element_name, self.dom_complement_element_name )
+
 
       return result
 
