@@ -7,8 +7,12 @@ from cloudmgrlib.i_cmgr_resolvers		import ICloudMgrResolvers
 from i_controllers                              import IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters
 from cloudmgrlib.sequential_ops			import SequentialOps
 
+# Interaction comet
+from i_comet                                    import ICloudMgrComet
+from nagare                                     import ajax
+
 # cache de component
-from i_cache_components                         import ICacheComponents
+from i_cache_components                         import ICacheComponents, FormRefreshOnComet
 
 # Mise en place d'un DOM pour la gestion comet
 from i_dom                                      import IDom
@@ -16,7 +20,7 @@ from i_dom                                      import IDom
 ###########################
 # Vision des zones
 ###########################
-class CounterServers( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters, ICacheComponents, SequentialOps, IDom ):
+class CounterServers( ICloudMgrResolvers, ICloudMgrComet, IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters, ICacheComponents, SequentialOps, IDom ):
 
    def __init__( self, appcode = '', le_appcode_provider = None, aera = '', le_aera_provider = None, env = '', le_env_provider = None, appcomp = '', le_appcomp_provider = None, resolvers = None, cache_components = None, dom_father = None, dom_complement_element_name = '' ):
       ICloudMgrResolvers.__init__( self, resolvers )
@@ -26,10 +30,11 @@ class CounterServers( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGet
       IAppCompGetters.__init__( self, appcomp = appcomp, le_appcomp_provider = le_appcomp_provider )
       ICacheComponents.__init__( self, cache_components = cache_components )
 
+      # Interaction comet
+      ICloudMgrComet.__init__( self )
+
       # Mise en place d'un DOM pour la gestion comet
       IDom.__init__( self, dom_father = dom_father, dom_element_name = '%s!%s!%s!%s!%s' % ( CounterServers.__name__, self.appcode, self.aera, self.env, self.appcomp ), dom_complement_element_name = dom_complement_element_name )
-
-      print self.full_dom_element_name
 
       def get_cloudmap_in_a_list( cmr ):
          result = None

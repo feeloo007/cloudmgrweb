@@ -7,22 +7,15 @@ from menu_control_envs	 			import MenuControlEnvs
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
 
-# Interaction comet
-from i_comet					import ICloudMgrComet
-from nagare					import ajax
-
 # cache de component
-from i_cache_components				import ICacheComponents, FormRefreshOnComet
+from i_cache_components				import ICacheComponents
 
 # Mise en place d'un DOM pour la gestion comet
 from i_dom                                      import IDom
 
-class MenuControl( ICloudMgrResolvers, ICloudMgrComet, ICacheComponents, IDom ):
+class MenuControl( ICloudMgrResolvers, ICacheComponents, IDom ):
    def __init__( self, dom_father = None, dom_complement_element_name = '' ):
       ICloudMgrResolvers.__init__( self )
-
-      # Interaction comet
-      ICloudMgrComet.__init__( self )
 
       # cache de components
       ICacheComponents.__init__( self, cache_components = None )
