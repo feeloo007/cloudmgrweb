@@ -17,7 +17,7 @@ class IDom( object ):
    dom_element_name = property( get_dom_element_name )
 
    def get_dom_complement_element_name( self ):
-      return self._dom_complement_element_name
+      return self._dom_complement_element_name.upper()
    dom_complement_element_name = property( get_dom_complement_element_name )
 
    def get_full_dom_element_name( self ):
@@ -28,12 +28,12 @@ class IDom( object ):
          if not self.dom_complement_element_name:
             result = '%s/%s' % ( f.full_dom_element_name, self.dom_element_name )
          else:
-            result = '%s/%s#%s' % ( f.full_dom_element_name, self.dom_element_name, self.dom_complement_element_name )
+            result = '%s/%s#%s' % ( f.full_dom_element_name, self.dom_complement_element_name, self.dom_element_name )
       else:
          if not self.dom_complement_element_name:
             result = '/%s' % ( self.dom_element_name )
          else:
-            result = '/%s#%s' % ( self.dom_element_name, self.dom_complement_element_name )
+            result = '/%s#%s' % ( self.dom_complement_element_name, self.dom_element_name )
 
 
       return result
