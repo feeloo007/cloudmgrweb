@@ -50,17 +50,6 @@ def render(self, h, comp, *args):
         h << h.div( ' / ', class_ = 'counter_appcomps_struct separator' )
         h << h.div( component.Component( KnownDiv( self.cp_counter_by_env ) ), class_ = 'counter_appcomps_struct' )
 
-   # Vérification de la valeur des id
-   pprint( '%s' % MenuControlEnv.__name__ )
-   for event_name, d_event_name in self.cache_components.items():
-      for appcode, d_appcode in d_event_name.items():
-         for aera, d_aera in d_appcode.items():
-            for env, d_env in d_aera.items():
-               for appcomp, d_appcomp in d_env.items():
-                  for dom_name, le in d_appcomp.items():
-                     pprint( '%s %s %s %s %s %s %s' % ( le().id, event_name, appcode, aera, env, appcomp, dom_name ) )
-   print
-
    return h.root
 
 @presentation.render_for( MenuControlEnv, model = '*' )
