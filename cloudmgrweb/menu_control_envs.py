@@ -49,6 +49,10 @@ class MenuControlEnvs( ICloudMgrResolvers, IAppcodeGetters, ICacheComponents, ID
 
 @presentation.render_for( MenuControlEnvs )
 def render(self, h, comp, *args):
+
+   # Nettoyage du cache de composant
+   self.clean_cache_for_dom( self.full_dom_element_name )
+
    with h.div( class_ = 'menu_control_envs' ): 
       with self.cloudmap_resolver:
          d_order = self.env_resolver.order_for_envs.copy()
@@ -57,5 +61,5 @@ def render(self, h, comp, *args):
             h << h.div( h.div, class_ = 'menu_control_envs_struct spacer' )
          h << h.div( component.Component( KnownDiv( self.cp_menu_all_envs ) ), class_ = 'menu_control_envs_struct SUM' )
          h << h.div( h.div, class_ = 'menu_control_envs_struct spacer' )
-
+   
    return h.root
