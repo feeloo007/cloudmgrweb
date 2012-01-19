@@ -25,6 +25,7 @@ from pprint					import pprint
 class CounterServers( ICloudMgrResolvers, ICloudMgrComet, IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters, ICacheComponents, SequentialOps, IDom ):
 
    def __init__( self, appcode = '', le_appcode_provider = None, aera = '', le_aera_provider = None, env = '', le_env_provider = None, appcomp = '', le_appcomp_provider = None, resolvers = None, cache_components = None, dom_father = None, dom_complement_element_name = '' ):
+
       ICloudMgrResolvers.__init__( self, resolvers )
       IAppcodeGetters.__init__( self, appcode = appcode, le_appcode_provider = le_appcode_provider )
       IAeraGetters.__init__( self, aera = aera, le_aera_provider = le_aera_provider)
@@ -38,6 +39,7 @@ class CounterServers( ICloudMgrResolvers, ICloudMgrComet, IAppcodeGetters, IAera
       # Mise en place d'un DOM pour la gestion comet
       IDom.__init__( self, dom_father = dom_father, dom_element_name = '%s!%s!%s!%s!%s' % ( CounterServers.__name__, self.appcode, self.aera, self.env, self.appcomp ), dom_complement_element_name = dom_complement_element_name )
 
+
       def get_cloudmap_in_a_list( cmr ):
          result = None
          with cmr as cloudmap_resolver:
@@ -49,7 +51,7 @@ class CounterServers( ICloudMgrResolvers, ICloudMgrComet, IAppcodeGetters, IAera
          for e in l:
             result = []
 
-            if getattr( self, attribute ) and getattr( self, attribute ) <> '*' :
+            if getattr( self, attribute ) and getattr( self, attribute ) <> '*':
             	result = e.get( getattr( self, attribute ), [] )
             else:
                result = e.values()
@@ -83,6 +85,15 @@ class CounterServers( ICloudMgrResolvers, ICloudMgrComet, IAppcodeGetters, IAera
             sum_element_on_list,
          ] 
       )
+
+   def get_appcode( self ):
+      if IAppcodeGetters.get_appcode( self ) == '':
+         return '*'
+      return IAppcodeGetters.get_appcode( self )
+
+   def set_appcode( self, appcode ):
+      IAppcodeGetters.set_appcode( self, appcode )
+   appcode = property( get_appcode, set_appcode )
 
 @presentation.render_for( CounterServers )
 def render(self, h, comp, *args):
