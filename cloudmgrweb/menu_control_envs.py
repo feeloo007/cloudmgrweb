@@ -14,6 +14,9 @@ from i_cache_components                         import ICacheComponents
 # Mise en place d'un DOM pour la gestion comet
 from i_dom                                      import IDom
 
+
+from pprint					import pprint
+
 ###########################
 # Vision des zones
 ###########################
@@ -28,16 +31,20 @@ class MenuControlEnvs( ICloudMgrResolvers, IAppcodeGetters, ICacheComponents, ID
       IDom.__init__( self, dom_father = dom_father, dom_element_name = MenuControlEnvs.__name__, dom_complement_element_name = dom_complement_element_name )
 
       # Filtre uniquement sur le code application
-      self._cp_env_all_envs = component.Component( MenuControlEnv( env = '*', le_appcode_provider = lambda: self.appcode, resolvers = self, cache_components = self, dom_father = self, dom_complement_element_name = 'by_appcode' ), model = '*' )
+      self._cp_menu_all_envs = component.Component( MenuControlEnv( env = '*', le_appcode_provider = lambda: self.appcode, resolvers = self, cache_components = self, dom_father = self, dom_complement_element_name = 'by_appcode' ), model = '*' )
 
-   def get_cp_envs( self ):
+   def get_cp_menu_all_envs( self ):
+      return self._cp_menu_all_envs
+   cp_menu_all_envs = property( get_cp_menu_all_envs )
+
+   def get_cp_menu_by_envs( self ):
       with self.cloudmap_resolver:
-         self._d_cp_envs = {}
+         self._d_cp_menu_by_envs = {}
          for env in self.env_resolver.all_envs:
             # Filtre sur le code applciation en l'environnement
-            self._d_cp_envs[ env ] = component.Component( MenuControlEnv( env = env, le_appcode_provider = lambda: self.appcode, resolvers = self, cache_components = self, dom_father = self, dom_complement_element_name = 'by_appcode_by_env' ) ) 
-      return self._d_cp_envs
-   cp_envs = property( get_cp_envs )
+            self._d_cp_menu_by_envs[ env ] = component.Component( MenuControlEnv( env = env, le_appcode_provider = lambda: self.appcode, resolvers = self, cache_components = self, dom_father = self, dom_complement_element_name = 'by_appcode_by_env' ) ) 
+      return self._d_cp_menu_by_envs
+   cp_menu_by_envs = property( get_cp_menu_by_envs )
 
 
 @presentation.render_for( MenuControlEnvs )
@@ -45,10 +52,10 @@ def render(self, h, comp, *args):
    with h.div( class_ = 'menu_control_envs' ): 
       with self.cloudmap_resolver:
          d_order = self.env_resolver.order_for_envs.copy()
-         for env, cp_env in sorted( self.cp_envs.items(), key = lambda e: d_order[ e[ 0 ] ], reverse = False ):
-            h << h.div( component.Component( KnownDiv( cp_env ) ), class_ = 'menu_control_envs_struct %s' %  ( env ) )
+         for env, cp_menu_by_env in sorted( self.cp_menu_by_envs.items(), key = lambda e: d_order[ e[ 0 ] ], reverse = False ):
+            h << h.div( component.Component( KnownDiv( cp_menu_by_env ) ), class_ = 'menu_control_envs_struct %s' %  ( env ) )
             h << h.div( h.div, class_ = 'menu_control_envs_struct spacer' )
-         h << h.div( component.Component( KnownDiv( self._cp_env_all_envs ) ), class_ = 'menu_control_envs_struct SUM' )
+         h << h.div( component.Component( KnownDiv( self.cp_menu_all_envs ) ), class_ = 'menu_control_envs_struct SUM' )
          h << h.div( h.div, class_ = 'menu_control_envs_struct spacer' )
 
    return h.root
