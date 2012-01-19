@@ -108,6 +108,46 @@ class ICacheComponents( object ):
       return seq.process()
 
 
+   def clean_cache_for_dom( self, dom_full_element_name ):
+
+      def get_all_values_on_list_of_dict( l ):
+         l_result = []
+         for e in l:
+            result = []
+            result = e.values()
+            if type( result ) == dict:
+               result = [ result ]
+
+            l_result.extend( result )
+
+         return l_result
+
+      def print_struct( x ):
+         pprint( x )
+         print
+         return x
+
+      def delete_childs( l ):
+         for d in l:
+            for full_dom_element_name in d.keys():
+               if full_dom_element_name.startswith( self.full_dom_element_name ):
+                  del( d[ full_dom_element_name ] )
+         return l
+
+      seq = SequentialOps(
+         [ self.cache_components ],
+         [ 
+            get_all_values_on_list_of_dict, # Récupération de la définition de tous les event_name
+            get_all_values_on_list_of_dict, # Récupération de la définition de tous les appcode
+            get_all_values_on_list_of_dict, # Récupération de la définition de tous les aera
+            get_all_values_on_list_of_dict, # Récupération de la définition de tous les env
+            get_all_values_on_list_of_dict, # Récupération de la définition de tous les appcomp
+            delete_childs,
+         ]
+      )
+
+      seq.process()
+
 
 class FormRefreshOnComet( ICacheComponents ):
    def __init__( self, cache_components = None ):
