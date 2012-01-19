@@ -5,7 +5,6 @@ class IAppcodeGetters( object ):
 
    def __init__( self, appcode = '', le_appcode_provider = None ):
       self._appcode 		= appcode
-      self._appcode 		= ''
       self._le_appcode_provider = le_appcode_provider
 
    def get_appcode( self ):
