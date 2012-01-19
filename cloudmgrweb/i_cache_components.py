@@ -1,8 +1,9 @@
 # -*- coding: UTF-8 -*-
-from __future__ 	import with_statement
-from nagare		import presentation, var
-from ajax_x_components  import XComponentsUpdates
-from pprint		import pprint
+from __future__ 				import with_statement
+from nagare					import presentation, var
+from ajax_x_components  			import XComponentsUpdates
+from pprint					import pprint
+from cloudmgrlib.sequential_ops			import SequentialOps
 
 class ICacheComponents( object ):
 
@@ -17,7 +18,7 @@ class ICacheComponents( object ):
 
    cache_components = property( get_cache_components )
 
-   def set_knowndiv_for( self, event_name, cp_div, appcode = '*', aera = '*', env = '*', appcomp = '*' ):
+   def set_knowndiv_for( self, event_name, cp_div, appcode = '-', aera = '-', env = '-', appcomp = '-' ):
 
       self.cache_components.setdefault(
          event_name,
@@ -34,32 +35,79 @@ class ICacheComponents( object ):
       ).setdefault( 
           appcomp, 
           {}                                  
-      ).setdefault( 
-           cp_div.full_dom_element_name,
-           lambda: cp_div.le_get_knowndiv()
-      )
+      )[ cp_div.full_dom_element_name ] = lambda: cp_div.le_get_knowndiv()
 
 
    def get_l_known_div_for_change( self, event_name, appcode = '*', aera = '*', env = '*', appcomp = '*' ):
 
-      pprint( u'event_name: %s' % event_name )  
-      pprint( u'appcode: %s' % appcode )  
-      pprint( u'aera: %s' % aera )  
-      pprint( u'env: %s' % env )  
-      pprint( u'appcomp: %s' % appcomp )  
+      def get_list_from_key( l, key ):
+         l_result = []
+         for e in l:
+            result = []
 
-      pprint( self.cache_components )
+            if e <> '*':
+               result = e.get( key, [] )
+            else:
+               result = e.values()
 
-      return [ le() for le in self.cache_components.get(
-            event_name
-         ).get(
-           appcode
-         ).get(
-           aera
-         ).get(
-           env
-         ).get( appcomp ).values()
-      ]
+            if type( result ) == dict:
+               result = [ result ]
+
+            l_result.extend( result )
+
+            result = []
+            result = e.get( '*', [] )
+
+            if type( result ) == dict:
+               result = [ result ]
+
+            l_result.extend( result )
+
+            result = []
+            result = e.get( '-', [] )
+
+            if type( result ) == dict:
+               result = [ result ]
+
+            l_result.extend( result )
+            
+         return l_result
+
+      def print_struct( x ):
+         pprint( x )
+         print
+         return x
+
+      def to_l_le( l ):
+         l_result = []
+         for d in l:
+            result = None
+            result = d.values()
+            if type( result ) == dict:
+               result = [ result ]
+            l_result.extend( result )
+         return l_result
+
+      def process_l_le( l ):
+         return [ le() for le in l ]
+         
+
+      seq = SequentialOps( 
+         [ self.cache_components ], 
+         [ 
+            lambda l, key = event_name: get_list_from_key( l, key ),
+            lambda l, key = appcode: get_list_from_key( l, key ),
+            lambda l, key = aera: get_list_from_key( l, key ),
+            lambda l, key = env: get_list_from_key( l, key ),
+            lambda l, key = appcomp: get_list_from_key( l, key ),
+            to_l_le,
+            process_l_le,
+         ] 
+      )
+
+      return seq.process()
+
+
 
 class FormRefreshOnComet( ICacheComponents ):
    def __init__( self, cache_components = None ):
