@@ -35,7 +35,6 @@ class IDom( object ):
          else:
             result = '/%s#%s' % ( self.dom_complement_element_name, self.dom_element_name )
 
-
       return result
 
    full_dom_element_name = property( get_full_dom_element_name )
