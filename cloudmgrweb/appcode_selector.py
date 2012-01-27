@@ -4,6 +4,8 @@ from __future__ import with_statement
 from nagare                                     import presentation, var, ajax
 from ajax_x_components				import XComponentsUpdates
 
+from pprint					import pprint
+
 #########################
 # Selection du code appli
 #########################

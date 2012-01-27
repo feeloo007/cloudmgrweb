@@ -16,43 +16,130 @@ from i_cache_components                         import ICacheComponents, FormRef
 
 # Mise en place d'un DOM pour la gestion comet
 from i_dom                                      import IDom
+from i_dom_tree                                 import IDomTree
+
+from i_dynamic_component_provider               import IDynamicComponentProvider
 
 from pprint					import pprint
 
 ###########################
 # Vision des zones
 ###########################
-class CounterServers( ICloudMgrResolvers, ICloudMgrComet, IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters, ICacheComponents, SequentialOps, IDom ):
+class CounterServers( 
+         ICloudMgrResolvers, 
+         ICloudMgrComet, 
+         IAppcodeGetters, 
+         IAeraGetters, 
+         IEnvGetters, 
+         IAppCompGetters, 
+         ICacheComponents, 
+         SequentialOps, 
+         IDom,
+         IDomTree,
+         IDynamicComponentProvider,
+      ):
 
-   def __init__( self, appcode = '', le_appcode_provider = None, aera = '', le_aera_provider = None, env = '', le_env_provider = None, appcomp = '', le_appcomp_provider = None, resolvers = None, cache_components = None, dom_father = None, dom_complement_element_name = '' ):
+   def __init__(
+          self, 
+          appcode = '', 
+          le_appcode_provider = None, 
+          aera = '', 
+          le_aera_provider = None, 
+          env = '', 
+          le_env_provider = None, 
+          appcomp = '', 
+          le_appcomp_provider = None, 
+          resolvers = None, 
+          cache_components = None, 
+          dom_storage = None,
+          dom_father = None, 
+          dom_complement_element_name = '' 
+      ):
 
-      ICloudMgrResolvers.__init__( self, resolvers )
-      IAppcodeGetters.__init__( self, appcode = appcode, le_appcode_provider = le_appcode_provider )
-      IAeraGetters.__init__( self, aera = aera, le_aera_provider = le_aera_provider)
-      IEnvGetters.__init__( self, env = env, le_env_provider = le_env_provider)
-      IAppCompGetters.__init__( self, appcomp = appcomp, le_appcomp_provider = le_appcomp_provider )
-      ICacheComponents.__init__( self, cache_components = cache_components )
+      ICloudMgrResolvers.__init__( 
+         self, 
+         resolvers 
+      )
+
+      IAppcodeGetters.__init__( 
+         self, 
+         appcode = appcode, 
+         le_appcode_provider = le_appcode_provider 
+      )
+
+      IAeraGetters.__init__( 
+         self, 
+         aera = aera, 
+         le_aera_provider = le_aera_provider
+      )
+
+      IEnvGetters.__init__( 
+         self, 
+         env = env, 
+         le_env_provider = le_env_provider
+      )
+
+      IAppCompGetters.__init__( 
+         self, 
+         appcomp = appcomp, 
+         le_appcomp_provider = le_appcomp_provider 
+      )
+
+      ICacheComponents.__init__( 
+         self, 
+         cache_components = cache_components 
+      )
 
       # Interaction comet
-      ICloudMgrComet.__init__( self )
+      ICloudMgrComet.__init__( 
+         self 
+      )
+
+      IDynamicComponentProvider.__init__(
+         self
+      )
 
       # Mise en place d'un DOM pour la gestion comet
-      IDom.__init__( self, dom_father = dom_father, dom_element_name = '%s!%s!%s!%s!%s' % ( CounterServers.__name__, self.appcode, self.aera, self.env, self.appcomp ), dom_complement_element_name = dom_complement_element_name )
+      IDom.__init__( 
+         self, 
+         dom_father = dom_father, 
+         dom_element_name = '%s!%s!%s!%s!%s' % ( CounterServers.__name__, self.appcode, self.aera, self.env, self.appcomp ), 
+         dom_complement_element_name = dom_complement_element_name 
+      )
+
+      IDomTree.__init__(
+         self,
+         dom_storage = dom_storage,
+         dom_father = dom_father,
+      )
 
 
-      def get_cloudmap_in_a_list( cmr ):
+      def get_cloudmap_in_a_list( 
+             cmr 
+          ):
+
          result = None
          with cmr as cloudmap_resolver:
             result = cloudmap_resolver.cloudmap.copy()
          return [ result ]
 
-      def get_list_from_attribute( l, attribute = None ):
+      def get_list_from_attribute( 
+             l, 
+             attribute = None 
+          ):
+
          l_result = []
          for e in l:
             result = []
 
             if getattr( self, attribute ) and getattr( self, attribute ) <> '*':
-            	result = e.get( getattr( self, attribute ), [] )
+            	result = e.get( 
+                            getattr( 
+                               self, 
+                               attribute 
+                            ), 
+                            [] 
+                         )
             else:
                result = e.values()
 
@@ -78,10 +165,22 @@ class CounterServers( ICloudMgrResolvers, ICloudMgrComet, IAppcodeGetters, IAera
          self.cloudmap_resolver, 
          [ 
             get_cloudmap_in_a_list, 
-            lambda l, attribute = 'aera': get_list_from_attribute( l, attribute ),
-            lambda l, attribute = 'appcode': get_list_from_attribute( l, attribute ),
-            lambda l, attribute = 'env': get_list_from_attribute( l, attribute ),
-            lambda l, attribute = 'appcomp': get_list_from_attribute( l, attribute ),
+            lambda l, attribute = 'aera': get_list_from_attribute( 
+                                             l, 
+                                             attribute 
+                                          ),
+            lambda l, attribute = 'appcode': get_list_from_attribute( 
+                                                l, 
+                                                attribute 
+                                          ),
+            lambda l, attribute = 'env': get_list_from_attribute( 
+                                            l, 
+                                            attribute 
+                                         ),
+            lambda l, attribute = 'appcomp': get_list_from_attribute( 
+                                                l, 
+                                                attribute 
+                                             ),
             sum_element_on_list,
          ] 
       )
@@ -92,12 +191,28 @@ class CounterServers( ICloudMgrResolvers, ICloudMgrComet, IAppcodeGetters, IAera
       return IAppcodeGetters.get_appcode( self )
 
    def set_appcode( self, appcode ):
-      IAppcodeGetters.set_appcode( self, appcode )
-   appcode = property( get_appcode, set_appcode )
+      IAppcodeGetters.set_appcode( 
+         self, 
+         appcode 
+      )
+   appcode = property( 
+                get_appcode, 
+                set_appcode 
+             )
 
 @presentation.render_for( CounterServers )
-def render(self, h, comp, *args):
-   self.set_knowndiv_for( 'REFRESH_ON_CREATION_SERVER_DEMAND', self, appcode = self.appcode, env = self.env )
+def render(
+       self, 
+       h, 
+       comp, 
+       *args
+    ):
+   self.set_knowndiv_for( 
+      'REFRESH_ON_CREATION_SERVER_DEMAND', 
+      self, 
+      appcode = self.appcode, 
+      env = self.env,
+   )
 
    with h.div( class_ = 'counter_appcomps' ):
 

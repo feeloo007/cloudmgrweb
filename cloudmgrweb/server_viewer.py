@@ -9,24 +9,96 @@ from i_controllers                              import IAppcodeGetters, IAeraGet
 # cache de component
 from i_cache_components                         import ICacheComponents
 
+from i_dom_tree                                 import IDomTree
+
+from i_dynamic_component_provider               import IDynamicComponentProvider
+
+from pprint                                     import pprint
+
 
 ###########################
 # Vision des zones
 ###########################
-class ServerViewer( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters, ICacheComponents ):
+class ServerViewer( 
+         ICloudMgrResolvers, 
+         IAppcodeGetters, 
+         IAeraGetters, 
+         IEnvGetters, 
+         IAppCompGetters, 
+         ICacheComponents,
+         IDomTree,
+         IDynamicComponentProvider,
+      ):
 
-   def __init__( self, appcode = '', le_appcode_provider = None, aera = '', le_aera_provider = None, env = '', le_env_provider = None, appcomp = '', le_appcomp_provider = None, num_component = '', d_component_status = {} , resolvers = None, cache_components = None ):
+   def __init__( 
+          self, 
+          appcode = '', 
+          le_appcode_provider = None, 
+          aera = '', 
+          le_aera_provider = None, 
+          env = '', 
+          le_env_provider = None, 
+          appcomp = '', 
+          le_appcomp_provider = None, 
+          num_component = '', 
+          d_component_status = {}, 
+          resolvers = None, 
+          dom_storage = None,
+          dom_father = None,
+          cache_components = None 
+       ):
 
-      ICloudMgrResolvers.__init__( self, resolvers )
-      IAppcodeGetters.__init__( self, appcode = appcode, le_appcode_provider = le_appcode_provider )
-      IAeraGetters.__init__( self, aera = aera, le_aera_provider = le_aera_provider )
-      IEnvGetters.__init__( self, env = env, le_env_provider = le_env_provider )
-      IAppCompGetters.__init__( self, appcomp = appcomp, le_appcomp_provider = le_appcomp_provider )
-      ICacheComponents.__init__( self, cache_components = cache_components )
+      ICloudMgrResolvers.__init__( 
+         self, 
+         resolvers 
+      )
+
+      IAppcodeGetters.__init__( 
+         self, 
+         appcode = appcode, 
+         le_appcode_provider = le_appcode_provider 
+      )
+
+      IAeraGetters.__init__( 
+         self, 
+         aera = aera, 
+         le_aera_provider = le_aera_provider 
+      )
+
+      IEnvGetters.__init__( 
+         self, 
+         env = env, 
+         le_env_provider = le_env_provider 
+      )
+
+      IAppCompGetters.__init__( 
+         self, 
+         appcomp = appcomp, 
+         le_appcomp_provider = le_appcomp_provider 
+      )
+
+      ICacheComponents.__init__( 
+         self, 
+         cache_components = cache_components 
+      )
+
+      IDomTree.__init__(
+         self,
+         dom_storage = dom_storage,
+         dom_father = dom_father,
+      )
+
+      IDynamicComponentProvider.__init__(
+         self
+      )
 
       self._num_component 	= num_component
       self._d_component_status 	= d_component_status
-      self._servername 		= '%s-%s-%s' % ( self.appcomp, self.num_component, self.aera )
+      self._servername 		= '%s-%s-%s' % ( 
+                                     self.appcomp, 
+                                     self.num_component, 
+                                     self.aera 
+                                  )
 
    def get_num_component( self ):
       return self._num_component

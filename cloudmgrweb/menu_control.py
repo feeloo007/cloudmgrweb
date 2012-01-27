@@ -13,42 +13,143 @@ from i_cache_components				import ICacheComponents
 # Mise en place d'un DOM pour la gestion comet
 from i_dom                                      import IDom
 
-class MenuControl( ICloudMgrResolvers, ICacheComponents, IDom ):
-   def __init__( self, dom_father = None, dom_complement_element_name = '', cache_components = None ):
-      ICloudMgrResolvers.__init__( self )
+from i_dom_tree					import IDomTree
+
+from i_dynamic_component_provider               import IDynamicComponentProvider
+
+from pprint					import pprint
+
+
+class MenuControl( 
+         ICloudMgrResolvers, 
+         ICacheComponents, 
+         IDom, 
+         IDomTree, 
+         IDynamicComponentProvider 
+      ):
+   def __init__( 
+          self, 
+          dom_storage = None, 
+          dom_father = None, 
+          dom_complement_element_name = '', 
+          cache_components = None 
+       ):
+
+      ICloudMgrResolvers.__init__( 
+         self 
+      )
 
       # cache de components
-      ICacheComponents.__init__( self, cache_components = cache_components )
+      ICacheComponents.__init__( 
+         self, 
+         cache_components = cache_components 
+      )
+
+      # Création de l'interface
+      # permettant la génération
+      # des composants de manière
+      # dynamique et avec 
+      # alimentation de l'objet en proprerties
+      IDynamicComponentProvider.__init__( 
+         self 
+      )
 
       # Mise en place d'un DOM pour la gestion comet
-      IDom.__init__( self, dom_father = dom_father, dom_element_name = MenuControl.__name__, dom_complement_element_name = dom_complement_element_name )
+      IDom.__init__( 
+         self, 
+         dom_father = dom_father, 
+         dom_element_name = MenuControl.__name__, 
+         dom_complement_element_name = dom_complement_element_name 
+      )
 
-      with self.cloudmap_resolver:
-         self._cp_appcode_selector 	= component.Component( AppcodeSelector() )
-         self._cp_menu_control_envs 	= component.Component( MenuControlEnvs( le_appcode_provider = lambda: self.cp_appcode_selector.o.appcode, resolvers = self, cache_components = self, dom_father = self ) )
+      IDomTree.__init__( 
+         self, 
+         dom_storage = dom_storage, 
+         dom_father = dom_father 
+      )
 
-   def get_cp_appcode_selector( self ):
-      return self._cp_appcode_selector
-   
-   cp_appcode_selector = property( get_cp_appcode_selector )
+      # Définition des composants dynamiques
+      # Menu de controle
+      def create_cp_appcode_selector():
+         with self.cloudmap_resolver:
+            return component.Component(
+               AppcodeSelector()
+            )
 
-   def get_cp_menu_control_envs( self ):
-      return self._cp_menu_control_envs
+      self.create_dynamic_component(
+         'cp_appcode_selector',
+         create_cp_appcode_selector,
+      )
 
-   cp_menu_control_envs = property( get_cp_menu_control_envs )
+      def create_cp_menu_control_envs():
+         with self.cloudmap_resolver:
+            return component.Component(
+                      MenuControlEnvs(
+                         le_appcode_provider = lambda: self.cp_appcode_selector.o.appcode,
+                         resolvers = self,
+                         cache_components = self,
+                         dom_storage = self,
+                         dom_father = self,
+                      )
+                   )
 
+      self.create_dynamic_component(
+         'cp_menu_control_envs',
+         create_cp_menu_control_envs,
+      ) 
+      
 @presentation.render_for(MenuControl)
-def render(self, h, *args):
+def render(
+       self, 
+       h, 
+       *args
+    ):
 
-   cp_div_appcode_selector	= component.Component( KnownDiv( self._cp_appcode_selector ) )
-   cp_div_menu_control_envs	= component.Component( KnownDiv( self._cp_menu_control_envs ) )
 
-   # Interaction comet
    with self.cloudmap_resolver:
 
-      with h.div( class_ = 'menu_control' ):
-         h << h.div( cp_div_appcode_selector, class_ = 'menu_control_struct APPCODE' )
-         h << h.div( '', class_ = 'menu_control_struct spacer' )
-         h << h.div( cp_div_menu_control_envs, class_ = 'menu_control_struct ENVS' )
+      # Suppression des précédents fils
+      # dans le modèle DOM
+      self.delete_dom_childs()
+
+      # Initialisation locale des composants
+      # utilisés
+      self.create_cp_appcode_selector()
+      self.create_cp_menu_control_envs()
+
+      # Création des DIV
+      cp_div_appcode_selector	= component.Component( 
+                                     KnownDiv( 
+                                        self.cp_appcode_selector 
+                                     ) 
+                                  )
+
+      cp_div_menu_control_envs	= component.Component( 
+                                     KnownDiv( 
+                                        self.cp_menu_control_envs 
+                                     ) 
+                                  )
+
+      # Interaction comet
+      with self.cloudmap_resolver:
+
+         with h.div( 
+                 class_ = 'menu_control' 
+              ):
+
+            h << h.div( 
+                    cp_div_appcode_selector,
+                    class_ = 'menu_control_struct APPCODE' 
+                 )
+
+            h << h.div( 
+                    '', 
+                    class_ = 'menu_control_struct spacer' 
+                 )
+
+            h << h.div( 
+                    cp_div_menu_control_envs, 
+                    class_ = 'menu_control_struct ENVS' 
+                 )
 
    return h.root

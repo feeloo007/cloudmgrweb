@@ -10,39 +10,130 @@ from i_controllers				import IAppcodeGetters
 # cache de component
 from i_cache_components                         import ICacheComponents
 
+from i_dom_tree					import IDomTree
+
+from i_dynamic_component_provider               import IDynamicComponentProvider
+
+from pprint					import pprint
+
 
 ###########################
 # Vision des zones
 ###########################
-class AerasViewer( ICloudMgrResolvers, IAppcodeGetters, ICacheComponents ):
+class AerasViewer( 
+         ICloudMgrResolvers, 
+         IAppcodeGetters, 
+         ICacheComponents,
+         IDomTree,
+         IDynamicComponentProvider,
+      ):
 
-   def __init__( self, appcode = '', le_appcode_provider = None, resolvers = None, cache_components = None ):
-      ICloudMgrResolvers.__init__( self, resolvers )
-      IAppcodeGetters.__init__( self, appcode = appcode, le_appcode_provider = le_appcode_provider ) 
-      ICacheComponents.__init__( self, cache_components = cache_components )
+   def __init__( 
+          self, 
+          appcode = '', 
+          le_appcode_provider = None, 
+          resolvers = None, 
+          cache_components = None, 
+          dom_storage = None, 
+          dom_father = None, 
+       ):
+
+      ICloudMgrResolvers.__init__( 
+         self, 
+         resolvers 
+      )
+
+      IAppcodeGetters.__init__(
+         self, 
+         appcode = appcode, 
+         le_appcode_provider = le_appcode_provider 
+      )
+ 
+      ICacheComponents.__init__( 
+         self, 
+         cache_components = cache_components 
+      )
+
+      IDynamicComponentProvider.__init__(
+         self,
+      )
+
+      IDomTree.__init__(
+         self,
+         dom_storage 	= dom_storage,
+         dom_father 	= dom_father,
+      )
 
 
-   def get_cp_aeras( self ):
-      with self.cloudmap_resolver:
-         self._d_cp_aeras = {}
-         for aera in self.aera_resolver.all_aeras:
-            self._d_cp_aeras[ aera ] = component.Component( AeraViewer( aera = aera, le_appcode_provider = lambda: self.appcode, resolvers = self, cache_components = self ) )
-      return self._d_cp_aeras
-       
-   cp_aeras = property( get_cp_aeras )
+      # Définition des composants dynamiques
+      # Menu de controle
+      def create_all_cp_aeras_viewer():
+         with self.cloudmap_resolver:
+            d_all_cp_aeras_viewer = {}
+            for aera in self.aera_resolver.all_aeras:
+               d_all_cp_aeras_viewer[ aera ] = component.Component( 
+                                                 AeraViewer( 
+                                                    aera = aera, 
+                                                    le_appcode_provider = lambda: self.appcode, 
+                                                    resolvers = self, 
+                                                    dom_storage = self,
+                                                    dom_father = self,
+                                                    cache_components = self 
+                                                 ) 
+                                              )
+         return d_all_cp_aeras_viewer
 
+      self.create_dynamic_component(
+         'all_cp_aeras_viewer',
+         create_all_cp_aeras_viewer
+      )
 
 
 @presentation.render_for( AerasViewer )
 def render(self, h, comp, *args):
-   
-   with h.div( class_ = 'aeras_viewer' ):
-      if not self.appcode:
-         h << h.div( u'Veuillez selectionner un code application', class_='appcodes message' )
-      else:
-         with self.cloudmap_resolver:
+
+   with self.cloudmap_resolver:
+
+      # Suppression des précédents fils
+      # dans le modèle DOM
+      self.delete_dom_childs()
+
+      with h.div( 
+              class_ = 'aeras_viewer' 
+           ):
+
+         if not self.appcode:
+
+            h << h.div( 
+                    u'Veuillez selectionner un code application', 
+                    class_='appcodes message' 
+                 )
+         else:
+
+            # Initialisation locale des composants
+            # utilisés
+            self.create_all_cp_aeras_viewer()
+
             d_order = self.aera_resolver.order_for_aeras.copy()
-            for aera, cp_aera in sorted( self.cp_aeras.items(), key = lambda e: d_order[ e[ 0 ] ], reverse = False ):
-               h << h.div( component.Component( KnownDiv( cp_aera ) ), class_ = 'aeras_viewer_struct %s' % aera )
-               h << h.div( h.div, class_ = 'aeras_viewer_struct spacer' )
+
+            for aera, cp_aera_viewer in sorted( 
+                                           self.all_cp_aeras_viewer.items(), 
+                                           key = lambda e: d_order[ e[ 0 ] ], 
+                                           reverse = False 
+                                        ):
+
+               h << h.div( 
+                       component.Component( 
+                          KnownDiv( 
+                             cp_aera_viewer
+                          ) 
+                       ), 
+                       class_ = 'aeras_viewer_struct %s' % aera 
+                    )
+
+               h << h.div(  
+                       h.div, 
+                       class_ = 'aeras_viewer_struct spacer' 
+               )
+
    return h.root

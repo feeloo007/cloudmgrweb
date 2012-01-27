@@ -10,25 +10,119 @@ from i_controllers                              import IAppcodeGetters, IAeraGet
 # cache de component
 from i_cache_components                         import ICacheComponents
 
+from i_dom_tree                                 import IDomTree
+
+from i_dynamic_component_provider               import IDynamicComponentProvider
+
 
 ###########################
 # Vision des zones
 ###########################
-class AeraViewer( ICloudMgrResolvers, IAppcodeGetters, IAeraGetters, ICacheComponents ):
+class AeraViewer( 
+         ICloudMgrResolvers, 
+         IAppcodeGetters, 
+         IAeraGetters, 
+         ICacheComponents,
+         IDomTree,
+         IDynamicComponentProvider, 
+      ):
 
-   def __init__( self, aera = '', le_aera_provider = None, appcode = '', le_appcode_provider = None, resolvers = None, cache_components = None ):
-      ICloudMgrResolvers.__init__( self, resolvers )
-      IAppcodeGetters.__init__( self, appcode = appcode, le_appcode_provider = le_appcode_provider )
-      IAeraGetters.__init__( self, aera = aera, le_aera_provider = le_aera_provider )
-      ICacheComponents.__init__( self, cache_components = cache_components )
+   def __init__( 
+           self, aera = '', 
+           le_aera_provider = None, 
+           appcode = '', 
+           le_appcode_provider = None, 
+           resolvers = None, 
+           dom_storage = None,
+           dom_father = None,
+           cache_components = None 
+       ):
 
-      with self.cloudmap_resolver:
-         self._cp_envs_viewer = component.Component( EnvsViewer( le_appcode_provider = lambda: self.appcode, le_aera_provider = lambda: self.aera, resolvers = self, cache_components = self ) )
+      ICloudMgrResolvers.__init__( 
+                            self, 
+                            resolvers 
+                         )
+
+      IAppcodeGetters.__init__( 
+                         self, 
+                         appcode = appcode, 
+                         le_appcode_provider = le_appcode_provider 
+                      )
+
+      IAeraGetters.__init__( 
+                       self, 
+                       aera = aera, 
+                       le_aera_provider = le_aera_provider 
+                   )
+
+      ICacheComponents.__init__( 
+                          self, 
+                          cache_components = cache_components 
+                       )
+
+      IDomTree.__init__(
+                  self,
+                  dom_storage = dom_storage,
+                  dom_father = dom_father,
+               )
+
+      IDynamicComponentProvider.__init__(
+                                   self,
+                                )
+
+      def create_cp_envs_viewer():
+         return component.Component( 
+                   EnvsViewer( 
+                      le_appcode_provider = lambda: self.appcode, 
+                      le_aera_provider = lambda: self.aera, 
+                      resolvers = self, 
+                      dom_storage = self,
+                      dom_father = self,
+                      cache_components = self 
+                   ) 
+                )
+
+
+      self.create_dynamic_component(
+         'cp_envs_viewer',
+         create_cp_envs_viewer
+      )
+
 
 @presentation.render_for( AeraViewer )
-def render(self, h, comp, *args):
+def render(
+       self, 
+       h, 
+       comp, 
+       *args
+    ):
+
    with self.cloudmap_resolver:
-      with h.div( class_='aera_viewer %s' % ( self.aera ) ):
-         h << h.div( self.aera_resolver.get_aera_desc( self.aera ), class_ = 'description' )
-         h << h.div( component.Component( KnownDiv( self._cp_envs_viewer ) ), class_ = 'aera %s' % ( self.aera ) )
+
+      # Suppression des précédents fils
+      # dans le modèle DOM
+      self.delete_dom_childs()
+
+      # Initialisation locale des composants
+      # utilisés
+      self.create_cp_envs_viewer()
+
+      with h.div( 
+              class_='aera_viewer %s' % ( self.aera )
+           ):
+
+         h << h.div( 
+                 self.aera_resolver.get_aera_desc( self.aera ), 
+                 class_ = 'description' 
+              )
+
+         h << h.div( 
+                 component.Component( 
+                    KnownDiv( 
+                       self.cp_envs_viewer
+                    ) 
+                 ), 
+                 class_ = 'aera %s' % ( self.aera ) 
+            )
+
    return h.root
