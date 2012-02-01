@@ -3,75 +3,148 @@
 from pprint import pprint
 
 class IDomTree( object ):
-  def __init__( self, dom_storage, dom_father ):
+   def __init__( self, dom_storage, dom_father ):
 
-     if not dom_storage:
-        self.d_dom_tree = {
-        }
-        self.dom_storage = dom_storage
-     else:
-        self.d_dom_tree = dom_storage.d_dom_tree
+      if not dom_storage:
 
-     self.d_dom_tree.setdefault(
-           dom_father,
-           {
-              'dom_father': None
-           },
-     ).setdefault(
-        'dom_childs',
-        []
-     ).append( self )
+         self.d_dom_tree 	= {
+         }
 
-     self.d_dom_tree[ self ] = {
-        'dom_father': dom_father,
-        'dom_childs': []
-     }
+         self.d_events 		= {
+         }
+
+         self.dom_storage 	= self
+
+      else:
+
+         self.dom_storage 	= dom_storage
+
+         self.d_dom_tree 	= self.dom_storage.d_dom_tree
+
+         self.d_events 		= self.dom_storage.d_events
+ 
+      self.d_dom_tree.setdefault(
+            dom_father,
+            {
+               'dom_father': None
+            },
+      ).setdefault(
+         'dom_childs',
+         []
+      ).append( self )
+ 
+      self.d_dom_tree[ self ] = {
+         'dom_father': dom_father,
+         'dom_childs': [],
+         'events': [],
+      }
+
+ 
+   def get_dom_storage( self ):
+      return self.__dom_storage
+ 
+   def set_dom_storage( self, dom_storage ):
+      self.__dom_storage = dom_storage
+ 
+   dom_storage = property( get_dom_storage, set_dom_storage )
+ 
+   def get_dom_father( self ):
+      return self.d_dom_tree[ self ][ 'dom_father' ]
+ 
+   dom_father = property( get_dom_father )
+ 
+   def get_d_dom_tree( self ):
+      return self.__d_dom_tree
+ 
+   def set_d_dom_tree( self, d_dom_tree ):
+     self.__d_dom_tree = d_dom_tree
+ 
+   d_dom_tree = property( get_d_dom_tree, set_d_dom_tree )
+ 
+   def get_dom_childs( self ):
+      return self.d_dom_tree[ self ][ 'dom_childs' ]
+   
+   dom_childs = property( get_dom_childs )
+ 
+   def get_all_dom_childs( self ):
+ 
+      def ready_to_reduce( l ):
+         if l == []:
+            return [ [ ] ]
+         return l
+       
+      return reduce( list.__add__, ready_to_reduce( [ reduce( list.__add__, [ [ e ], e.all_dom_childs ] ) for e in self.dom_childs ] ) )
+ 
+   all_dom_childs = property( get_all_dom_childs )
+ 
+   def delete_dom_childs( self ):
+ 
+      for dom_child in self.dom_childs[ : ]:
+         dom_child.delete_events()
+         dom_child.delete_dom_childs()
+         self.d_dom_tree[ dom_child.dom_father ][ 'dom_childs' ].remove( dom_child )
+         del( self.d_dom_tree[ dom_child ] )
 
 
-  def get_dom_storage( self ):
-     return self.__dom_storage
+   def get_d_events( self ):
+      return self.__d_events
 
-  def set_dom_storage( self, dom_storage ):
-     self.__dom_storage = dom_storage
+   def set_d_events( self, d_events ):
+      self.__d_events = d_events
 
-  dom_storage = property( get_dom_storage, set_dom_storage )
+   d_events = property( get_d_events, set_d_events )
 
-  def get_dom_father( self ):
-     return self.d_dom_tree[ self ][ 'dom_father' ]
+   def add_event_for_knowndiv( self, event_name, cp_knowndiv, appcode = '-', aera = '-', env = '-', appcomp = '-' ):
 
-  dom_father = property( get_dom_father )
+      self.d_dom_tree[ self ][ 'events' ].append( {
+                                                      'event_name'	: event_name, 
+                                                      'cp_knowndiv'	: cp_knowndiv,
+                                                      'appcode'		: appcode, 
+                                                      'aera'		: aera, 
+					              'env'		: env, 
+                                                      'appcomp'		: appcomp 
+                                                  }
+                                          )
 
-  def get_d_dom_tree( self ):
-     return self.__d_dom_tree
-
-  def set_d_dom_tree( self, d_dom_tree ):
-    self.__d_dom_tree = d_dom_tree
-
-  d_dom_tree = property( get_d_dom_tree, set_d_dom_tree )
-
-  def get_dom_childs( self ):
-     return self.d_dom_tree[ self ][ 'dom_childs' ]
-  
-  dom_childs = property( get_dom_childs )
-
-  def get_all_dom_childs( self ):
-
-     def ready_to_reduce( l ):
-        if l == []:
-           return [ [ ] ]
-        return l
       
-     return reduce( list.__add__, ready_to_reduce( [ reduce( list.__add__, [ [ e ], e.all_dom_childs ] ) for e in self.dom_childs ] ) )
+      self.d_events.setdefault(
+         event_name,
+         {}
+      ).setdefault(
+         appcode,
+         {}
+      ).setdefault(
+         aera,
+         {}
+      ).setdefault(
+         env,
+         {}
+      ).setdefault(
+         appcomp,
+         {}
+      )[ cp_knowndiv ] = lambda: cp_knowndiv.le_get_knowndiv()
 
-  all_dom_childs = property( get_all_dom_childs )
 
-  def delete_dom_childs( self ):
+   def delete_events( self ):
 
-     for dom_child in self.dom_childs[ : ]:
-        dom_child.delete_dom_childs()
-        self.d_dom_tree[ dom_child.dom_father ][ 'dom_childs' ].remove( dom_child )
-        del( self.d_dom_tree[ dom_child ] )
+      for desc_event in self.d_dom_tree[ self ][ 'events' ]:
 
+         del( self.d_events[ desc_event[ 'event_name' ] ][ desc_event[ 'appcode' ] ][ desc_event[ 'aera' ] ][ desc_event[ 'env' ] ][ desc_event[ 'appcomp' ] ][ desc_event[ 'cp_knowndiv' ] ] )
+
+         if not self.d_events[ desc_event[ 'event_name' ] ][ desc_event[ 'appcode' ] ][ desc_event[ 'aera' ] ][ desc_event[ 'env' ] ][ desc_event[ 'appcomp' ] ]:
+            del( self.d_events[ desc_event[ 'event_name' ] ][ desc_event[ 'appcode' ] ][ desc_event[ 'aera' ] ][ desc_event[ 'env' ] ][ desc_event[ 'appcomp' ] ] )
+     
+         if not self.d_events[ desc_event[ 'event_name' ] ][ desc_event[ 'appcode' ] ][ desc_event[ 'aera' ] ][ desc_event[ 'env' ] ]:
+            del( self.d_events[ desc_event[ 'event_name' ] ][ desc_event[ 'appcode' ] ][ desc_event[ 'aera' ] ][ desc_event[ 'env' ] ] )
+
+         if not self.d_events[ desc_event[ 'event_name' ] ][ desc_event[ 'appcode' ] ][ desc_event[ 'aera' ] ]:
+            del( self.d_events[ desc_event[ 'event_name' ] ][ desc_event[ 'appcode' ] ][ desc_event[ 'aera' ] ] )
+
+         if not self.d_events[ desc_event[ 'event_name' ] ][ desc_event[ 'appcode' ] ]:
+            del( self.d_events[ desc_event[ 'event_name' ] ][ desc_event[ 'appcode' ] ] )
+
+         if not self.d_events[ desc_event[ 'event_name' ] ]:
+            del( self.d_events[ desc_event[ 'event_name' ] ] )
 
 if __name__ == "__main__":
    class ROOT( IDomTree ):

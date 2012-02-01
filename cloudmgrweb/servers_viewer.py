@@ -208,6 +208,15 @@ def render(
                self.create_all_cp_servers_viewer()
 
                #self.set_knowndiv_for( 'REFRESH_ON_CREATION_SERVER_DEMAND', self, appcode = self.appcode, aera = self.aera, env = self.env, appcomp = self.appcomp )
+               self.add_event_for_knowndiv( 
+                  'REFRESH_ON_CREATION_SERVER_DEMAND', 
+                  self, 
+                  appcode = self.appcode, 
+                  aera = self.aera, 
+                  env = self.env, 
+                  appcomp = self.appcomp
+               )
+
 
                colspan = 4
                i = 0

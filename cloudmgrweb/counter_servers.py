@@ -214,6 +214,13 @@ def render(
       env = self.env,
    )
 
+   self.add_event_for_knowndiv(
+      'REFRESH_ON_CREATION_SERVER_DEMAND', 
+      self, 
+      appcode = self.appcode, 
+      env = self.env,
+   )
+
    with h.div( class_ = 'counter_appcomps' ):
 
       with self.cloudmap_resolver as cloudmap_resolver:

@@ -78,6 +78,11 @@ def render(
    print( '##################################' )
    print( '##################################' )
    pprint( self._cloudmgrweb.d_dom_tree )
+   print
+   print
+   pprint( self._cloudmgrweb.d_events )
+   print
+   print
 
    h << 'DEBUG IN STDOUT NAGARE-SERVE'
 
