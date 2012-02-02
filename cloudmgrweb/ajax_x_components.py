@@ -55,9 +55,16 @@ class XComponentsUpdates( ajax.Update ):
        qui seront modifiés
     """
     def __init__(self, le_l_knowndiv = [], update_himself = True, **kw ):
+
+        def fake( *args ):
+           pass
+
         self._le_l_knowndiv = le_l_knowndiv
-        self._action = kw.get('action', lambda *args: None)
+
+        self._action = kw.get('action', fake )
+
         self._update_himself = update_himself
+
         super( XComponentsUpdates, self ).__init__( action=self.action, with_request=True )
         
     def action(self, request, response, *args ):

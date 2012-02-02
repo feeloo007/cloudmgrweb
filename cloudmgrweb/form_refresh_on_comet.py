@@ -32,14 +32,9 @@ def render(
    v_env        = var.Var()
    v_appcomp    = var.Var()
 
-   def fake():
-      pass
-
    with h.form( 
              id = 'refresh_on_comet_event' 
           ):
-
-         #h << h.input( type = 'submit', class_ = 'submit', style = 'display: none ;' ).action( fake )
 
          h << h.input( 
                  type = 'submit', 
@@ -55,7 +50,6 @@ def render(
                                                                 appcomp = v_appcomp() 
                                             ), 
                     update_himself = True, 
-                    action = lambda: fake() 
                  ) 
               )
 
