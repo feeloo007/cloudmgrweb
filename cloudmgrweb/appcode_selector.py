@@ -6,20 +6,42 @@ from ajax_x_components				import XComponentsUpdates
 
 from pprint					import pprint
 
+from i_dom_tree					import IDomTree
+
 #########################
 # Selection du code appli
 #########################
-class AppcodeSelector( object ):
+class AppcodeSelector( 
+         IDomTree,         
+      ):
 
-  def __init__( self ):
-     self._appcode = ''
+  def __init__( 
+         self,
+         dom_storage 	= None,
+         dom_father 	= None,
+      ):
+
+     self.__appcode = ''
      self._l_known_div_for_appcode_change = []
 
-  def get_appcode( self ):
-     return self._appcode
+     IDomTree.__init__(
+        self,
+        dom_storage 	= dom_storage,
+        dom_father 	= dom_father,
+     )
 
-  def set_appcode( self, appcode ):
-     self._appcode = appcode
+  def get_appcode( 
+         self 
+      ):
+
+     return self.__appcode
+
+  def set_appcode( 
+         self, 
+         appcode 
+     ):
+
+     self.__appcode = appcode
 
   appcode = property( get_appcode, set_appcode )
 
@@ -35,14 +57,19 @@ class AppcodeSelector( object ):
   def get_l_known_div_for_appcode_change( self ):
      return self._l_known_div_for_appcode_change
 
-
-
 @presentation.render_for( AppcodeSelector )
-def render(self, h, comp, *args):
+def render(
+       self, 
+       h, 
+       comp, 
+       *args
+    ):
 
    v_appcode = var.Var()
 
-   with h.div( class_ = 'appcode_selector' ):
+   with h.div( 
+           class_ = 'appcode_selector' 
+        ):
 
       if self.appcode:
          h << h.div( self.appcode, class_ = 'message current' )

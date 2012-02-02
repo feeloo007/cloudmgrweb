@@ -50,7 +50,10 @@ class MenuControl(
       def create_cp_appcode_selector():
          with self.cloudmap_resolver:
             return component.Component(
-               AppcodeSelector()
+               AppcodeSelector(
+                  dom_storage 	= self,
+                  dom_father 	= self,
+               )
             )
 
       self.create_dynamic_component(
