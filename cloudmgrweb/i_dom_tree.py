@@ -141,15 +141,9 @@ class IDomTree( object ):
 
    def delete_events( self ):
 
-      print( Fore.MAGENTA + pformat( self.d_dom_tree[ self ] ) + Fore.RESET )
-
       for desc_event in self.d_dom_tree[ self ][ 'events' ][ : ]:
 
-         print( Fore.WHITE + pformat( desc_event ) + Fore.RESET )
-
          del( self.d_events[ desc_event[ 'event_name' ] ][ desc_event[ 'appcode' ] ][ desc_event[ 'aera' ] ][ desc_event[ 'env' ] ][ desc_event[ 'appcomp' ] ][ desc_event[ 'cp_knowndiv' ] ] )
-
-         self.d_dom_tree[ self ][ 'events' ].remove( desc_event )
 
          if not self.d_events[ desc_event[ 'event_name' ] ][ desc_event[ 'appcode' ] ][ desc_event[ 'aera' ] ][ desc_event[ 'env' ] ][ desc_event[ 'appcomp' ] ]:
             del( self.d_events[ desc_event[ 'event_name' ] ][ desc_event[ 'appcode' ] ][ desc_event[ 'aera' ] ][ desc_event[ 'env' ] ][ desc_event[ 'appcomp' ] ] )
@@ -165,9 +159,6 @@ class IDomTree( object ):
 
          if not self.d_events[ desc_event[ 'event_name' ] ]:
             del( self.d_events[ desc_event[ 'event_name' ] ] )
-
-      print( Fore.BLUE + pformat( self.d_dom_tree[ self ] ) + Fore.RESET )
-
 
 
    def get_l_known_div_for_change( self, event_name, appcode = '*', aera = '*', env = '*', appcomp = '*' ):
