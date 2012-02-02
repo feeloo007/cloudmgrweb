@@ -7,12 +7,7 @@ from menu_control_envs	 			import MenuControlEnvs
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
 
-# cache de component
-from i_cache_components				import ICacheComponents
-
 # Mise en place d'un DOM pour la gestion comet
-from i_dom                                      import IDom
-
 from i_dom_tree					import IDomTree
 
 from i_dynamic_component_provider               import IDynamicComponentProvider
@@ -22,8 +17,6 @@ from pprint					import pprint
 
 class MenuControl( 
          ICloudMgrResolvers, 
-         ICacheComponents, 
-         IDom, 
          IDomTree, 
          IDynamicComponentProvider 
       ):
@@ -31,18 +24,10 @@ class MenuControl(
           self, 
           dom_storage = None, 
           dom_father = None, 
-          dom_complement_element_name = '', 
-          cache_components = None 
        ):
 
       ICloudMgrResolvers.__init__( 
          self 
-      )
-
-      # cache de components
-      ICacheComponents.__init__( 
-         self, 
-         cache_components = cache_components 
       )
 
       # Création de l'interface
@@ -52,14 +37,6 @@ class MenuControl(
       # alimentation de l'objet en proprerties
       IDynamicComponentProvider.__init__( 
          self 
-      )
-
-      # Mise en place d'un DOM pour la gestion comet
-      IDom.__init__( 
-         self, 
-         dom_father = dom_father, 
-         dom_element_name = MenuControl.__name__, 
-         dom_complement_element_name = dom_complement_element_name 
       )
 
       IDomTree.__init__( 
@@ -87,7 +64,6 @@ class MenuControl(
                       MenuControlEnvs(
                          le_appcode_provider = lambda: self.cp_appcode_selector.o.appcode,
                          resolvers = self,
-                         cache_components = self,
                          dom_storage = self,
                          dom_father = self,
                       )

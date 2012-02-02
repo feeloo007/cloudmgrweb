@@ -51,7 +51,7 @@ def render(self, h, comp, *args):
 
       with h.form:
          with h.div( class_ = 'form' ):
-            h << h.input( type = 'text', class_ = 'input_appcode' ).action( v_appcode )
+            h << h.input( type = 'text', class_ = 'input_appcode', value = self.appcode ).action( v_appcode )
             h << h.input( type = 'submit', value= u'Charger', class_ = 'submit_appcode' ).action( XComponentsUpdates( le_l_knowndiv = lambda: self.get_l_known_div_for_appcode_change(), update_himself = True, action = lambda: self.set_appcode( v_appcode() ) ) )
 
    return h.root

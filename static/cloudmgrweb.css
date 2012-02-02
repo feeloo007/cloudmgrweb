@@ -330,6 +330,27 @@ html {
    padding: 0em ;
 }
 
+.servers_control {
+   display: table ;
+   font-family: "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+   padding: 0em ;
+   margin: 0em ;
+   border-spacing: 0em ;
+   width: 100% ;
+}
+
+.servers_control>.spacer>div {
+   height: 0.5em ;
+   width: 0.5em ;
+}
+
+.servers_control>.spacer:last-child {
+   display: none ;
+}
+
+.servers_control>.servers_control_struct {
+   display: table-row ;
+}
 
 .servers_viewer {
    display: table ;
@@ -347,14 +368,6 @@ html {
 
 .servers_viewer>.spacer:last-child {
    display: none ;
-}
-
-.servers_viewer>.servers_viewer_struct.create_server_task_struct {
-   display: table-row ;
-}
-
-.servers_viewer .servers_viewer_struct.create_server_task_struct.spacer {
-   /* background-color: black ; */
 }
 
 .servers_viewer>.servers_viewer_struct.servers {
@@ -390,7 +403,6 @@ html {
 .create_server_form form {
    width: 100% ;
 }
-
 
 .create_server_form .message {
    display: table-cell ;

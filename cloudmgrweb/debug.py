@@ -6,47 +6,34 @@ from nagare                                     import component, presentation
 # Interaction comet
 from i_comet                                    import ICloudMgrComet
 
-from i_cache_components                         import ICacheComponents
-
-# Mise en place d'un DOM pour la gestion comet
-from i_dom                                      import IDom
 from i_dom_tree                                 import IDomTree
 
-from pprint                                     import pprint
+from pprint                                     import pprint, pformat
 
 from time					import localtime
+
+from colorama					import init, Fore
 
 
 class CloudmgrwebDebug(
          ICloudMgrComet,
          IDomTree,
-         ICacheComponents,
-         IDom,
       ):
 
    def __init__(
           self,
-          cache_components = None,
           dom_storage      = None,
           dom_father       = None,
           cloudmgrweb      = None,
        ):
 
+      # Initialisation colorama
+      init( autoreset = True )
+
       ICloudMgrComet.__init__(
                         self
       )
  
-      ICacheComponents.__init__( 
-                          self, 
-                          cache_components = cache_components 
-      )
-
-      IDom.__init__(
-         self,
-         dom_father = dom_father,
-         dom_element_name = CloudmgrwebDebug.__name__,
-         dom_complement_element_name = ''
-      )
 
       IDomTree.__init__(
                   self,
@@ -63,7 +50,11 @@ def render(
        *args
     ):
 
-   self.set_knowndiv_for( 
+   # Suppression des précédents fils
+   # dans le modèle DOM
+   self.delete_dom_childs()
+
+   self.add_event_for_knowndiv( 
       '*', 
       self, 
       appcode = '*',
@@ -77,10 +68,10 @@ def render(
    print( localtime() )
    print( '##################################' )
    print( '##################################' )
-   pprint( self._cloudmgrweb.d_dom_tree )
+   print( Fore.BLUE + pformat( self._cloudmgrweb.d_dom_tree ) + Fore.RESET )
    print
    print
-   pprint( self._cloudmgrweb.d_events )
+   print( Fore.CYAN +  pformat( self._cloudmgrweb.d_events ) + Fore.RESET )
    print
    print
 

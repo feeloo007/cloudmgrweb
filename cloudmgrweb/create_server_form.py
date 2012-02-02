@@ -11,9 +11,6 @@ from ajax_x_components                          import XComponentsUpdates
 # Interaction comet
 from i_comet					import ICloudMgrComet
 
-# cache de component
-from i_cache_components                         import ICacheComponents
-
 from i_dom_tree                                 import IDomTree
 
 from i_dynamic_component_provider               import IDynamicComponentProvider
@@ -31,7 +28,6 @@ class CreateServerForm(
          IEnvGetters, 
          IAppCompGetters, 
          ICloudMgrComet, 
-         ICacheComponents,
          IDomTree,
          IDynamicComponentProvider 
       ):
@@ -49,7 +45,6 @@ class CreateServerForm(
           resolvers = None, 
           dom_storage = None,
           dom_father = None,
-          cache_components = None,
        ):
 
       ICloudMgrResolvers.__init__(
@@ -80,11 +75,6 @@ class CreateServerForm(
                          appcomp = appcomp, 
                          le_appcomp_provider = le_appcomp_provider 
                       )
-
-      ICacheComponents.__init__( 
-                          self, 
-                          cache_components = cache_components 
-                       )
 
       # Interaction comet
       ICloudMgrComet.__init__( 
@@ -289,7 +279,6 @@ class CreateServerTask(
          IAeraGetters, 
          IEnvGetters, 
          IAppCompGetters, 
-         ICacheComponents,
          IDomTree,
          IDynamicComponentProvider, 
       ):
@@ -307,7 +296,6 @@ class CreateServerTask(
           resolvers = None, 
           dom_storage = None,
           dom_father = None,
-          cache_components = None 
        ):
 
       ICloudMgrResolvers.__init__( 
@@ -339,11 +327,6 @@ class CreateServerTask(
                          le_appcomp_provider = le_appcomp_provider 
                       )
 
-      ICacheComponents.__init__( 
-                          self, 
-                          cache_components = cache_components 
-                       )
-
       IDomTree.__init__(
                   self,
                   dom_storage = dom_storage,
@@ -364,7 +347,6 @@ class CreateServerTask(
                       resolvers = self,
                       dom_storage = self,
                       dom_father = self,
-                      cache_components = self,
                    ) 
                 )   
 

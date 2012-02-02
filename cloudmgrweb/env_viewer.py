@@ -7,9 +7,6 @@ from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
 from i_controllers                              import IAppcodeGetters, IAeraGetters, IEnvGetters
 from appcomps_viewer				import AppCompsViewer
 
-# cache de component
-from i_cache_components                         import ICacheComponents
-
 from i_dom_tree                                 import IDomTree
 
 from i_dynamic_component_provider               import IDynamicComponentProvider
@@ -23,7 +20,6 @@ class EnvViewer(
          IAppcodeGetters, 
          IAeraGetters, 
          IEnvGetters, 
-         ICacheComponents,
          IDomTree,
          IDynamicComponentProvider,
       ):
@@ -39,7 +35,6 @@ class EnvViewer(
           resolvers = None, 
           dom_storage = None,
           dom_father = None,
-          cache_components = None 
        ):
 
       ICloudMgrResolvers.__init__( 
@@ -65,11 +60,6 @@ class EnvViewer(
                      le_env_provider = le_env_provider 
                   )
 
-      ICacheComponents.__init__( 
-                          self, 
-                          cache_components = cache_components 
-                       )
-
       IDomTree.__init__(
                   self,
                   dom_storage = dom_storage,
@@ -90,7 +80,6 @@ class EnvViewer(
                           resolvers = self, 
                           dom_storage = self,
                           dom_father = self,
-                          cache_components = self 
                        ) 
                     )
 

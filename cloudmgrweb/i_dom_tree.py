@@ -1,9 +1,20 @@
 # -*- coding: UTF-8 -*-
 
-from pprint import pprint
+from pprint 			import pprint, pformat
+from cloudmgrlib.sequential_ops import SequentialOps
+
+from colorama			import init, Fore
 
 class IDomTree( object ):
-   def __init__( self, dom_storage, dom_father ):
+
+   def __init__( 
+          self, 
+          dom_storage, 
+          dom_father 
+       ):
+
+      # Initialisation colorama
+      init( autoreset = True )
 
       if not dom_storage:
 
@@ -77,11 +88,14 @@ class IDomTree( object ):
  
    all_dom_childs = property( get_all_dom_childs )
  
-   def delete_dom_childs( self ):
- 
+
+   def reset_in_dom( self ):
+
+      self.delete_events()
+
       for dom_child in self.dom_childs[ : ]:
          dom_child.delete_events()
-         dom_child.delete_dom_childs()
+         dom_child.reset_in_dom()
          self.d_dom_tree[ dom_child.dom_father ][ 'dom_childs' ].remove( dom_child )
          del( self.d_dom_tree[ dom_child ] )
 
@@ -127,13 +141,19 @@ class IDomTree( object ):
 
    def delete_events( self ):
 
-      for desc_event in self.d_dom_tree[ self ][ 'events' ]:
+      print( Fore.MAGENTA + pformat( self.d_dom_tree[ self ] ) + Fore.RESET )
+
+      for desc_event in self.d_dom_tree[ self ][ 'events' ][ : ]:
+
+         print( Fore.WHITE + pformat( desc_event ) + Fore.RESET )
 
          del( self.d_events[ desc_event[ 'event_name' ] ][ desc_event[ 'appcode' ] ][ desc_event[ 'aera' ] ][ desc_event[ 'env' ] ][ desc_event[ 'appcomp' ] ][ desc_event[ 'cp_knowndiv' ] ] )
 
+         self.d_dom_tree[ self ][ 'events' ].remove( desc_event )
+
          if not self.d_events[ desc_event[ 'event_name' ] ][ desc_event[ 'appcode' ] ][ desc_event[ 'aera' ] ][ desc_event[ 'env' ] ][ desc_event[ 'appcomp' ] ]:
             del( self.d_events[ desc_event[ 'event_name' ] ][ desc_event[ 'appcode' ] ][ desc_event[ 'aera' ] ][ desc_event[ 'env' ] ][ desc_event[ 'appcomp' ] ] )
-     
+
          if not self.d_events[ desc_event[ 'event_name' ] ][ desc_event[ 'appcode' ] ][ desc_event[ 'aera' ] ][ desc_event[ 'env' ] ]:
             del( self.d_events[ desc_event[ 'event_name' ] ][ desc_event[ 'appcode' ] ][ desc_event[ 'aera' ] ][ desc_event[ 'env' ] ] )
 
@@ -145,6 +165,82 @@ class IDomTree( object ):
 
          if not self.d_events[ desc_event[ 'event_name' ] ]:
             del( self.d_events[ desc_event[ 'event_name' ] ] )
+
+      print( Fore.BLUE + pformat( self.d_dom_tree[ self ] ) + Fore.RESET )
+
+
+
+   def get_l_known_div_for_change( self, event_name, appcode = '*', aera = '*', env = '*', appcomp = '*' ):
+      pprint( 'get_l_known_div_for_change' )
+
+      def get_list_from_key( l, key ):
+         l_result = []
+         for e in l:
+            result = []
+
+            if e <> '*':
+               result = e.get( key, [] )
+            else:
+               result = e.values()
+
+            if type( result ) == dict:
+               result = [ result ]
+
+            l_result.extend( result )
+
+            result = []
+            result = e.get( '*', [] )
+
+            if type( result ) == dict:
+               result = [ result ]
+
+            l_result.extend( result )
+
+            result = []
+            result = e.get( '-', [] )
+
+            if type( result ) == dict:
+               result = [ result ]
+
+            l_result.extend( result )
+
+         return l_result
+
+      def print_struct( x ):
+         pprint( x )
+         print
+         return x
+
+      def to_l_le( l ):
+         l_result = []
+         for d in l:
+            result = None
+            result = d.values()
+            if type( result ) == dict:
+               result = [ result ]
+            l_result.extend( result )
+         return l_result
+
+      def process_l_le( l ):
+         return [ le() for le in l ]
+
+      seq = SequentialOps(
+         [ self.d_events ],
+         [
+            lambda l, key = event_name: get_list_from_key( l, key ),
+            lambda l, key = appcode: get_list_from_key( l, key ),
+            lambda l, key = aera: get_list_from_key( l, key ),
+            lambda l, key = env: get_list_from_key( l, key ),
+            lambda l, key = appcomp: get_list_from_key( l, key ),
+            print_struct,
+            to_l_le,
+            process_l_le,
+         ]
+      )
+
+      return seq.process()
+
+
 
 if __name__ == "__main__":
    class ROOT( IDomTree ):
@@ -218,6 +314,6 @@ if __name__ == "__main__":
    print
    pprint( 'root.all_dom_childs: %s' % root.all_dom_childs )
    print
-   root.delete_dom_childs()
+   root.reset_in_dom()
    pprint( 'root.all_dom_childs: %s' % root.all_dom_childs )
    print

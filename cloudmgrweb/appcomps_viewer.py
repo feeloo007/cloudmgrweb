@@ -7,9 +7,6 @@ from cloudmgrlib.i_cmgr_resolvers		import ICloudMgrResolvers
 from i_controllers                              import IAppcodeGetters, IAeraGetters, IEnvGetters
 from appcomp_viewer 				import AppCompViewer
 
-# cache de component
-from i_cache_components                         import ICacheComponents
-
 from i_dom_tree                                 import IDomTree
 
 from i_dynamic_component_provider               import IDynamicComponentProvider
@@ -23,7 +20,6 @@ class AppCompsViewer(
          IAppcodeGetters, 
          IAeraGetters, 
          IEnvGetters, 
-         ICacheComponents,
          IDomTree,
          IDynamicComponentProvider,
       ):
@@ -38,7 +34,6 @@ class AppCompsViewer(
           resolvers = None, 
           dom_storage = None,
           dom_father = None,
-          cache_components = None 
        ):
 
       ICloudMgrResolvers.__init__( 
@@ -64,11 +59,6 @@ class AppCompsViewer(
                      le_env_provider = le_env_provider
                   )
 
-      ICacheComponents.__init__( 
-                          self, 
-                          cache_components = cache_components 
-                       )
-
       IDomTree.__init__(
                   self,
                   dom_storage = dom_storage,
@@ -93,7 +83,6 @@ class AppCompsViewer(
                                                     resolvers = self, 
                                                     dom_storage = self,
                                                     dom_father = self,
-                                                    cache_components = self 
                                                  ) 
                                               )
             return d_all_cp_appcomps

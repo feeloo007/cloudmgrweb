@@ -6,9 +6,6 @@ from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
 from i_controllers                              import IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters
 
-# cache de component
-from i_cache_components                         import ICacheComponents
-
 from i_dom_tree                                 import IDomTree
 
 from i_dynamic_component_provider               import IDynamicComponentProvider
@@ -25,7 +22,6 @@ class ServerViewer(
          IAeraGetters, 
          IEnvGetters, 
          IAppCompGetters, 
-         ICacheComponents,
          IDomTree,
          IDynamicComponentProvider,
       ):
@@ -45,7 +41,6 @@ class ServerViewer(
           resolvers = None, 
           dom_storage = None,
           dom_father = None,
-          cache_components = None 
        ):
 
       ICloudMgrResolvers.__init__( 
@@ -75,11 +70,6 @@ class ServerViewer(
          self, 
          appcomp = appcomp, 
          le_appcomp_provider = le_appcomp_provider 
-      )
-
-      ICacheComponents.__init__( 
-         self, 
-         cache_components = cache_components 
       )
 
       IDomTree.__init__(

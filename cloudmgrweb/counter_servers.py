@@ -11,11 +11,7 @@ from cloudmgrlib.sequential_ops			import SequentialOps
 from i_comet                                    import ICloudMgrComet
 from nagare                                     import ajax
 
-# cache de component
-from i_cache_components                         import ICacheComponents, FormRefreshOnComet
-
 # Mise en place d'un DOM pour la gestion comet
-from i_dom                                      import IDom
 from i_dom_tree                                 import IDomTree
 
 from i_dynamic_component_provider               import IDynamicComponentProvider
@@ -32,9 +28,7 @@ class CounterServers(
          IAeraGetters, 
          IEnvGetters, 
          IAppCompGetters, 
-         ICacheComponents, 
          SequentialOps, 
-         IDom,
          IDomTree,
          IDynamicComponentProvider,
       ):
@@ -50,10 +44,8 @@ class CounterServers(
           appcomp = '', 
           le_appcomp_provider = None, 
           resolvers = None, 
-          cache_components = None, 
           dom_storage = None,
           dom_father = None, 
-          dom_complement_element_name = '' 
       ):
 
       ICloudMgrResolvers.__init__( 
@@ -85,11 +77,6 @@ class CounterServers(
          le_appcomp_provider = le_appcomp_provider 
       )
 
-      ICacheComponents.__init__( 
-         self, 
-         cache_components = cache_components 
-      )
-
       # Interaction comet
       ICloudMgrComet.__init__( 
          self 
@@ -97,14 +84,6 @@ class CounterServers(
 
       IDynamicComponentProvider.__init__(
          self
-      )
-
-      # Mise en place d'un DOM pour la gestion comet
-      IDom.__init__( 
-         self, 
-         dom_father = dom_father, 
-         dom_element_name = '%s!%s!%s!%s!%s' % ( CounterServers.__name__, self.appcode, self.aera, self.env, self.appcomp ), 
-         dom_complement_element_name = dom_complement_element_name 
       )
 
       IDomTree.__init__(
@@ -207,12 +186,8 @@ def render(
        comp, 
        *args
     ):
-   self.set_knowndiv_for( 
-      'REFRESH_ON_CREATION_SERVER_DEMAND', 
-      self, 
-      appcode = self.appcode, 
-      env = self.env,
-   )
+
+   self.delete_dom_childs()
 
    self.add_event_for_knowndiv(
       'REFRESH_ON_CREATION_SERVER_DEMAND', 

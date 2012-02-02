@@ -7,9 +7,6 @@ from aera_viewer				import AeraViewer
 from cloudmgrlib.i_cmgr_resolvers		import ICloudMgrResolvers
 from i_controllers				import IAppcodeGetters
 
-# cache de component
-from i_cache_components                         import ICacheComponents
-
 from i_dom_tree					import IDomTree
 
 from i_dynamic_component_provider               import IDynamicComponentProvider
@@ -23,7 +20,6 @@ from pprint					import pprint
 class AerasViewer( 
          ICloudMgrResolvers, 
          IAppcodeGetters, 
-         ICacheComponents,
          IDomTree,
          IDynamicComponentProvider,
       ):
@@ -33,7 +29,6 @@ class AerasViewer(
           appcode = '', 
           le_appcode_provider = None, 
           resolvers = None, 
-          cache_components = None, 
           dom_storage = None, 
           dom_father = None, 
        ):
@@ -49,11 +44,6 @@ class AerasViewer(
          le_appcode_provider = le_appcode_provider 
       )
  
-      ICacheComponents.__init__( 
-         self, 
-         cache_components = cache_components 
-      )
-
       IDynamicComponentProvider.__init__(
          self,
       )
@@ -78,7 +68,6 @@ class AerasViewer(
                                                     resolvers = self, 
                                                     dom_storage = self,
                                                     dom_father = self,
-                                                    cache_components = self 
                                                  ) 
                                               )
          return d_all_cp_aeras_viewer

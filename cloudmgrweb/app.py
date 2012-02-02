@@ -11,11 +11,9 @@ from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
 # Interaction comet
 from i_comet					import ICloudMgrComet
 
-# cache de component
-from i_cache_components				import ICacheComponents, FormRefreshOnComet
+from form_refresh_on_comet			import FormRefreshOnComet
 
 # Mise en place d'un DOM pour la gestion comet
-from i_dom					import IDom
 from i_dom_tree					import IDomTree
 
 from i_dynamic_component_provider		import IDynamicComponentProvider	
@@ -27,8 +25,6 @@ from debug 					import CloudmgrwebDebug
 class Cloudmgrweb( 
          ICloudMgrResolvers, 
          ICloudMgrComet, 
-         ICacheComponents, 
-         IDom, 
          IDomTree, 
          IDynamicComponentProvider 
       ):
@@ -46,12 +42,6 @@ class Cloudmgrweb(
          self
       )
 
-      # cache de components
-      ICacheComponents.__init__( 
-         self,
-         cache_components = None 
-      )
-
       # Création de l'interface
       # permettant la génération
       # des composants de manière
@@ -59,13 +49,6 @@ class Cloudmgrweb(
       # alimentation de l'objet en proprerties
       IDynamicComponentProvider.__init__( 
          self
-      )
-
-      # Mise en place d'un DOM pour la gestion comet
-      IDom.__init__( 
-         self, 
-         dom_father = None, 
-         dom_element_name = Cloudmgrweb.__name__ 
       )
 
       IDomTree.__init__( 
@@ -82,7 +65,6 @@ class Cloudmgrweb(
                MenuControl(
                   dom_storage = self,
                   dom_father = self,
-                  cache_components = self,
                )
             )
 
@@ -96,11 +78,10 @@ class Cloudmgrweb(
          with self.cloudmap_resolver:
             return component.Component( 
                       AerasViewer(
-                         le_appcode_provider = lambda: self.cp_menu_control.o.cp_appcode_selector.o.appcode,
-                         resolvers = self,
-                         dom_storage = self,
-                         dom_father = self,
-                         cache_components = self,
+                         le_appcode_provider 	= lambda: self.cp_menu_control.o.cp_appcode_selector.o.appcode,
+                         resolvers 		= self,
+                         dom_storage 		= self,
+                         dom_father 		= self,
                       )
                    )
 
@@ -114,7 +95,8 @@ class Cloudmgrweb(
       def create_cp_form_refresh_on_comet():
          return component.Component(
                    FormRefreshOnComet(
-                      cache_components = self,
+                      dom_storage 	= self,
+                      dom_father 	= self,
                    )
                 )
 
@@ -129,7 +111,6 @@ class Cloudmgrweb(
                    CloudmgrwebDebug(
                       dom_storage       = self,
                       dom_father        = self,
-                      cache_components  = self,
                       cloudmgrweb	= self,
                    )
                 )

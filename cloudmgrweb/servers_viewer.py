@@ -7,13 +7,6 @@ from cloudmgrlib.i_cmgr_resolvers		import ICloudMgrResolvers
 from i_controllers                              import IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters
 from cloudmgrlib.m_cmgr_manage_virtual_stack    import create_next_dhcp_file_for, create_vm
 from server_viewer				import ServerViewer
-from create_server_form				import CreateServerTask
-
-# cache de component
-from i_cache_components                         import ICacheComponents
-
-# Mise en place d'un DOM pour la gestion comet
-from i_dom                                      import IDom
 
 from i_dom_tree                                 import IDomTree
 
@@ -31,8 +24,6 @@ class ServersViewer(
          IAeraGetters, 
          IEnvGetters, 
          IAppCompGetters, 
-         ICacheComponents, 
-         IDom,
          IDomTree,
          IDynamicComponentProvider,
       ):
@@ -48,10 +39,8 @@ class ServersViewer(
           appcomp = '', 
           le_appcomp_provider = None, 
           resolvers = None, 
-          cache_components = None, 
           dom_storage = None, 
           dom_father = None, 
-          dom_complement_element_name = '' 
        ):
 
       ICloudMgrResolvers.__init__( 
@@ -83,20 +72,6 @@ class ServersViewer(
                          le_appcomp_provider = le_appcomp_provider 
                       )
 
-      ICacheComponents.__init__( 
-                          self, 
-                          cache_components = cache_components 
-                       )
-
-      # Mise en place d'un DOM pour la gestion comet
-      IDom.__init__( 
-              self, 
-              #dom_father = dom_father,  # on bidouille le père car l'interface IDOM n'a pas été reporté sur toute l'arborescence. On force ainsi un attachement à la racine.
-              dom_father = dom_storage,
-              dom_element_name = ServersViewer.__name__,
-              dom_complement_element_name = dom_complement_element_name 
-           )
-
       IDomTree.__init__(
          self,
          dom_storage = dom_storage,
@@ -106,26 +81,6 @@ class ServersViewer(
       IDynamicComponentProvider.__init__(
                                    self
                                 )
-
-
-      def create_cp_create_server_task():
-         return component.Component( 
-                   CreateServerTask( 
-                      le_appcode_provider = lambda: self.appcode, 
-                      le_aera_provider = lambda: self.aera, 
-                      le_env_provider = lambda: self.env, 
-                      le_appcomp_provider = lambda: self.appcomp, 
-                      resolvers = self, 
-                      dom_storage = self,
-                      dom_father = self,
-                      cache_components = self,
-                   ) 
-                )
-
-      self.create_dynamic_component(
-         'cp_create_server_task',
-         create_cp_create_server_task
-      )
 
 
       def create_all_cp_servers_viewer():
@@ -146,7 +101,6 @@ class ServersViewer(
                                                                    resolvers = self, 
                                                                    dom_storage = self,
                                                                    dom_father = self,
-                                                                   cache_components = self, 
                                                                 ) 
                                                              ) 
             except Exception, e:
@@ -204,10 +158,10 @@ def render(
 
          else:
 
-               self.create_cp_create_server_task()
                self.create_all_cp_servers_viewer()
 
                #self.set_knowndiv_for( 'REFRESH_ON_CREATION_SERVER_DEMAND', self, appcode = self.appcode, aera = self.aera, env = self.env, appcomp = self.appcomp )
+
                self.add_event_for_knowndiv( 
                   'REFRESH_ON_CREATION_SERVER_DEMAND', 
                   self, 
@@ -220,19 +174,6 @@ def render(
 
                colspan = 4
                i = 0
-               h << h.div( 
-                       component.Component( 
-                          KnownDiv( 
-                             self.cp_create_server_task 
-                          ) 
-                       ), 
-                       class_ = 'servers_viewer_struct create_server_task_struct %s %s %s' % ( self.aera, self.env, self.appcomp ) 
-                    )
-
-               h << h.div( 
-                       h.div, 
-                       class_ = 'servers_viewer_struct create_server_task_struct spacer' 
-                    )
 
                div_block = None
 

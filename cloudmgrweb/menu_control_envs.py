@@ -8,11 +8,6 @@ from cloudmgrlib.i_cmgr_resolvers		import ICloudMgrResolvers
 from i_controllers                              import IAppcodeGetters
 
 
-# cache de component
-from i_cache_components                         import ICacheComponents
-
-# Mise en place d'un DOM pour la gestion comet
-from i_dom                                      import IDom
 from i_dom_tree					import IDomTree
 
 from i_dynamic_component_provider               import IDynamicComponentProvider
@@ -25,8 +20,6 @@ from pprint					import pprint
 class MenuControlEnvs( 
          ICloudMgrResolvers, 
          IAppcodeGetters, 
-         ICacheComponents, 
-         IDom, 
          IDomTree, 
          IDynamicComponentProvider 
       ):
@@ -36,10 +29,8 @@ class MenuControlEnvs(
           appcode = '', 
           le_appcode_provider = None, 
           resolvers = None, 
-          cache_components = None, 
           dom_storage = None, 
           dom_father = None, 
-          dom_complement_element_name = '' 
        ):
 
       ICloudMgrResolvers.__init__( 
@@ -53,21 +44,8 @@ class MenuControlEnvs(
          le_appcode_provider = le_appcode_provider 
       )
 
-      ICacheComponents.__init__( 
-         self, 
-         cache_components = cache_components 
-      )
-
       IDynamicComponentProvider.__init__( 
          self 
-      )
-
-      # Mise en place d'un DOM pour la gestion comet
-      IDom.__init__( 
-         self, 
-         dom_father = dom_father, 
-         dom_element_name = MenuControlEnvs.__name__, 
-         dom_complement_element_name = dom_complement_element_name 
       )
 
       IDomTree.__init__( 
@@ -85,10 +63,8 @@ class MenuControlEnvs(
                          env = '*', 
                          le_appcode_provider = lambda: self.appcode, 
                          resolvers = self, 
-                         cache_components = self, 
                          dom_storage = self,
                          dom_father = self, 
-                         dom_complement_element_name = 'by_appcode' 
                       ),
                       model = '*' 
                    ) 
@@ -108,10 +84,8 @@ class MenuControlEnvs(
                                                 env = env, 
                                                 le_appcode_provider = lambda: self.appcode, 
                                                 resolvers = self, 
-                                                cache_components = self, 
                                                 dom_storage = self,
                                                 dom_father = self, 
-                                                dom_complement_element_name = 'by_appcode_by_env' 
                                              ) 
                                           ) 
             return d_cp_menu_by_envs
@@ -131,9 +105,6 @@ def render(
     ):
 
    with self.cloudmap_resolver:
-
-      # Nettoyage du cache de composant
-      self.clean_cache_for_dom( self.full_dom_element_name )
 
       # Suppression des précédents fils
       # dans le modèle DOM

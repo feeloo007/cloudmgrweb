@@ -5,10 +5,7 @@ from nagare                                     import presentation, component
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
 from i_controllers                              import IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters
-from servers_viewer				import ServersViewer
-
-# cache de component
-from i_cache_components                         import ICacheComponents
+from servers_control				import ServersControl
 
 from i_dom_tree                                 import IDomTree
 
@@ -24,7 +21,6 @@ class AppCompViewer(
          IAeraGetters,
          IEnvGetters, 
          IAppCompGetters, 
-         ICacheComponents,
          IDomTree,
          IDynamicComponentProvider
       ):
@@ -41,7 +37,6 @@ class AppCompViewer(
           resolvers = None, 
           dom_storage = None,
           dom_father = None,
-          cache_components = None
        ):
 
       ICloudMgrResolvers.__init__( 
@@ -73,11 +68,6 @@ class AppCompViewer(
          le_appcomp_provider = None 
       )
 
-      ICacheComponents.__init__( 
-         self, 
-         cache_components = cache_components 
-      )
-
       IDomTree.__init__(
          self,
          dom_storage = dom_storage,
@@ -88,9 +78,9 @@ class AppCompViewer(
          self
       )
 
-      def create_cp_servers_viewer():
+      def create_cp_servers_control():
          return component.Component( 
-                             ServersViewer( 
+                             ServersControl( 
                                 le_appcode_provider = lambda: self.appcode, 
                                 le_aera_provider = lambda: self.aera, 
                                 le_env_provider = lambda: self.env, 
@@ -98,13 +88,12 @@ class AppCompViewer(
                                 resolvers = self, 
                                 dom_storage = self,
                                 dom_father = self, 
-                                cache_components = self 
                              ) 
                           )
 
       self.create_dynamic_component(
-         'cp_servers_viewer',
-         create_cp_servers_viewer
+         'cp_servers_control',
+         create_cp_servers_control
       )
 
 @presentation.render_for( AppCompViewer )
@@ -123,7 +112,7 @@ def render(
 
       # Initialisation locale des composants
       # utilisés
-      self.create_cp_servers_viewer()
+      self.create_cp_servers_control()
 
       with h.div( 
               class_='appcomp_viewer %s %s %s' % ( self.aera, self.env, self.appcomp ) 
@@ -137,7 +126,7 @@ def render(
          h << h.div( 
                  component.Component( 
                     KnownDiv( 
-                       self.cp_servers_viewer 
+                       self.cp_servers_control 
                     ) 
                  ), 
                  class_ = 'appcomp %s %s %s' % ( self.aera, self.env, self.appcomp ) 
