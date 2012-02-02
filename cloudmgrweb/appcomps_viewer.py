@@ -105,7 +105,7 @@ def render(
 
       # Suppression des précédents fils
       # dans le modèle DOM
-      self.delete_dom_childs()
+      self.reset_in_dom()
 
       with h.div( 
               class_ = 'appcomps_viewer %s %s' % ( self.aera, self.env ) 

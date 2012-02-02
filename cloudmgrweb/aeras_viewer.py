@@ -85,7 +85,7 @@ def render(self, h, comp, *args):
 
       # Suppression des précédents fils
       # dans le modèle DOM
-      self.delete_dom_childs()
+      self.reset_in_dom()
 
       with h.div( 
               class_ = 'aeras_viewer' 

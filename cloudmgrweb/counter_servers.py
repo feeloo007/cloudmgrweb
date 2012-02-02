@@ -187,7 +187,7 @@ def render(
        *args
     ):
 
-   self.delete_dom_childs()
+   self.reset_in_dom()
 
    self.add_event_for_knowndiv(
       'REFRESH_ON_CREATION_SERVER_DEMAND', 

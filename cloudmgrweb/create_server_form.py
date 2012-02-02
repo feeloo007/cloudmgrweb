@@ -375,7 +375,7 @@ class CreateServerTask(
          # Recréation à cahque itération de la boucle mais ce n'est pas vraiment
          # nécessaire vu qu'on ne fait que des call
          # On devrait pouvoir les créer une fois hors de la boucle
-         self.delete_dom_childs()
+         self.reset_in_dom()
          self.create_cp_create_server_form()
 
          comp.call( 

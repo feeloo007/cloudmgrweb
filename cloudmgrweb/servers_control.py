@@ -135,7 +135,7 @@ def render(
 
    with self.cloudmap_resolver:
 
-      self.delete_dom_childs()
+      self.reset_in_dom()
 
       with h.div( 
               class_ = 'servers_control %s %s %s' % ( self.aera, self.env, self.appcomp ) ):
