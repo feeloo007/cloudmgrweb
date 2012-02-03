@@ -36,6 +36,7 @@ class IDomTree( object ):
          dom_father,
          {
             'dom_fathers'	: [],
+            'events'		: [],
          },
       ).setdefault(
          'dom_childs',
