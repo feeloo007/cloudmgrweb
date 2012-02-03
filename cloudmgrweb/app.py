@@ -200,22 +200,6 @@ def render(
               cp_div_debug
            )
 
-      # Ajout des CallBacks
-      # On le fait en fin de traitement pour que toutes les
-      # knowndiv soit résolus
-      self.cp_menu_control.o.cp_appcode_selector.o.register_known_div_for_appcode_change( 
-         cp_div_aeras_viewer.o
-      )
-
-      self.cp_menu_control.o.cp_appcode_selector.o.register_known_div_for_appcode_change( 
-         cp_div_menu_control.o.component.o.cp_menu_control_envs.o.le_get_knowndiv() 
-      )
-
-
-      self.cp_menu_control.o.cp_appcode_selector.o.register_known_div_for_appcode_change(
-         cp_div_debug.o
-      )
-
       h << h.br
       h << h.br
       h << h.br

@@ -87,6 +87,12 @@ def render(self, h, comp, *args):
       # dans le modèle DOM
       self.reset_in_dom()
 
+      self.add_event_for_knowndiv(
+         'LOCAL_REFRESH_ON_APPCODE_SELECTED',
+         self,
+         appcode = '*',
+      )
+
       with h.div( 
               class_ = 'aeras_viewer' 
            ):

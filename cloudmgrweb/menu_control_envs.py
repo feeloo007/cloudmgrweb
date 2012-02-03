@@ -110,6 +110,12 @@ def render(
       # dans le modèle DOM
       self.reset_in_dom()
 
+      self.add_event_for_knowndiv(
+         'LOCAL_REFRESH_ON_APPCODE_SELECTED',
+         self,
+         appcode = '*',
+      )
+
       # Initialisation locale des composants
       # utilisés
       self.create_cp_menu_all_envs()

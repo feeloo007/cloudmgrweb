@@ -56,42 +56,77 @@ class IDomTree( object ):
       }
 
 
-   def get_dom_storage( self ):
+   def get_dom_storage( 
+          self 
+       ):
+
       return self.__dom_storage
  
-   def set_dom_storage( self, dom_storage ):
+
+   def set_dom_storage( 
+          self, 
+          dom_storage 
+       ):
+
       self.__dom_storage = dom_storage
  
+
    dom_storage = property( get_dom_storage, set_dom_storage )
  
-   def get_dom_father( self ):
+
+   def get_dom_father( 
+          self 
+       ):
+
       if not self.d_dom_tree[ self ][ 'dom_fathers' ]:
          return None
       else:
          return self.d_dom_tree[ self ][ 'dom_fathers' ][ 0 ]
  
+
    dom_father = property( get_dom_father )
 
-   def get_dom_fathers( self ):
+
+   def get_dom_fathers( 
+          self 
+       ):
+
       return self.d_dom_tree[ self ][ 'dom_fathers' ]
      
 
    dom_fathers = property( get_dom_fathers )
  
-   def get_d_dom_tree( self ):
+
+   def get_d_dom_tree( 
+          self 
+       ):
+
       return self.__d_dom_tree
  
-   def set_d_dom_tree( self, d_dom_tree ):
+   def set_d_dom_tree( 
+          self, 
+          d_dom_tree 
+       ):
+
      self.__d_dom_tree = d_dom_tree
  
+
    d_dom_tree = property( get_d_dom_tree, set_d_dom_tree )
+
  
-   def get_dom_childs( self ):
+   def get_dom_childs( 
+          self 
+       ):
+
       return self.d_dom_tree[ self ][ 'dom_childs' ]
    
+
    dom_childs = property( get_dom_childs )
  
-   def get_all_dom_childs( self ):
+
+   def get_all_dom_childs( 
+          self 
+       ):
  
       def ready_to_reduce( l ):
          if l == []:
@@ -112,10 +147,13 @@ class IDomTree( object ):
                 ) 
              )
  
+
    all_dom_childs = property( get_all_dom_childs )
  
 
-   def reset_in_dom( self ):
+   def reset_in_dom( 
+          self 
+       ):
 
       self.delete_events()
 
@@ -126,15 +164,33 @@ class IDomTree( object ):
          del( self.d_dom_tree[ dom_child ] )
 
 
-   def get_d_events( self ):
+
+   def get_d_events( 
+          self 
+        ):
+
       return self.__d_events
 
-   def set_d_events( self, d_events ):
+   def set_d_events( 
+          self, 
+          d_events 
+       ):
+
       self.__d_events = d_events
+
 
    d_events = property( get_d_events, set_d_events )
 
-   def add_event_for_knowndiv( self, event_name, cp_knowndiv, appcode = '-', aera = '-', env = '-', appcomp = '-' ):
+
+   def add_event_for_knowndiv( 
+          self, 
+          event_name, 
+          cp_knowndiv, 
+          appcode = '-', 
+          aera = '-', 
+          env = '-', 
+          appcomp = '-' 
+       ):
 
       self.d_dom_tree[ self ][ 'events' ].append( {
                                                       'event_name'	: event_name, 
@@ -165,7 +221,9 @@ class IDomTree( object ):
       )[ cp_knowndiv ] = lambda: cp_knowndiv.le_get_knowndiv()
 
 
-   def delete_events( self ):
+   def delete_events( 
+          self 
+       ):
 
       for desc_event in self.d_dom_tree[ self ][ 'events' ][ : ]:
 
@@ -189,11 +247,25 @@ class IDomTree( object ):
             del( self.d_events[ desc_event[ 'event_name' ] ] )
 
 
-   def get_l_known_div_for_change( self, event_name, appcode = '*', aera = '*', env = '*', appcomp = '*' ):
+   def get_l_known_div_for_change( 
+          self, 
+          event_name, 
+          appcode = '*', 
+          aera = '*', 
+          env = '*', 
+          appcomp = '*' 
+       ):
 
-      def get_list_from_key( l, key ):
+
+      def get_list_from_key( 
+             l, 
+             key 
+          ):
+
          l_result = []
+
          for e in l:
+
             result = []
 
             if e <> '*':
@@ -224,66 +296,109 @@ class IDomTree( object ):
 
          return l_result
 
-      def print_struct( x ):
-         print
+
+      def print_struct( 
+             x, 
+             color = Fore.WHITE 
+          ):
+
+         print(
+            color + pformat( x ) + Fore.RESET
+         )
          return x
 
-      def to_one_list( l ):
+
+      def to_one_list( 
+             l 
+          ):
+
          l_result = []
+
          for d in l:
+
             for k, v in d.items():
-               l_result.append( { k: v } )
+
+               if { k: v } not in l_result:
+
+                  l_result.append( { k: v } )
+
          return l_result
 
-      def better_father( f1, f2 ):
-         return f1
 
-      def find_upper_fathers( l ):
+      def find_upper_fathers( 
+             l 
+          ):
+
          l_result = []
+
          for d in l: 
+
             if not l_result:
                l_result.append(
                   d
                )
 
-            for possible_father in [ d_possible_father.keys()[ 0 ] for d_possible_father in l_result ] :
-               better_father(  d.keys()[ 0 ], possible_father )
+            try:
+
+               for d_possible_father in l_result[ : ]:
+
+                  if d_possible_father.keys()[ 0 ] in d.keys()[ 0 ].dom_fathers:
+                     raise Exception( 'NOVALID' )
+
+                  if d.keys()[ 0 ] in d_possible_father.keys()[ 0 ].dom_fathers:
+                     l_result.remove( d_possible_father )
+
+               if d not in l_result:
+                  l_result.append( d )
+
+            except Exception, e:
+               pass
 
          return l_result
 
-      def to_list_le( l ):
+
+      def to_list_le( 
+             l 
+          ):
+
          l_result = []
+
          for d in l:
+
             result = None
             result = d.values()
+
             if type( result ) == dict:
                result = [ result ]
+
             l_result.extend( result )
+
          return l_result
 
-      def process_list_le( l ):
+
+      def process_list_le( 
+             l 
+          ):
+
          return [ le() for le in l ]
 
       seq = SequentialOps(
          [ self.d_events ],
          [
-            lambda l, key = event_name: get_list_from_key( l, key ),
-            lambda l, key = appcode: get_list_from_key( l, key ),
-            lambda l, key = aera: get_list_from_key( l, key ),
-            lambda l, key = env: get_list_from_key( l, key ),
-            lambda l, key = appcomp: get_list_from_key( l, key ),
-            #print_struct,
-            #to_one_list,
-            #print_struct,
-            #find_upper_fathers,
+            lambda l, key 	= event_name: 	get_list_from_key( l, key ),
+            lambda l, key 	= appcode: 	get_list_from_key( l, key ),
+            lambda l, key 	= aera: 	get_list_from_key( l, key ),
+            lambda l, key 	= env: 		get_list_from_key( l, key ),
+            lambda l, key 	= appcomp: 	get_list_from_key( l, key ),
+            to_one_list,
+            find_upper_fathers,
+            #lambda l, color 	= Fore.CYAN: 	print_struct( l, color ),
             to_list_le,
-            #print_struct,
             process_list_le,
          ]
       )
 
       return seq.process()
-
 
 
 if __name__ == "__main__":

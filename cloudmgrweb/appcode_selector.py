@@ -22,7 +22,6 @@ class AppcodeSelector(
       ):
 
      self.__appcode = ''
-     self._l_known_div_for_appcode_change = []
 
      IDomTree.__init__(
         self,
@@ -45,17 +44,6 @@ class AppcodeSelector(
 
   appcode = property( get_appcode, set_appcode )
 
-  def register_known_div_for_appcode_change( self, cp_kd ):
-     """
-        Enregistre un KnownDiv
-        On doit y trouver les attributs :
-        .o.id
-        .o.component
-     """
-     self._l_known_div_for_appcode_change.append( cp_kd )
-
-  def get_l_known_div_for_appcode_change( self ):
-     return self._l_known_div_for_appcode_change
 
 @presentation.render_for( AppcodeSelector )
 def render(
@@ -65,6 +53,8 @@ def render(
        *args
     ):
 
+   self.reset_in_dom()
+
    v_appcode = var.Var()
 
    with h.div( 
@@ -72,13 +62,46 @@ def render(
         ):
 
       if self.appcode:
-         h << h.div( self.appcode, class_ = 'message current' )
+
+         h << h.div( 
+                 self.appcode, class_ = 'message current' 
+              )
+
       else:
-         h << h.div( u'Saisir un code application :', class_ = 'message default' )
+
+         h << h.div( 
+                 u'Saisir un code application :', 
+                 class_ = 'message default' 
+              )
 
       with h.form:
-         with h.div( class_ = 'form' ):
-            h << h.input( type = 'text', class_ = 'input_appcode', value = self.appcode ).action( v_appcode )
-            h << h.input( type = 'submit', value= u'Charger', class_ = 'submit_appcode' ).action( XComponentsUpdates( le_l_knowndiv = lambda: self.get_l_known_div_for_appcode_change(), update_himself = True, action = lambda: self.set_appcode( v_appcode() ) ) )
+
+         with h.div( 
+                 class_ = 'form' 
+              ):
+
+            h << h.input( 
+                    type = 'text', 
+                    class_ = 'input_appcode', 
+                    value = self.appcode 
+                 ).action( v_appcode )
+
+            h << h.input( 
+                    type = 'submit', 
+                    value= u'Charger', 
+                    class_ = 'submit_appcode' 
+                 ).action( 
+                    XComponentsUpdates(
+                       le_l_knowndiv = lambda: self.dom_storage.get_l_known_div_for_change(
+                                                                   'LOCAL_REFRESH_ON_APPCODE_SELECTED',
+                                                                   appcode = v_appcode(),
+                                               ),
+                       update_himself = True,
+                       action = lambda: self.set_appcode( 
+                                           v_appcode()
+                                        ),
+                    )
+                 )
+
 
    return h.root
