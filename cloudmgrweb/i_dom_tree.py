@@ -35,7 +35,6 @@ class IDomTree( object ):
       self.d_dom_tree.setdefault(
          dom_father,
          {
-            'dom_father'	: None,
             'dom_fathers'	: [],
          },
       ).setdefault(
@@ -44,7 +43,6 @@ class IDomTree( object ):
       ).append( self )
 
       self.d_dom_tree[ self ] = {
-         'dom_father'	: dom_father,
          'dom_fathers'	: reduce(
                              list.__add__,
                              [ 
@@ -66,16 +64,15 @@ class IDomTree( object ):
    dom_storage = property( get_dom_storage, set_dom_storage )
  
    def get_dom_father( self ):
-      #return self.d_dom_tree[ self ][ 'dom_father' ]
       if not self.d_dom_tree[ self ][ 'dom_fathers' ]:
          return None
       else:
-         self.d_dom_tree[ self ][ 'dom_fathers' ][ 0 ]
+         return self.d_dom_tree[ self ][ 'dom_fathers' ][ 0 ]
  
    dom_father = property( get_dom_father )
 
    def get_dom_fathers( self ):
-      return self.d_dom_tree[ self ][ 'dom_fathers' ][ : ]
+      return self.d_dom_tree[ self ][ 'dom_fathers' ]
      
 
    dom_fathers = property( get_dom_fathers )
@@ -100,7 +97,19 @@ class IDomTree( object ):
             return [ [ ] ]
          return l
        
-      return reduce( list.__add__, ready_to_reduce( [ reduce( list.__add__, [ [ e ], e.all_dom_childs ] ) for e in self.dom_childs ] ) )
+      return reduce( 
+                list.__add__, 
+                ready_to_reduce( 
+                   [ reduce( 
+                        list.__add__, 
+                        [ 
+                           [ e ], 
+                           e.all_dom_childs 
+                        ] 
+                     ) for e in self.dom_childs 
+                   ] 
+                ) 
+             )
  
    all_dom_childs = property( get_all_dom_childs )
  
@@ -215,7 +224,6 @@ class IDomTree( object ):
          return l_result
 
       def print_struct( x ):
-         print( Fore.YELLOW + pformat( x ) + Fore.RESET )
          print
          return x
 
@@ -236,12 +244,10 @@ class IDomTree( object ):
                l_result.append(
                   d
                )
-               print( Fore.BLUE + pformat( l_result ) + Fore.RESET )
 
             for possible_father in [ d_possible_father.keys()[ 0 ] for d_possible_father in l_result ] :
                better_father(  d.keys()[ 0 ], possible_father )
 
-         print( Fore.CYAN + pformat( l_result ) + Fore.RESET )
          return l_result
 
       def to_list_le( l ):
