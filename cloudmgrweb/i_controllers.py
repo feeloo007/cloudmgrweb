@@ -1,136 +1,157 @@
 # -*- coding: UTF-8 -*-
 from __future__ import with_statement
+from pprint 	import pprint, pformat
 
-class IAppcodeGetters( 
-         object 
-      ):
+def define_accessor(
+       accessor 
+    ):
+
+   def modify_class( 
+      cl 
+   ):
+
+
+      # Définitino de tous les noms utilisés
+      # par la suite
+      hide_attrib_accessor		= '__%s' % accessor
+      hide_le_attrib_accessor_provider	= '__le_%s_provider' % accessor
+      init_param_accessor		= accessor
+      init_le_accessor_provider		= 'le_%s_provider' % accessor
+      mthd_get_accessor			= 'get_%s' % accessor
+      mthd_set_accessor			= 'set_%s' % accessor
+      prop_accessor			= accessor
+
+      origin_init = cl.__init__
+
+      def __init__( 
+             self, 
+             *args, 
+	     **kwargs
+          ):
+
+         setattr( 
+            self, 
+            hide_attrib_accessor, 
+            kwargs.get( 
+                  init_param_accessor, 
+                  '' 
+               ) 
+         )
+
+         setattr( 
+            self, 
+            hide_le_attrib_accessor_provider, 
+            kwargs.get( 
+                  init_le_accessor_provider, 
+                  None
+               ) 
+         )
+
+         origin_init( 
+            self, 
+            *args, 
+            **kwargs 
+         )
+         
+      cl.__init__ = __init__
+
+
+      # Création du accessor en lecture
+      def get_accessor(
+             self
+          ):
+
+         if not getattr( 
+                   self, 
+                   hide_le_attrib_accessor_provider 
+                ):
+
+            return getattr( 
+                      self, 
+                      hide_attrib_accessor 
+                   )
+
+         else:
+
+            return getattr( 
+                      self, 
+                      hide_le_attrib_accessor_provider 
+                   )()
+
+      # Création de l'accessor en écriture
+      def set_accessor(
+             self,
+             value
+          ):
+
+         setattr( 
+            self, 
+            hide_attrib_accessor, 
+            value 
+         )
+
+      # Ajout des méthodes d'accès à la class
+      setattr(
+         cl,
+         mthd_get_accessor,
+         get_accessor
+      )
+
+      setattr(
+         cl,
+         mthd_set_accessor,
+         set_accessor
+      )
+     
+      # Création de la propriété
+      setattr(
+         cl,
+         prop_accessor,
+         property( get_accessor, set_accessor )
+      )
+
+      return cl
+
+   return modify_class
+
+
+class IGetters:
 
    def __init__( 
-          self, 
-          appcode = '', 
-          le_appcode_provider = None 
-       ):
-
-      self.__appcode 			= appcode
-      self.__le_appcode_provider 	= le_appcode_provider
-
-   def get_appcode( 
-          self 
-       ):
-
-      if not self.__le_appcode_provider:
-         return self.__appcode
-      else:
-         return self.__le_appcode_provider()
-
-   def set_appcode( 
-          self, 
-          appcode 
-       ):
-
-     self.__appcode = appcode
-
-   appcode = property( get_appcode, set_appcode )
+      self, 
+      *args, 
+      **kwargs 
+   ):
+      pass
 
 
-class IAeraGetters( 
-         object 
+@define_accessor( 'appcode' )
+class IAppcodeGetters(
+         IGetters
       ):
+    pass
 
-   def __init__( 
-          self, 
-          aera = '', 
-          le_aera_provider = None 
-       ):
-
-      self.__aera 		= aera
-      self.__le_aera_provider 	= le_aera_provider
-
-   def get_aera( 
-          self 
-       ):
-
-      if not self.__le_aera_provider:
-         return self.__aera
-      else:
-         return self.__le_aera_provider()
-
-
-   def set_aera( 
-          self, 
-          aera 
-       ):
-
-     self.__aera = aera
-
-
-   aera = property( get_aera, set_aera )
-
-
-class IEnvGetters( 
-         object 
+@define_accessor( 'aera' )
+class IAeraGetters(
+         IGetters
       ):
+    pass
 
-   def __init__( 
-          self, 
-          env = '', 
-          le_env_provider = None 
-       ):
-
-      self.__env                = env
-      self.__le_env_provider    = le_env_provider
-
-
-   def get_env( 
-          self 
-       ):
-
-      if not self.__le_env_provider:
-         return self.__env
-      else:
-         return self.__le_env_provider()
-
-
-   def set_env( 
-          self, 
-          env 
-       ):
-
-     self.__env = env
-
-
-   env = property( get_env, set_env )
-
-
-class IAppCompGetters( 
-         object 
+@define_accessor( 'env' )
+class IEnvGetters(
+         IGetters
       ):
+    pass
 
-   def __init__( 
-          self, 
-          appcomp = '', 
-          le_appcomp_provider = None 
-       ):
-
-      self.__appcomp                = appcomp
-      self.__le_appcomp_provider    = le_appcomp_provider
+@define_accessor( 'appcomp' )
+class IAppCompGetters(
+         IGetters
+      ):
+    pass
 
 
-   def get_appcomp( 
-          self 
-       ):
+if __name__ == "__main__":
 
-      if not self.__le_appcomp_provider:
-         return self.__appcomp
-      else:
-         return self.__le_appcomp_provider()
-
-
-   def set_appcomp( 
-          self, 
-          appcomp 
-       ):
-
-     self.__appcomp = appcomp
-
-   appcomp = property( get_appcomp, set_appcomp )
+   test_appcode = IAppcodeGetters( appcode = 'A01' )
+   pprint( dir ( test_appcode ) )
+   pprint( test_appcode.appcode )
