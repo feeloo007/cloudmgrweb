@@ -92,20 +92,7 @@ class CreateServerForm(
                                 )
       
 
-      self._l_le_known_div_for_change = []
       self._known_component_for_answer = None
-
-   def get_l_known_div_for_change( self ):
-       return [ le() for le in self._l_le_known_div_for_change ]
-
-   def register_le_known_div_for_change( self, le_kd ):
-       """
-          Enregistre une lambda expression renvoyant un KnownDiv
-          Une fois la lambda expression instanciée, on doit y trouver les attributs :
-          .o.id
-          .o.component
-       """
-       self._l_le_known_div_for_change.append( le_kd )
 
 
    def get_known_component_for_answer( self ):
@@ -250,7 +237,13 @@ def render(
                        value=u'Confirmer' 
                     ).action( 
                        XComponentsUpdates( 
-                          le_l_knowndiv = lambda: self.get_l_known_div_for_change(), 
+                          le_l_knowndiv = lambda: self.dom_storage.get_l_known_div_for_change(
+                                                     'REFRESH_ON_CREATION_SERVER_DEMAND',
+                                                     appcode 	= self.appcode,
+                                                     aera 	= self.aera,
+                                                     env 	= self.env,
+                                                     appcomp 	= self.appcomp,
+                                                  ), 
                           update_himself = True, 
                           action = lambda: create_and_get_next_dhcp_file() 
                        ) 
@@ -355,18 +348,6 @@ class CreateServerTask(
          create_cp_create_server_form
       )
      
-   def get_l_known_div_for_change( self ):
-       return [ le() for le in self.cp_create_server_form.o.get_l_known_div_for_change() ]
-
-   def register_le_known_div_for_change( self, le_kd ):
-       """
-          Enregistre une lambda expression renvoyant un KnownDiv
-          Une fois la lambda expression instanciée, on doit y trouver les attributs :
-          .o.id
-          .o.component
-       """
-       self.cp_create_server_form.o.register_le_known_div_for_change( le_kd )
-
 
    def go( self, comp ):
 
