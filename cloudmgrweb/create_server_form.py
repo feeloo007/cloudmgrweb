@@ -92,18 +92,6 @@ class CreateServerForm(
                                 )
       
 
-      self._known_component_for_answer = None
-
-
-   def get_known_component_for_answer( self ):
-       print 'get_known_component_for_answer %s' % self._known_component_for_answer
-       return self._known_component_for_answer
-
-   def set_known_component_for_answer( self, le_comp ):
-       self._known_component_for_answer = le_comp
-       print 'set_known_component_for_answer %s' % self._known_component_for_answer
-
-
 @presentation.render_for( CreateServerForm )
 def render(
        self, 
