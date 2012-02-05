@@ -15,7 +15,7 @@ setup(
       include_package_data = True,
       package_data = {'' : ['*.cfg']},
       zip_safe = False,
-      install_requires = ('nagare',),
+      install_requires = ('nagare==0.3.0',),
       entry_points = """
       [nagare.applications]
       cloudmgrweb = cloudmgrweb.app:app
