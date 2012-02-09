@@ -123,35 +123,3 @@ class IGetters:
       **kwargs 
    ):
       pass
-
-
-@define_accessor( 'appcode' )
-class IAppcodeGetters(
-         IGetters
-      ):
-    pass
-
-@define_accessor( 'aera' )
-class IAeraGetters(
-         IGetters
-      ):
-    pass
-
-@define_accessor( 'env' )
-class IEnvGetters(
-         IGetters
-      ):
-    pass
-
-@define_accessor( 'appcomp' )
-class IAppCompGetters(
-         IGetters
-      ):
-    pass
-
-
-if __name__ == "__main__":
-
-   test_appcode = IAppcodeGetters( appcode = 'A01' )
-   pprint( dir ( test_appcode ) )
-   pprint( test_appcode.appcode )

@@ -4,7 +4,10 @@ from __future__ import with_statement
 from nagare                                     import presentation, component, ajax
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers		import ICloudMgrResolvers
-from i_controllers                              import IAppcodeGetters, IAeraGetters, IEnvGetters, IAppCompGetters
+from i_appcode_getter                           import IAppcodeGetter
+from i_aera_getter                              import IAeraGetter
+from i_env_getter                               import IEnvGetter
+from i_appcomp_getter                           import IAppCompGetter
 from cloudmgrlib.m_cmgr_manage_virtual_stack    import create_next_dhcp_file_for, create_vm
 from create_server_form				import CreateServerTask
 from servers_viewer				import ServersViewer
@@ -21,10 +24,10 @@ from pprint					import pprint
 ###########################
 class ServersControl( 
          ICloudMgrResolvers, 
-         IAppcodeGetters, 
-         IAeraGetters, 
-         IEnvGetters, 
-         IAppCompGetters, 
+         IAppcodeGetter, 
+         IAeraGetter, 
+         IEnvGetter, 
+         IAppCompGetter, 
          IDomTree,
          IDynamicComponentProvider,
       ):
@@ -49,25 +52,25 @@ class ServersControl(
                             resolvers 
                          )
 
-      IAppcodeGetters.__init__( 
+      IAppcodeGetter.__init__( 
                          self, 
                          appcode = appcode, 
                          le_appcode_provider = le_appcode_provider 
                       )
 
-      IAeraGetters.__init__( 
+      IAeraGetter.__init__( 
                       self, 
                       aera = aera, 
                       le_aera_provider = le_aera_provider
                    )
 
-      IEnvGetters.__init__( 
+      IEnvGetter.__init__( 
                      self, 
                      env = env, 
                      le_env_provider = le_env_provider
                   )
 
-      IAppCompGetters.__init__( 
+      IAppCompGetter.__init__( 
                          self, 
                          appcomp = appcomp, 
                          le_appcomp_provider = le_appcomp_provider 

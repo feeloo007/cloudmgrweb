@@ -5,7 +5,7 @@ from nagare                                     import presentation, component
 from ajax_x_components				import KnownDiv
 from menu_control_env				import MenuControlEnv
 from cloudmgrlib.i_cmgr_resolvers		import ICloudMgrResolvers
-from i_controllers                              import IAppcodeGetters
+from i_appcode_getter                           import IAppcodeGetter
 
 
 from i_dom_tree					import IDomTree
@@ -19,7 +19,7 @@ from pprint					import pprint
 ###########################
 class MenuControlEnvs( 
          ICloudMgrResolvers, 
-         IAppcodeGetters, 
+         IAppcodeGetter, 
          IDomTree, 
          IDynamicComponentProvider 
       ):
@@ -38,7 +38,7 @@ class MenuControlEnvs(
          resolvers 
       )
 
-      IAppcodeGetters.__init__( 
+      IAppcodeGetter.__init__( 
          self, 
          appcode = appcode, 
          le_appcode_provider = le_appcode_provider 

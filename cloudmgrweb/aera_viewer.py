@@ -5,7 +5,8 @@ from nagare                                     import presentation, component
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
 from envs_viewer				import EnvsViewer
-from i_controllers                              import IAppcodeGetters, IAeraGetters
+from i_appcode_getter                           import IAppcodeGetter
+from i_aera_getter                              import IAeraGetter
 
 from i_dom_tree                                 import IDomTree
 
@@ -17,8 +18,8 @@ from i_dynamic_component_provider               import IDynamicComponentProvider
 ###########################
 class AeraViewer( 
          ICloudMgrResolvers, 
-         IAppcodeGetters, 
-         IAeraGetters, 
+         IAppcodeGetter, 
+         IAeraGetter, 
          IDomTree,
          IDynamicComponentProvider, 
       ):
@@ -38,13 +39,13 @@ class AeraViewer(
                             resolvers 
                          )
 
-      IAppcodeGetters.__init__( 
+      IAppcodeGetter.__init__( 
                          self, 
                          appcode = appcode, 
                          le_appcode_provider = le_appcode_provider 
                       )
 
-      IAeraGetters.__init__( 
+      IAeraGetter.__init__( 
                        self, 
                        aera = aera, 
                        le_aera_provider = le_aera_provider 

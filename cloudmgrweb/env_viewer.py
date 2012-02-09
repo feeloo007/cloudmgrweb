@@ -4,7 +4,9 @@ from __future__ import with_statement
 from nagare                                     import presentation, component
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
-from i_controllers                              import IAppcodeGetters, IAeraGetters, IEnvGetters
+from i_appcode_getter                           import IAppcodeGetter
+from i_aera_getter                              import IAeraGetter
+from i_env_getter                               import IEnvGetter
 from appcomps_viewer				import AppCompsViewer
 
 from i_dom_tree                                 import IDomTree
@@ -17,9 +19,9 @@ from i_dynamic_component_provider               import IDynamicComponentProvider
 ###########################
 class EnvViewer( 
          ICloudMgrResolvers, 
-         IAppcodeGetters, 
-         IAeraGetters, 
-         IEnvGetters, 
+         IAppcodeGetter, 
+         IAeraGetter, 
+         IEnvGetter, 
          IDomTree,
          IDynamicComponentProvider,
       ):
@@ -42,19 +44,19 @@ class EnvViewer(
                             resolvers 
                          )
 
-      IAppcodeGetters.__init__( 
+      IAppcodeGetter.__init__( 
                          self, 
                          appcode = appcode, 
                          le_appcode_provider = le_appcode_provider 
                       )
 
-      IAeraGetters.__init__( 
+      IAeraGetter.__init__( 
                       self, 
                       aera = aera, 
                       le_aera_provider = le_aera_provider 
                    )
 
-      IEnvGetters.__init__( 
+      IEnvGetter.__init__( 
                      self, 
                      env = env, 
                      le_env_provider = le_env_provider 

@@ -4,7 +4,8 @@ from __future__ import with_statement
 from nagare                                     import presentation, component
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
-from i_controllers                              import IAppcodeGetters, IEnvGetters
+from i_appcode_getter                           import IAppcodeGetter
+from i_env_getter                               import IEnvGetter
 from counter_servers				import CounterServers
 
 from i_dom_tree                                 import IDomTree
@@ -18,8 +19,8 @@ from pprint					import pprint
 ###########################
 class MenuControlEnv( 
          ICloudMgrResolvers, 
-         IAppcodeGetters, 
-         IEnvGetters, 
+         IAppcodeGetter, 
+         IEnvGetter, 
          IDomTree,
          IDynamicComponentProvider, 
       ):
@@ -40,13 +41,13 @@ class MenuControlEnv(
          resolvers 
       )
 
-      IAppcodeGetters.__init__( 
+      IAppcodeGetter.__init__( 
          self, 
          appcode = appcode, 
          le_appcode_provider = le_appcode_provider 
       )
 
-      IEnvGetters.__init__( 
+      IEnvGetter.__init__( 
          self, 
          env = env, 
          le_env_provider = le_env_provider 
