@@ -3,7 +3,11 @@
 from pprint 			import pprint, pformat
 from cloudmgrlib.sequential_ops import SequentialOps
 
-from colorama			import init, Fore
+from nagare			import component
+
+import stackless
+
+from colorama			import Fore, Back, Style
 
 class IDomTree( object ):
 
@@ -13,8 +17,7 @@ class IDomTree( object ):
           dom_father 
        ):
 
-      # Initialisation colorama
-      init( autoreset = True )
+      self.previous_comp	= None
 
       if not dom_storage:
 
@@ -149,20 +152,67 @@ class IDomTree( object ):
  
 
    all_dom_childs = property( get_all_dom_childs )
+
+
+   def get_previous_comp(
+          self
+       ):
+      return self.__previous_comp
+
+
+   def set_previous_comp(
+          self,
+          previous_comp
+       ):
+      self.__previous_comp = previous_comp
+
+   previous_comp = property( get_previous_comp, set_previous_comp )
+
+
+   def get_previous_channel( 
+          self,
+       ):
+      if self.previous_comp:
+         return self.previous_comp._channel
+      else:
+         return None
+
+   previous_channel = property( get_previous_channel )
  
 
    def reset_in_dom( 
-          self 
+          self,
+          comp, 
        ):
 
+      # Permet de ne pas conserver une référence
+      # permanente sur ce tasklet
+      stackless._gc_untrack( stackless.current )
+
+      # Permet de tuer le tasklet précédemment attaché à la Task
+      if isinstance( self, component.Task ) and self.previous_channel:
+         self.previous_channel.send_exception( TaskletExit )
+         self.previous_channel.close()
+
+      # suppression des évènemenets associés
       self.delete_events()
 
+      # Appel récursif vers les enfants
       for dom_child in self.dom_childs[ : ]:
+
          dom_child.delete_events()
-         dom_child.reset_in_dom()
+
+         dom_child.reset_in_dom(
+                      None
+         )
+
          self.d_dom_tree[ dom_child.dom_father ][ 'dom_childs' ].remove( dom_child )
+
          del( self.d_dom_tree[ dom_child ] )
 
+         del( dom_child )
+
+      self.previous_comp = comp
 
 
    def get_d_events( 
@@ -225,6 +275,7 @@ class IDomTree( object ):
           self 
        ):
 
+
       for desc_event in self.d_dom_tree[ self ][ 'events' ][ : ]:
 
          del( self.d_events[ desc_event[ 'event_name' ] ][ desc_event[ 'appcode' ] ][ desc_event[ 'aera' ] ][ desc_event[ 'env' ] ][ desc_event[ 'appcomp' ] ][ desc_event[ 'cp_knowndiv' ] ] )
@@ -255,7 +306,6 @@ class IDomTree( object ):
           env = '*', 
           appcomp = '*' 
        ):
-
 
       def get_list_from_key( 
              l, 
@@ -299,11 +349,11 @@ class IDomTree( object ):
 
       def print_struct( 
              x, 
-             color = Fore.WHITE 
+             color = Fore.BLACK + Back.WHITE + Style.BRIGHT 
           ):
 
          print(
-            color + pformat( x ) + Fore.RESET
+            color + pformat( x ) + Style.RESET_ALL + Back.RESET + Fore.RESET
          )
          return x
 
