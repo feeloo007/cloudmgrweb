@@ -2,7 +2,7 @@
 from __future__ import with_statement
 from pprint 	import pprint, pformat
 
-def define_accessor(
+def define_getter(
        accessor 
     ):
 
@@ -11,12 +11,10 @@ def define_accessor(
    ):
 
 
-      # Définitino de tous les noms utilisés
+      # Définition de tous les noms utilisés
       # par la suite
       hide_attrib_accessor		= '__%s' % accessor
-      hide_le_attrib_accessor_provider	= '__le_%s_provider' % accessor
       init_param_accessor		= accessor
-      init_le_accessor_provider		= 'le_%s_provider' % accessor
       mthd_get_accessor			= 'get_%s' % accessor
       mthd_set_accessor			= 'set_%s' % accessor
       prop_accessor			= accessor
@@ -38,15 +36,6 @@ def define_accessor(
                ) 
          )
 
-         setattr( 
-            self, 
-            hide_le_attrib_accessor_provider, 
-            kwargs.get( 
-                  init_le_accessor_provider, 
-                  None
-               ) 
-         )
-
          origin_init( 
             self, 
             *args, 
@@ -61,9 +50,11 @@ def define_accessor(
              self
           ):
 
-         if not getattr( 
-                   self, 
-                   hide_le_attrib_accessor_provider 
+         if not callable( 
+                   getattr(
+                      self,
+                      hide_attrib_accessor,
+                   )
                 ):
 
             return getattr( 
@@ -75,7 +66,7 @@ def define_accessor(
 
             return getattr( 
                       self, 
-                      hide_le_attrib_accessor_provider 
+                      hide_attrib_accessor 
                    )()
 
       # Création de l'accessor en écriture
@@ -115,7 +106,7 @@ def define_accessor(
    return modify_class
 
 
-class IGetters:
+class IGetter:
 
    def __init__( 
       self, 

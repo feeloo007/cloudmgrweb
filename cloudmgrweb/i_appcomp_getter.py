@@ -2,11 +2,12 @@
 from __future__ import with_statement
 from pprint 	import pprint, pformat
 
-from i_getter 	import *
+import i_getter 
 
 
-@define_accessor( 'appcomp' )
+
+@i_getter.define_getter( 'appcomp' )
 class IAppCompGetter(
-         IGetters
+         i_getter.IGetter
       ):
     pass

@@ -2,11 +2,12 @@
 from __future__ import with_statement
 from pprint 	import pprint, pformat
 
-from i_getter 	import *
+import i_getter 
 
 
-@define_accessor( 'env' )
+
+@i_getter.define_getter( 'env' )
 class IEnvGetter(
-         IGetters
+         i_getter.IGetter
       ):
     pass
