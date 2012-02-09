@@ -5,8 +5,8 @@ from nagare                                     import presentation, component
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
 from envs_viewer				import EnvsViewer
-from i_appcode_getter                           import IAppcodeGetter
-from i_aera_getter                              import IAeraGetter
+
+import i_getter
 
 from i_dom_tree                                 import IDomTree
 
@@ -16,40 +16,27 @@ from i_dynamic_component_provider               import IDynamicComponentProvider
 ###########################
 # Vision des zones
 ###########################
+@i_getter.define_getter( 'appcode' )
+@i_getter.define_getter( 'aera' )
 class AeraViewer( 
          ICloudMgrResolvers, 
-         IAppcodeGetter, 
-         IAeraGetter, 
          IDomTree,
          IDynamicComponentProvider, 
       ):
 
    def __init__( 
-           self, aera = '', 
-           le_aera_provider = None, 
-           appcode = '', 
-           le_appcode_provider = None, 
-           resolvers = None, 
-           dom_storage = None,
-           dom_father = None,
+           self, 
+           resolvers 	= None, 
+           dom_storage 	= None,
+           dom_father 	= None,
+           *args,
+           **kwargs
        ):
 
       ICloudMgrResolvers.__init__( 
                             self, 
                             resolvers 
                          )
-
-      IAppcodeGetter.__init__( 
-                         self, 
-                         appcode = appcode, 
-                         le_appcode_provider = le_appcode_provider 
-                      )
-
-      IAeraGetter.__init__( 
-                       self, 
-                       aera = aera, 
-                       le_aera_provider = le_aera_provider 
-                   )
 
       IDomTree.__init__(
                   self,
@@ -64,11 +51,11 @@ class AeraViewer(
       def create_cp_envs_viewer():
          return component.Component( 
                    EnvsViewer( 
-                      le_appcode_provider = lambda: self.appcode, 
-                      le_aera_provider = lambda: self.aera, 
-                      resolvers = self, 
-                      dom_storage = self,
-                      dom_father = self,
+                      appcode 		= lambda: self.appcode, 
+                      aera 		= lambda: self.aera, 
+                      resolvers 	= self, 
+                      dom_storage 	= self,
+                      dom_father 	= self,
                    ) 
                 )
 

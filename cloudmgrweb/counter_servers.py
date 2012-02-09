@@ -4,10 +4,7 @@ from __future__ import with_statement
 from nagare                                     import presentation, component, ajax
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers		import ICloudMgrResolvers
-from i_appcode_getter                           import IAppcodeGetter
-from i_aera_getter                              import IAeraGetter
-from i_env_getter                               import IEnvGetter
-from i_appcomp_getter                           import IAppCompGetter
+import i_getter
 from cloudmgrlib.sequential_ops			import SequentialOps
 
 # Interaction comet
@@ -24,13 +21,13 @@ from pprint					import pprint
 ###########################
 # Vision des zones
 ###########################
+@i_getter.define_getter( 'appcode' )
+@i_getter.define_getter( 'aera' )
+@i_getter.define_getter( 'env' )
+@i_getter.define_getter( 'appcomp' )
 class CounterServers( 
          ICloudMgrResolvers, 
          ICloudMgrComet, 
-         IAppcodeGetter, 
-         IAeraGetter, 
-         IEnvGetter, 
-         IAppCompGetter, 
          SequentialOps, 
          IDomTree,
          IDynamicComponentProvider,
@@ -38,46 +35,16 @@ class CounterServers(
 
    def __init__(
           self, 
-          appcode = '', 
-          le_appcode_provider = None, 
-          aera = '', 
-          le_aera_provider = None, 
-          env = '', 
-          le_env_provider = None, 
-          appcomp = '', 
-          le_appcomp_provider = None, 
-          resolvers = None, 
-          dom_storage = None,
-          dom_father = None, 
+          resolvers 	= None, 
+          dom_storage 	= None,
+          dom_father 	= None, 
+          *args,
+          **kwargs
       ):
 
       ICloudMgrResolvers.__init__( 
          self, 
          resolvers 
-      )
-
-      IAppcodeGetter.__init__( 
-         self, 
-         appcode = appcode, 
-         le_appcode_provider = le_appcode_provider 
-      )
-
-      IAeraGetter.__init__( 
-         self, 
-         aera = aera, 
-         le_aera_provider = le_aera_provider
-      )
-
-      IEnvGetter.__init__( 
-         self, 
-         env = env, 
-         le_env_provider = le_env_provider
-      )
-
-      IAppCompGetter.__init__( 
-         self, 
-         appcomp = appcomp, 
-         le_appcomp_provider = le_appcomp_provider 
       )
 
       # Interaction comet
@@ -91,8 +58,8 @@ class CounterServers(
 
       IDomTree.__init__(
          self,
-         dom_storage = dom_storage,
-         dom_father = dom_father,
+         dom_storage 	= dom_storage,
+         dom_father 	= dom_father,
       )
 
 
@@ -167,21 +134,6 @@ class CounterServers(
          ] 
       )
 
-   def get_appcode( self ):
-      if IAppcodeGetter.get_appcode( self ) == '':
-         return '*'
-      return IAppcodeGetter.get_appcode( self )
-
-   def set_appcode( self, appcode ):
-      IAppcodeGetter.set_appcode( 
-         self, 
-         appcode 
-      )
-   appcode = property( 
-                get_appcode, 
-                set_appcode 
-             )
-
 @presentation.render_for( CounterServers )
 def render(
        self, 
@@ -197,8 +149,8 @@ def render(
    self.add_event_for_knowndiv(
       'REFRESH_ON_CREATION_SERVER_DEMAND', 
       self, 
-      appcode = self.appcode, 
-      env = self.env,
+      appcode 	= self.appcode, 
+      env 	= self.env,
    )
 
    with h.div( class_ = 'counter_appcomps' ):

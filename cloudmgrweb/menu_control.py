@@ -41,8 +41,8 @@ class MenuControl(
 
       IDomTree.__init__( 
          self, 
-         dom_storage = dom_storage, 
-         dom_father = dom_father 
+         dom_storage 	= dom_storage, 
+         dom_father 	= dom_father 
       )
 
       # Définition des composants dynamiques
@@ -53,6 +53,7 @@ class MenuControl(
                AppcodeSelector(
                   dom_storage 	= self,
                   dom_father 	= self,
+                  appcode	= '',
                )
             )
 
@@ -65,10 +66,10 @@ class MenuControl(
          with self.cloudmap_resolver:
             return component.Component(
                       MenuControlEnvs(
-                         le_appcode_provider = lambda: self.cp_appcode_selector.o.appcode,
-                         resolvers = self,
-                         dom_storage = self,
-                         dom_father = self,
+                         appcode 	= lambda: self.cp_appcode_selector.o.appcode,
+                         resolvers 	= self,
+                         dom_storage 	= self,
+                         dom_father 	= self,
                       )
                    )
 

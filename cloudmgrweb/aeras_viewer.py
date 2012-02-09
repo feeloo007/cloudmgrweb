@@ -5,7 +5,7 @@ from nagare                                     import presentation, component
 from ajax_x_components				import KnownDiv
 from aera_viewer				import AeraViewer
 from cloudmgrlib.i_cmgr_resolvers		import ICloudMgrResolvers
-from i_appcode_getter				import IAppcodeGetter
+import i_getter
 
 from i_dom_tree					import IDomTree
 
@@ -17,20 +17,20 @@ from pprint					import pprint
 ###########################
 # Vision des zones
 ###########################
+@i_getter.define_getter( 'appcode' )
 class AerasViewer( 
          ICloudMgrResolvers, 
-         IAppcodeGetter, 
          IDomTree,
          IDynamicComponentProvider,
       ):
 
    def __init__( 
           self, 
-          appcode = '', 
-          le_appcode_provider = None, 
-          resolvers = None, 
-          dom_storage = None, 
-          dom_father = None, 
+          resolvers 	= None, 
+          dom_storage 	= None, 
+          dom_father 	= None, 
+          *args,
+          **kwargs
        ):
 
       ICloudMgrResolvers.__init__( 
@@ -38,12 +38,6 @@ class AerasViewer(
          resolvers 
       )
 
-      IAppcodeGetter.__init__(
-         self, 
-         appcode = appcode, 
-         le_appcode_provider = le_appcode_provider 
-      )
- 
       IDynamicComponentProvider.__init__(
          self,
       )
@@ -63,11 +57,11 @@ class AerasViewer(
             for aera in self.aera_resolver.all_aeras:
                d_all_cp_aeras_viewer[ aera ] = component.Component( 
                                                  AeraViewer( 
-                                                    aera = aera, 
-                                                    le_appcode_provider = lambda: self.appcode, 
-                                                    resolvers = self, 
-                                                    dom_storage = self,
-                                                    dom_father = self,
+                                                    aera 		= aera, 
+                                                    appcode	 	= lambda: self.appcode, 
+                                                    resolvers 		= self, 
+                                                    dom_storage 	= self,
+                                                    dom_father 		= self,
                                                  ) 
                                               )
          return d_all_cp_aeras_viewer

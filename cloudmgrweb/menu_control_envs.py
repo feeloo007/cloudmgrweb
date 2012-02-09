@@ -5,8 +5,7 @@ from nagare                                     import presentation, component
 from ajax_x_components				import KnownDiv
 from menu_control_env				import MenuControlEnv
 from cloudmgrlib.i_cmgr_resolvers		import ICloudMgrResolvers
-from i_appcode_getter                           import IAppcodeGetter
-
+import i_getter
 
 from i_dom_tree					import IDomTree
 
@@ -17,31 +16,25 @@ from pprint					import pprint
 ###########################
 # Vision des zones
 ###########################
+@i_getter.define_getter( 'appcode' )
 class MenuControlEnvs( 
          ICloudMgrResolvers, 
-         IAppcodeGetter, 
          IDomTree, 
          IDynamicComponentProvider 
       ):
 
    def __init__( 
-          self, 
-          appcode = '', 
-          le_appcode_provider = None, 
-          resolvers = None, 
-          dom_storage = None, 
-          dom_father = None, 
+         self, 
+         resolvers 	= None, 
+         dom_storage 	= None, 
+         dom_father 	= None, 
+         *args,
+         **kwargs
        ):
 
       ICloudMgrResolvers.__init__( 
          self, 
          resolvers 
-      )
-
-      IAppcodeGetter.__init__( 
-         self, 
-         appcode = appcode, 
-         le_appcode_provider = le_appcode_provider 
       )
 
       IDynamicComponentProvider.__init__( 
@@ -60,11 +53,11 @@ class MenuControlEnvs(
          with self.cloudmap_resolver:
             return component.Component(
                       MenuControlEnv( 
-                         env = '*', 
-                         le_appcode_provider = lambda: self.appcode, 
-                         resolvers = self, 
-                         dom_storage = self,
-                         dom_father = self, 
+                         env 		= '*', 
+                         appcode 	= lambda: self.appcode, 
+                         resolvers 	= self, 
+                         dom_storage 	= self,
+                         dom_father 	= self, 
                       ),
                       model = '*' 
                    ) 
@@ -81,11 +74,11 @@ class MenuControlEnvs(
             for env in self.env_resolver.all_envs:
                d_cp_menu_by_envs[ env ] = component.Component( 
                                              MenuControlEnv( 
-                                                env = env, 
-                                                le_appcode_provider = lambda: self.appcode, 
-                                                resolvers = self, 
-                                                dom_storage = self,
-                                                dom_father = self, 
+                                                env 		= env, 
+                                                appcode 	= lambda: self.appcode, 
+                                                resolvers 	= self, 
+                                                dom_storage 	= self,
+                                                dom_father 	= self, 
                                              ) 
                                           ) 
             return d_cp_menu_by_envs

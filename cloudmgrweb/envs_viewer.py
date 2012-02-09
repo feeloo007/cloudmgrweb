@@ -5,8 +5,7 @@ from nagare                                     import presentation, component
 from ajax_x_components				import KnownDiv
 from env_viewer					import EnvViewer
 from cloudmgrlib.i_cmgr_resolvers		import ICloudMgrResolvers
-from i_appcode_getter                           import IAppcodeGetter
-from i_aera_getter                              import IAeraGetter
+import i_getter
 
 from i_dom_tree                                 import IDomTree
 
@@ -16,40 +15,26 @@ from i_dynamic_component_provider               import IDynamicComponentProvider
 ###########################
 # Vision des zones
 ###########################
+@i_getter.define_getter( 'appcode' )
+@i_getter.define_getter( 'aera' )
 class EnvsViewer( 
          ICloudMgrResolvers, 
-         IAppcodeGetter, 
-         IAeraGetter, 
          IDomTree,
          IDynamicComponentProvider
       ):
 
    def __init__( 
           self, 
-          appcode = '', 
-          le_appcode_provider = None, 
-          aera = '', 
-          le_aera_provider = None, 
-          resolvers = None, 
-          dom_storage = None,
-          dom_father = None,
+          resolvers 	= None, 
+          dom_storage 	= None,
+          dom_father 	= None,
+          *args,
+          **kwargs
        ):
 
       ICloudMgrResolvers.__init__( 
          self, 
          resolvers 
-      )
-
-      IAppcodeGetter.__init__( 
-         self, 
-         appcode = appcode, 
-         le_appcode_provider = le_appcode_provider 
-      )
-
-      IAeraGetter.__init__( 
-         self, 
-         aera = aera, 
-         le_aera_provider= le_aera_provider 
       )
 
       IDomTree.__init__(
@@ -68,12 +53,12 @@ class EnvsViewer(
             for env in self.env_resolver.all_envs:
                d_all_cp_envs[ env ] = component.Component( 
                                     EnvViewer( 
-                                       le_appcode_provider = lambda: self.appcode, 
-                                       le_aera_provider = lambda: self.aera, 
-                                       env = env, 
-                                       resolvers = self, 
-                                       dom_storage = self,
-                                       dom_father = self,
+                                       appcode 		= lambda: self.appcode, 
+                                       aera 		= lambda: self.aera, 
+                                       env 		= env, 
+                                       resolvers 	= self, 
+                                       dom_storage 	= self,
+                                       dom_father 	= self,
                                     ) 
                                  )
             return d_all_cp_envs

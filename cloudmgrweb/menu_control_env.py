@@ -4,8 +4,8 @@ from __future__ import with_statement
 from nagare                                     import presentation, component
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
-from i_appcode_getter                           import IAppcodeGetter
-from i_env_getter                               import IEnvGetter
+import i_getter
+
 from counter_servers				import CounterServers
 
 from i_dom_tree                                 import IDomTree
@@ -17,40 +17,26 @@ from pprint					import pprint
 ###########################
 # Vision des zones
 ###########################
+@i_getter.define_getter( 'appcode' )
+@i_getter.define_getter( 'env' )
 class MenuControlEnv( 
          ICloudMgrResolvers, 
-         IAppcodeGetter, 
-         IEnvGetter, 
          IDomTree,
          IDynamicComponentProvider, 
       ):
 
    def __init__( 
           self, 
-          appcode = '', 
-          le_appcode_provider = None, 
-          env = '', 
-          le_env_provider = None, 
-          resolvers = None, 
-          dom_storage = None,
-          dom_father = None, 
+          resolvers 	= None, 
+          dom_storage 	= None,
+          dom_father 	= None, 
+          *args,
+          **kwargs
        ):
 
       ICloudMgrResolvers.__init__( 
          self, 
          resolvers 
-      )
-
-      IAppcodeGetter.__init__( 
-         self, 
-         appcode = appcode, 
-         le_appcode_provider = le_appcode_provider 
-      )
-
-      IEnvGetter.__init__( 
-         self, 
-         env = env, 
-         le_env_provider = le_env_provider 
       )
 
       IDynamicComponentProvider.__init__(
@@ -59,8 +45,8 @@ class MenuControlEnv(
 
       IDomTree.__init__(
          self,
-         dom_storage = dom_storage,
-         dom_father = dom_father, 
+         dom_storage 	= dom_storage,
+         dom_father 	= dom_father, 
       )
 
       # Définition des composants dynamiques
@@ -68,11 +54,13 @@ class MenuControlEnv(
          with self.cloudmap_resolver:
             return component.Component(
                       CounterServers( 
-                         le_appcode_provider = lambda: self.appcode, 
-                         le_env_provider = lambda: self.env, 
-                         resolvers = self, 
-                         dom_storage = self,
-                         dom_father = self, 
+                         appcode 	= lambda: self.appcode, 
+                         env 		= lambda: self.env, 
+                         aera		= '*',
+                         appcomp	= '*',
+                         resolvers 	= self, 
+                         dom_storage 	= self,
+                         dom_father 	= self, 
                       ) 
                    )
 
@@ -86,10 +74,13 @@ class MenuControlEnv(
          with self.cloudmap_resolver:
             return component.Component( 
                       CounterServers( 
-                         le_env_provider = lambda: self.env, 
-                         resolvers = self, 
-                         dom_storage = self,
-                         dom_father = self, 
+                         appcode	= '*',
+                         env 		= lambda: self.env, 
+                         aera		= '*',
+                         appcomp	= '*',
+                         resolvers 	= self, 
+                         dom_storage 	= self,
+                         dom_father 	= self, 
                       ) 
                    )
  

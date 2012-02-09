@@ -26,6 +26,8 @@ def define_getter(
              *args, 
 	     **kwargs
           ):
+   
+         assert( kwargs.has_key( init_param_accessor ) ), u'%s doit exister' % init_param_accessor
 
          setattr( 
             self, 
@@ -104,13 +106,3 @@ def define_getter(
       return cl
 
    return modify_class
-
-
-class IGetter:
-
-   def __init__( 
-      self, 
-      *args, 
-      **kwargs 
-   ):
-      pass

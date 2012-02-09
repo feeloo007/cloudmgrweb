@@ -19,7 +19,6 @@ from ajax_x_components                          import XComponentsUpdates
 
 
 import gc
-import stackless
 
 
 class CloudmgrwebDebug(
@@ -67,21 +66,20 @@ def render(
    self.add_event_for_knowndiv( 
       '*', 
       self, 
-      appcode = '*',
-      aera = '*', 
-      env = '*', 
-      appcomp = '*' 
+      appcode 	= '*',
+      aera 	= '*', 
+      env 	= '*', 
+      appcomp 	= '*',
    )
 
-   #def print_gc():
-      #gc.collect( 0 )
-      #gc.collect( 1 )
-      #gc.collect( 2 )
-      #print( Fore.CYAN + Back.WHITE + Style.BRIGHT + pformat( stackless.runcount ) + Style.RESET_ALL + Back.RESET + Fore.RESET )
-      #print( Fore.BLACK + Back.WHITE + Style.BRIGHT + pformat( gc.garbage ) + Style.RESET_ALL + Back.RESET + Fore.RESET )
-      #for o in gc.garbage:
-      #   print( Fore.BLUE + Back.WHITE + Style.BRIGHT + pformat( gc.get_referrers( o ) ) + Style.RESET_ALL + Back.RESET + Fore.RESET )
-      #   print( Fore.MAGENTA + Back.WHITE + Style.BRIGHT + pformat( gc.get_referents( o ) ) + Style.RESET_ALL + Back.RESET + Fore.RESET )
+   def print_gc():
+      gc.collect( 0 )
+      gc.collect( 1 )
+      gc.collect( 2 )
+      print( Fore.BLACK + Back.WHITE + Style.BRIGHT + pformat( gc.garbage ) + Style.RESET_ALL + Back.RESET + Fore.RESET )
+      for o in gc.garbage:
+         print( Fore.BLUE + Back.WHITE + Style.BRIGHT + pformat( gc.get_referrers( o ) ) + Style.RESET_ALL + Back.RESET + Fore.RESET )
+         print( Fore.MAGENTA + Back.WHITE + Style.BRIGHT + pformat( gc.get_referents( o ) ) + Style.RESET_ALL + Back.RESET + Fore.RESET )
          
 
    #print( '##################################' )

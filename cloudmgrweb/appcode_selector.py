@@ -2,15 +2,20 @@
 from __future__ import with_statement
 
 from nagare                                     import presentation, var, ajax
+
 from ajax_x_components				import XComponentsUpdates
 
 from pprint					import pprint
 
 from i_dom_tree					import IDomTree
 
+import i_getter
+
+
 #########################
 # Selection du code appli
 #########################
+@i_getter.define_getter( 'appcode' )
 class AppcodeSelector( 
          IDomTree,         
       ):
@@ -19,30 +24,15 @@ class AppcodeSelector(
          self,
          dom_storage 	= None,
          dom_father 	= None,
+         *args, 
+         **kwargs
       ):
-
-     self.__appcode = ''
 
      IDomTree.__init__(
         self,
         dom_storage 	= dom_storage,
         dom_father 	= dom_father,
      )
-
-  def get_appcode( 
-         self 
-      ):
-
-     return self.__appcode
-
-  def set_appcode( 
-         self, 
-         appcode 
-     ):
-
-     self.__appcode = appcode
-
-  appcode = property( get_appcode, set_appcode )
 
 
 @presentation.render_for( AppcodeSelector )

@@ -78,10 +78,10 @@ class Cloudmgrweb(
          with self.cloudmap_resolver:
             return component.Component( 
                       AerasViewer(
-                         le_appcode_provider 	= lambda: self.cp_menu_control.o.cp_appcode_selector.o.appcode,
-                         resolvers 		= self,
-                         dom_storage 		= self,
-                         dom_father 		= self,
+                         appcode 	= lambda: self.cp_menu_control.o.cp_appcode_selector.o.appcode,
+                         resolvers 	= self,
+                         dom_storage 	= self,
+                         dom_father 	= self,
                       )
                    )
 
