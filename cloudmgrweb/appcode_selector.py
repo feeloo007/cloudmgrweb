@@ -53,7 +53,9 @@ def render(
        *args
     ):
 
-   self.reset_in_dom()
+   self.reset_in_dom(
+           comp
+   )
 
    v_appcode = var.Var()
 

@@ -108,7 +108,9 @@ def render(
 
       # Suppression des précédents fils
       # dans le modèle DOM
-      self.reset_in_dom()
+      self.reset_in_dom(
+              comp
+      )
 
       self.add_event_for_knowndiv(
          'LOCAL_REFRESH_ON_APPCODE_SELECTED',

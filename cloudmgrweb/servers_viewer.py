@@ -123,7 +123,9 @@ def render(
 
    with self.cloudmap_resolver:
 
-      self.reset_in_dom()
+      self.reset_in_dom(
+              comp
+      )
 
       with h.div( 
               class_ = 'servers_viewer %s %s %s' % ( self.aera, self.env, self.appcomp ) ):

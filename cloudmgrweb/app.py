@@ -18,7 +18,7 @@ from i_dom_tree					import IDomTree
 
 from i_dynamic_component_provider		import IDynamicComponentProvider	
 
-from pprint					import pprint
+from pprint					import pprint, pformat
 
 from debug 					import CloudmgrwebDebug
 
@@ -124,7 +124,8 @@ class Cloudmgrweb(
 @presentation.render_for(Cloudmgrweb)
 def render(
        self, 
-       h, 
+       h,
+       comp, 
        *args
     ):
 
@@ -132,7 +133,9 @@ def render(
 
       # Suppression des précédents fils
       # dans le modèle DOM
-      self.reset_in_dom()
+      self.reset_in_dom(
+              comp
+      )
 
       # Initialisation locale des composants
       # utilisés

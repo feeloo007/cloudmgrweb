@@ -6,7 +6,9 @@ from pprint                                     import pprint
 from i_dom_tree					import IDomTree
 
 
-class FormRefreshOnComet( IDomTree ):
+class FormRefreshOnComet( 
+         IDomTree,
+      ):
    def __init__( 
           self, 
           dom_storage, 
@@ -22,9 +24,14 @@ class FormRefreshOnComet( IDomTree ):
 @presentation.render_for( FormRefreshOnComet )
 def render(
        self, 
-       h, 
+       h,
+       comp,
        *args
     ):
+
+   self.reset_in_dom(
+           comp
+   )
 
    v_event_name = var.Var()
    v_appcode    = var.Var()

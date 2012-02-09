@@ -95,7 +95,9 @@ def render(
 
       # Suppression des précédents fils
       # dans le modèle DOM
-      self.reset_in_dom()
+      self.reset_in_dom(
+              comp
+      )
 
 
       with h.div( 

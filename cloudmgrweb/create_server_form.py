@@ -15,9 +15,6 @@ from i_dom_tree                                 import IDomTree
 
 from i_dynamic_component_provider               import IDynamicComponentProvider
 
-from pprint                                     import pprint
-
-
 ###########################
 # Vision des zones
 ###########################
@@ -99,6 +96,10 @@ def render(
        comp, 
        *args
     ):
+
+   self.reset_in_dom(
+           comp
+   )
 
    with self.cloudmap_resolver:
 
@@ -225,13 +226,14 @@ def render(
                        value=u'Confirmer' 
                     ).action( 
                        XComponentsUpdates( 
-                          le_l_knowndiv = lambda: self.dom_storage.get_l_known_div_for_change(
-                                                     'REFRESH_ON_CREATION_SERVER_DEMAND',
-                                                     appcode 	= self.appcode,
-                                                     aera 	= self.aera,
-                                                     env 	= self.env,
-                                                     appcomp 	= self.appcomp,
-                                                  ), 
+                          # Supprimer pour ne pas être redondant avec le message comet
+                          #le_l_knowndiv = lambda: self.dom_storage.get_l_known_div_for_change(
+                          #                           'REFRESH_ON_CREATION_SERVER_DEMAND',
+                          #                           appcode 	= self.appcode,
+                          #                           aera 	= self.aera,
+                          #                           env 	= self.env,
+                          #                           appcomp 	= self.appcomp,
+                          #                        ), 
                           update_himself = True, 
                           action = lambda: create_and_get_next_dhcp_file() 
                        ) 
@@ -335,27 +337,38 @@ class CreateServerTask(
          'cp_create_server_form',
          create_cp_create_server_form
       )
-     
+
 
    def go( self, comp ):
 
-      while True:
+      self.reset_in_dom(
+              comp
+      )
 
-         # Recréation à cahque itération de la boucle mais ce n'est pas vraiment
-         # nécessaire vu qu'on ne fait que des call
-         # On devrait pouvoir les créer une fois hors de la boucle
-         self.reset_in_dom()
-         self.create_cp_create_server_form()
+      self.create_cp_create_server_form()
 
-         comp.call( 
-            self.cp_create_server_form 
-         )
+      #try:
+      if True:
 
-         if comp.call( 
-               self.cp_create_server_form, model='validate' 
-            ):
-            self.cp_create_server_form.o.comet_channel.send( 
-               'REFRESH_ON_CREATION_SERVER_DEMAND appcode:%s aera:%s env:%s appcomp:%s' % ( self.appcode, self.aera, self.env, self.appcomp ) 
+         while True:
+     
+            comp.call( 
+               self.cp_create_server_form 
             )
-         else:
-            continue
+
+            if comp.call(
+                  self.cp_create_server_form, model = 'validate'
+               ):
+
+               self.cp_create_server_form.o.comet_channel.send( 
+                  'REFRESH_ON_CREATION_SERVER_DEMAND appcode:%s aera:%s env:%s appcomp:%s' % ( self.appcode, self.aera, self.env, self.appcomp ) 
+               )
+
+            else:
+
+               continue
+
+      #except TaskletExit, te:
+      #   import stackless
+      #   print 'TaskletExit %s' % stackless.current
+      #   raise te
