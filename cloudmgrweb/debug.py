@@ -16,8 +16,6 @@ from colorama					import init, Fore, Back, Style
 
 from ajax_x_components                          import XComponentsUpdates
 
-
-
 import gc
 
 
@@ -32,9 +30,6 @@ class CloudmgrwebDebug(
           dom_father       = None,
           cloudmgrweb      = None,
        ):
-
-      # Initialisation colorama
-      init( autoreset = True )
 
       ICloudMgrComet.__init__(
                         self
