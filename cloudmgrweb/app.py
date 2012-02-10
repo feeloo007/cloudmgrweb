@@ -22,6 +22,7 @@ from pprint					import pprint, pformat
 
 from debug 					import CloudmgrwebDebug
 
+
 class Cloudmgrweb( 
          ICloudMgrResolvers, 
          ICloudMgrComet, 
@@ -30,8 +31,11 @@ class Cloudmgrweb(
       ):
 
    def __init__(
-          self 
+          self,
       ):
+
+      default_appcode = ''
+
 
       ICloudMgrResolvers.__init__( 
          self 
@@ -53,8 +57,8 @@ class Cloudmgrweb(
 
       IDomTree.__init__( 
          self, 
-         dom_storage = None, 
-         dom_father = None 
+         dom_storage 	= None, 
+         dom_father 	= None 
       )
 
       # Définition des composants dynamiques
@@ -63,8 +67,9 @@ class Cloudmgrweb(
          with self.cloudmap_resolver:
             return component.Component(
                MenuControl(
-                  dom_storage = self,
-                  dom_father = self,
+                  appcode 	= default_appcode,
+                  dom_storage 	= self,
+                  dom_father 	= self,
                )
             )
 
@@ -78,7 +83,7 @@ class Cloudmgrweb(
          with self.cloudmap_resolver:
             return component.Component( 
                       AerasViewer(
-                         appcode 	= lambda: self.cp_menu_control.o.cp_appcode_selector.o.appcode,
+                         appcode 	= default_appcode,
                          resolvers 	= self,
                          dom_storage 	= self,
                          dom_father 	= self,
