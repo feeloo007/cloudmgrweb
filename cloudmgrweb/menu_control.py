@@ -7,6 +7,8 @@ from menu_control_envs	 			import MenuControlEnvs
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
 
+import i_getter
+
 # Mise en place d'un DOM pour la gestion comet
 from i_dom_tree					import IDomTree
 
@@ -14,7 +16,7 @@ from i_dynamic_component_provider               import IDynamicComponentProvider
 
 from pprint					import pprint
 
-
+@i_getter.define_getter( 'appcode' )
 class MenuControl( 
          ICloudMgrResolvers, 
          IDomTree, 
@@ -22,8 +24,10 @@ class MenuControl(
       ):
    def __init__( 
           self, 
-          dom_storage = None, 
-          dom_father = None, 
+          dom_storage 	= None, 
+          dom_father 	= None, 
+          *args,
+          **kwargs
        ):
 
       ICloudMgrResolvers.__init__( 
@@ -53,7 +57,7 @@ class MenuControl(
                AppcodeSelector(
                   dom_storage 	= self,
                   dom_father 	= self,
-                  appcode	= '',
+                  appcode	= self.appcode,
                )
             )
 
@@ -66,7 +70,7 @@ class MenuControl(
          with self.cloudmap_resolver:
             return component.Component(
                       MenuControlEnvs(
-                         appcode 	= lambda: self.cp_appcode_selector.o.appcode,
+                         appcode 	= self.appcode,
                          resolvers 	= self,
                          dom_storage 	= self,
                          dom_father 	= self,
