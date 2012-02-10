@@ -1,11 +1,12 @@
 # -*- coding: UTF-8 -*-
 
-from pprint 			import pprint, pformat
 from cloudmgrlib.sequential_ops import SequentialOps
 
 from nagare			import component
 
 import stackless
+
+from pprint 			import pprint, pformat
 
 from colorama			import Fore, Back, Style
 
@@ -231,24 +232,29 @@ class IDomTree( object ):
 
    d_events = property( get_d_events, set_d_events )
 
+   def fake( **d_params_for_update ):
+      pass
+
 
    def add_event_for_knowndiv( 
           self, 
           event_name, 
           cp_knowndiv, 
-          appcode = '-', 
-          aera = '-', 
-          env = '-', 
-          appcomp = '-' 
+          le_callback_update 	= fake,
+          appcode 		= '-', 
+          aera 			= '-', 
+          env 			= '-', 
+          appcomp 		= '-', 
        ):
 
       self.d_dom_tree[ self ][ 'events' ].append( {
-                                                      'event_name'	: event_name, 
-                                                      'cp_knowndiv'	: cp_knowndiv,
-                                                      'appcode'		: appcode, 
-                                                      'aera'		: aera, 
-					              'env'		: env, 
-                                                      'appcomp'		: appcomp 
+                                                      'event_name'		: event_name, 
+                                                      'cp_knowndiv'		: cp_knowndiv,
+                                                      'le_callback_update' 	: le_callback_update,
+                                                      'appcode'			: appcode, 
+                                                      'aera'			: aera, 
+					              'env'			: env, 
+                                                      'appcomp'			: appcomp 
                                                   }
                                           )
 
@@ -301,11 +307,41 @@ class IDomTree( object ):
    def get_l_known_div_for_change( 
           self, 
           event_name, 
-          appcode = '*', 
-          aera = '*', 
-          env = '*', 
-          appcomp = '*' 
+          appcode 	= '*', 
+          aera 		= '*', 
+          env 		= '*', 
+          appcomp 	= '*' 
        ):
+
+      d_params_for_update = {
+         'appcode': 	appcode,
+	 'aera':	aera,
+	 'env':		env,
+	 'appcomp':	appcomp,
+      }
+
+      def process_le_callback_updates(
+             l,
+      ):
+     
+         for d in reduce(
+                     list.__add__,
+                     map(
+                        lambda e: self.d_dom_tree[ e ][ 'events' ],
+                        map( 
+                           lambda o: o.keys()[ 0 ],
+                           l
+                        )
+                     )
+                  ): 
+
+            if d[ 'event_name' ] == event_name:
+
+               d[ 'le_callback_update' ]( **d_params_for_update )
+
+         
+         return l
+
 
       def get_list_from_key( 
              l, 
@@ -441,6 +477,7 @@ class IDomTree( object ):
             lambda l, key 	= env: 		get_list_from_key( l, key ),
             lambda l, key 	= appcomp: 	get_list_from_key( l, key ),
             to_one_list,
+            process_le_callback_updates,
             find_upper_fathers,
             #lambda l, color 	= Fore.CYAN: 	print_struct( l, color ),
             to_list_le,
