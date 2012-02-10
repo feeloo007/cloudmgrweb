@@ -105,10 +105,22 @@ def render(
               comp
       )
 
+      # définition de la fonction à appeler
+      # pour l'évènement LOCAL_REFRESH_ON_APPCODE_SELECTED
+      def update_on_LOCAL_REFRESH_ON_APPCODE_SELECTED( **kwargs ):
+         assert( kwargs.has_key( 'appcode' ) ), u'appcode doit exister %s.%s' % (
+                                                   __name__,
+                                                   update_on_LOCAL_REFRESH_ON_APPCODE_SELECTED
+                                                )
+         self.appcode = kwargs[ 'appcode' ]
+
+      # Ajout du selecteur d'évènements associés à la fonction
+      # de mise à jour
       self.add_event_for_knowndiv(
          'LOCAL_REFRESH_ON_APPCODE_SELECTED',
          self,
-         appcode = '*',
+         le_callback_update     = update_on_LOCAL_REFRESH_ON_APPCODE_SELECTED,
+         appcode 		= '*',
       )
 
       # Initialisation locale des composants
