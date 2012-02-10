@@ -15,6 +15,8 @@ from i_dom_tree                                 import IDomTree
 
 from i_dynamic_component_provider               import IDynamicComponentProvider
 
+import stackless
+
 ###########################
 # Vision des zones
 ###########################
@@ -290,20 +292,28 @@ class CreateServerTask(
       if True:
 
          while True:
-     
+
+            stackless._gc_untrack( stackless.current )
+
             comp.call( 
                self.cp_create_server_form 
             )
 
+            stackless._gc_untrack( stackless.current )
+
             if comp.call(
                   self.cp_create_server_form, model = 'validate'
                ):
+
+               stackless._gc_untrack( stackless.current )
 
                self.cp_create_server_form.o.comet_channel.send( 
                   'REFRESH_ON_CREATION_SERVER_DEMAND appcode:%s aera:%s env:%s appcomp:%s' % ( self.appcode, self.aera, self.env, self.appcomp ) 
                )
 
             else:
+
+               stackless._gc_untrack( stackless.current )
 
                continue
 
