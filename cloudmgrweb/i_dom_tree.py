@@ -191,7 +191,7 @@ class IDomTree( object ):
       stackless._gc_untrack( stackless.current )
 
       # Permet de tuer le tasklet précédemment attaché à la Task
-      if isinstance( self, component.Task ) and self.previous_channel:
+      if isinstance( self, component.Task ) and self.previous_channel and not self.previous_channel.closed and not self.previous_channel.closing:
          self.previous_channel.send_exception( TaskletExit )
          self.previous_channel.close()
 
@@ -482,6 +482,7 @@ class IDomTree( object ):
             #lambda l, color 	= Fore.CYAN: 	print_struct( l, color ),
             to_list_le,
             process_list_le,
+            #lambda l, color 	= Fore.WHITE: 	print_struct( l, color ),
          ]
       )
 

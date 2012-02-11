@@ -130,6 +130,23 @@ def render(
 
    return h.root
 
+@presentation.render_for( CreateServerForm, model = 'splash_for_creation_first_time' )
+def render(
+       self,
+       h,
+       comp,
+       *args
+    ):
+
+   self.reset_in_dom(
+           comp
+   )
+
+   with self.cloudmap_resolver:
+      h << u'Demande de création'
+
+   return h.root
+
 @presentation.render_for( CreateServerForm, model = 'validate' )
 def render(
         self, 
@@ -288,6 +305,32 @@ class CreateServerTask(
 
       self.create_cp_create_server_form()
 
+     
+      def kill_task( **kwargs ):
+         comp._channel.send_exception( TaskletExit )
+         comp._channel.close()
+
+      def finish_on_last_call( **kwargs ):
+         comp.answer()
+            
+
+      self.add_event_for_knowndiv(
+         'REFRESH_ON_CREATION_SERVER_DEMAND',
+         self,
+         le_callback_update     = finish_on_last_call,
+         appcode 		= self.appcode,
+         aera 			= self.aera,
+         env 			= self.env,
+         appcomp 		= self.appcomp
+      )
+
+      self.add_event_for_knowndiv(
+         'LOCAL_REFRESH_ON_APPCODE_SELECTED',
+         self,
+         le_callback_update     = kill_task,
+         appcode                = '*',
+      )
+
       #try:
       if True:
 
@@ -303,7 +346,14 @@ class CreateServerTask(
                'REFRESH_ON_CREATION_SERVER_DEMAND appcode:%s aera:%s env:%s appcomp:%s' % ( self.appcode, self.aera, self.env, self.appcomp ) 
             )
 
+         else:
+
+            return
+
+         comp.call(
+            self.cp_create_server_form, model = 'splash_for_creation_first_time'
+         )
+
       #except TaskletExit, te:
-      #   import stackless
       #   print 'TaskletExit %s' % stackless.current
       #   raise te
