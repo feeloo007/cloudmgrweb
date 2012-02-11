@@ -291,31 +291,17 @@ class CreateServerTask(
       #try:
       if True:
 
-         while True:
+         comp.call( 
+            self.cp_create_server_form 
+         )
 
-            stackless._gc_untrack( stackless.current )
+         if comp.call(
+            self.cp_create_server_form, model = 'validate'
+         ):
 
-            comp.call( 
-               self.cp_create_server_form 
+            self.cp_create_server_form.o.comet_channel.send( 
+               'REFRESH_ON_CREATION_SERVER_DEMAND appcode:%s aera:%s env:%s appcomp:%s' % ( self.appcode, self.aera, self.env, self.appcomp ) 
             )
-
-            stackless._gc_untrack( stackless.current )
-
-            if comp.call(
-                  self.cp_create_server_form, model = 'validate'
-               ):
-
-               stackless._gc_untrack( stackless.current )
-
-               self.cp_create_server_form.o.comet_channel.send( 
-                  'REFRESH_ON_CREATION_SERVER_DEMAND appcode:%s aera:%s env:%s appcomp:%s' % ( self.appcode, self.aera, self.env, self.appcomp ) 
-               )
-
-            else:
-
-               stackless._gc_untrack( stackless.current )
-
-               continue
 
       #except TaskletExit, te:
       #   import stackless
