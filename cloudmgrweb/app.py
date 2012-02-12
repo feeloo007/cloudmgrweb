@@ -66,12 +66,16 @@ class Cloudmgrweb(
       def create_cp_menu_control():
          with self.cloudmap_resolver:
             return component.Component(
-               MenuControl(
-                  appcode 	= default_appcode,
-                  dom_storage 	= self,
-                  dom_father 	= self,
-               )
-            )
+                      KnownDiv(
+                         component.Component(
+                            MenuControl(
+                               appcode 		= default_appcode,
+                               dom_storage 	= self,
+                               dom_father 	= self,
+                            )
+                         )
+                      )
+                   )
 
       self.create_dynamic_component( 
          'cp_menu_control', 
@@ -81,12 +85,16 @@ class Cloudmgrweb(
       # affichage des zones
       def create_cp_aeras_viewer():
          with self.cloudmap_resolver:
-            return component.Component( 
-                      AerasViewer(
-                         appcode 	= default_appcode,
-                         resolvers 	= self,
-                         dom_storage 	= self,
-                         dom_father 	= self,
+            return component.Component(
+                      KnownDiv(
+                         component.Component( 
+                            AerasViewer(
+                               appcode 		= default_appcode,
+                               resolvers 	= self,
+                               dom_storage 	= self,
+                               dom_father 	= self,
+                            )
+                         )
                       )
                    )
 
@@ -99,9 +107,13 @@ class Cloudmgrweb(
       # suite à un message comet
       def create_cp_form_refresh_on_comet():
          return component.Component(
-                   FormRefreshOnComet(
-                      dom_storage 	= self,
-                      dom_father 	= self,
+                   KnownDiv(
+                      component.Component(
+                         FormRefreshOnComet(
+                            dom_storage	= self,
+                            dom_father 	= self,
+                         )
+                      )
                    )
                 )
 
@@ -113,10 +125,14 @@ class Cloudmgrweb(
 
       def create_cp_debug():
          return component.Component(
-                   CloudmgrwebDebug(
-                      dom_storage       = self,
-                      dom_father        = self,
-                      cloudmgrweb	= self,
+                   KnownDiv(
+                      component.Component(
+                         CloudmgrwebDebug(
+                            dom_storage	= self,
+                            dom_father 	= self,
+                            cloudmgrweb	= self,
+                         )
+                      )
                    )
                 )
 
@@ -150,29 +166,13 @@ def render(
       self.create_cp_debug()
 
       # Création des DIV
-      cp_div_menu_control	   = component.Component( 
-                                        KnownDiv( 
-                                           self.cp_menu_control 
-                                        ) 
-                                     )
+      cp_div_menu_control	   = self.cp_menu_control 
 
-      cp_div_aeras_viewer	   = component.Component( 
-                                        KnownDiv(
-                                           self.cp_aeras_viewer 
-                                        ) 
-                                     )
+      cp_div_aeras_viewer	   = self.cp_aeras_viewer 
 
-      cp_div_form_refresh_on_comet = component.Component( 
-                                        KnownDiv( 
-                                           self.cp_form_refresh_on_comet 
-                                        ) 
-                                     )
+      cp_div_form_refresh_on_comet = self.cp_form_refresh_on_comet 
 
-      cp_div_debug                 = component.Component(
-                                        KnownDiv(
-                                           self.cp_debug
-                                        )
-                                     )
+      cp_div_debug                 = self.cp_debug
 
       # Rendu
       h.head.css_url( 
