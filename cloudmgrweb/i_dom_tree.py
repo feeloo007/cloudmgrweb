@@ -15,7 +15,9 @@ class IDomTree( object ):
    def __init__( 
           self, 
           dom_storage, 
-          dom_father 
+          dom_father,
+          l_static_init_params = [],
+          **d_init_params
        ):
 
       self.previous_comp	= None
@@ -39,8 +41,9 @@ class IDomTree( object ):
       self.d_dom_tree.setdefault(
          dom_father,
          {
-            'dom_fathers'	: [],
-            'events'		: [],
+            'dom_fathers'		: [],
+            'events'			: [],
+            'd_static_init_params' 	: dict( [ ( k, v ) for k, v in d_init_params.items() if k in l_static_init_params ] )
          },
       ).setdefault(
          'dom_childs',
@@ -55,8 +58,9 @@ class IDomTree( object ):
                                 self.d_dom_tree[ dom_father ][ 'dom_fathers' ] 
                              ]
                           ),
-         'dom_childs'	: [],
-         'events'	: [],
+         'dom_childs'		: [],
+         'events'		: [],
+         'd_static_init_params' : dict( [ ( k, v ) for k, v in d_init_params.items() if k in l_static_init_params ] )
       }
 
 
@@ -179,12 +183,40 @@ class IDomTree( object ):
          return None
 
    previous_channel = property( get_previous_channel )
+
+
+   def get_child_with_static_init_params(
+          self,
+          object_class 		= None.__class__,
+          l_static_init_params	= [],
+          **d_init_params
+       ):
+     l_childs = [ child for child in self.dom_childs 
+                           if 
+                              isinstance( child, object_class ) 
+                              and
+                              self.d_dom_tree[ child ][ 'd_static_init_params' ] == dict( [ ( k, v ) for k, v in d_init_params.items() 
+                                                                                                        if 
+                                                                                                           k in l_static_init_params 
+                                                                                          ] 
+                                                                                    )
+                ] if self.dom_childs else [ None ] 
+
+     assert( len( l_childs ) == 1 ), u'%s doit renvoyer renvoyer au plus un fils' % get_child_with_static_init_params
+
+     return l_childs[ 0 ]
  
 
    def reset_in_dom( 
           self,
           comp, 
        ):
+
+      ## DEBUG ##
+      ## VVVVV ##
+      return
+      ## ^^^^^ ##
+      ## DEBUG ##
 
       # Permet de ne pas conserver une référence
       # permanente sur ce tasklet
