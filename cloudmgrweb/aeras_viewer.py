@@ -30,7 +30,6 @@ class AerasViewer(
           dom_storage 		= None, 
           dom_father 		= None, 
           l_static_init_params 	= [],
-          *args,
           **kwargs
        ):
 
@@ -76,7 +75,12 @@ class AerasViewer(
 
 
 @presentation.render_for( AerasViewer )
-def render(self, h, comp, *args):
+def render(
+       self, 
+       h, 
+       comp, 
+       *args
+    ):
 
    with self.cloudmap_resolver:
 
