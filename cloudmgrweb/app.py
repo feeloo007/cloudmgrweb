@@ -54,7 +54,7 @@ class Cloudmgrweb(
       # Création de l'interface
       # permettant la génération
       # des composants de manière
-      # dynamique et avec 
+      # dynamique, avec un cache et avec 
       # alimentation de l'objet en proprerties
       IDynamicComponentProvider.__init__( 
          self
@@ -68,35 +68,25 @@ class Cloudmgrweb(
          **kwargs
       )
 
-      # Définition des composants dynamiques
-      # Menu de controle
-      def create_cp_menu_control():
+      # Défintion du composant MenuControl
+      @cached_component_for_dom(
+         self,
+         component_name         = 'cp_menu_control',
+         object_class           = MenuControl,
+         l_static_init_params   = [],
+         **{ 'appcode': default_appcode, }
+      )
+      def create_cp_menu_control(
+             **kwargs
+          ):
          with self.cloudmap_resolver:
-            return component.Component(
-                      KnownDiv(
-                         component.Component(
-                            MenuControl(
-                               appcode 		= default_appcode,
-                               dom_storage 	= self,
-                               dom_father 	= self,
-                            )
-                         )
-                      )
+            return MenuControl(
+                      dom_storage     = self,
+                      dom_father      = self,
+                      **kwargs
                    )
 
-      self.create_dynamic_component( 
-         'cp_menu_control', 
-         create_cp_menu_control
-      )
-
-
       # Défintion du composant définissant les zones
-      #cp_aeras_viewer_d_init_params		= {
-      #                                                'appcode': default_appcode,
-      #              		          	}
-      # 
-      #cp_aeras_viewer_l_static_init_params 	= []
-
       @cached_component_for_dom(
          self,
          component_name		= 'cp_aeras_viewer',
@@ -115,43 +105,45 @@ class Cloudmgrweb(
                       **kwargs
                    ) 
 
-      # Formulaire pour les rechargements
-      # suite à un message comet
-      def create_cp_form_refresh_on_comet():
-         return component.Component(
-                   KnownDiv(
-                      component.Component(
-                         FormRefreshOnComet(
-                            dom_storage	= self,
-                            dom_father 	= self,
-                         )
-                      )
-                   )
-                )
 
-      self.create_dynamic_component(
-         'cp_form_refresh_on_comet',
-         create_cp_form_refresh_on_comet
-      ) 
-
-
-      def create_cp_debug():
-         return component.Component(
-                   KnownDiv(
-                      component.Component(
-                         CloudmgrwebDebug(
-                            dom_storage	= self,
-                            dom_father 	= self,
-                            cloudmgrweb	= self,
-                         )
-                      )
-                   )
-                )
-
-      self.create_dynamic_component(
-         'cp_debug',
-         create_cp_debug,
+      # Défintion du composant permettant les mise à jour suite à un message comet
+      @cached_component_for_dom(
+         self,
+         component_name         = 'cp_form_refresh_on_comet',
+         object_class           = FormRefreshOnComet,
+         l_static_init_params   = [],
+         **{}
       )
+      def create_cp_form_refresh_on_comet(
+             **kwargs
+          ):
+         return FormRefreshOnComet(
+                   dom_storage        = self,
+                   dom_father         = self,
+                   **kwargs
+                )
+
+
+      # Défintion du composant permettant de débuger
+      # lors d'un XComponentsUpdate par exemple
+      @cached_component_for_dom(  
+         self,
+         component_name         = 'cp_debug',
+         object_class           = CloudmgrwebDebug,
+         l_static_init_params   = [],
+         **{}
+      )
+      def create_cp_debug(
+             **kwargs
+          ):
+         with self.cloudmap_resolver:
+            return CloudmgrwebDebug(
+                      dom_storage        = self,
+                      dom_father         = self,
+                      cloudmgrweb        = self,
+                      **kwargs
+            )
+         
 
 
 @presentation.render_for(Cloudmgrweb)
@@ -170,21 +162,6 @@ def render(
               comp
       )
 
-      # Initialisation locale des composants
-      # utilisés
-      self.create_cp_menu_control()
-      #self.create_cp_form_refresh_on_comet()
-      #self.create_cp_debug()
-
-      # Création des DIV
-      p_div_menu_control	   = self.cp_menu_control 
-
-      cp_div_aeras_viewer	   = self.cp_aeras_viewer
-
-      #cp_div_form_refresh_on_comet = self.cp_form_refresh_on_comet 
-
-      #cp_div_debug                 = self.cp_debug
-
       # Rendu
       h.head.css_url( 
          'cloudmgrweb.css' 
@@ -199,7 +176,7 @@ def render(
               self.comet_channel 
            )
 
-      h << cp_div_form_refresh_on_comet
+      h << self.cp_form_refresh_on_comet
 
       ## DEBUG ##
       ## VVVVV ##
@@ -213,18 +190,18 @@ def render(
            ):
 
          h << h.div( 
-                 cp_div_menu_control, 
+                 self.cp_menu_control,
                  class_ = 'menu_control_struct' 
               )
 
          h << h.div( 
-                 cp_div_aeras_viewer, 
+                 self.cp_aeras_viewer,
                  class_ = 'aeras_viewer_struct' 
               )
 
-      #h << h.div(
-      #        cp_div_debug
-      #     )
+      h << h.div(
+              self.cp_debug
+           )
 
       h << h.br
       h << h.br
