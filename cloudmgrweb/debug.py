@@ -29,6 +29,7 @@ class CloudmgrwebDebug(
           dom_storage      = None,
           dom_father       = None,
           cloudmgrweb      = None,
+          **kwargs
        ):
 
       ICloudMgrComet.__init__(

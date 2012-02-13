@@ -12,7 +12,8 @@ class FormRefreshOnComet(
    def __init__( 
           self, 
           dom_storage, 
-          dom_father 
+          dom_father, 
+          **kwargs
        ):
 
       IDomTree.__init__( 
