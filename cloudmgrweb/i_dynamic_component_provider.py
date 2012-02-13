@@ -74,7 +74,6 @@ def cached_component_for_dom(
        **init_params
     ):
 
-   assert( component_name ), u'component_name dans %s.%s doit être défini' % ( __name__, cached_component_for_dom )
    assert( object_class <> None.__class__ ), u'object_class dans %s.%s doit être défini a une valeur différente de %s' % ( __name__, cached_component_for_dom, None.__class__ )
 
    def fct_create_component_if_needed_wrapper( fct ):
@@ -107,10 +106,11 @@ def cached_component_for_dom(
                     )
                  )
 
-      self.create_dynamic_component(
-         component_name,
-         fct_create_component_if_needed_wrapped
-      )
+      if cached_component_for_dom:
+         self.create_dynamic_component(
+            component_name,
+            fct_create_component_if_needed_wrapped
+         )
 
       return fct_create_component_if_needed_wrapped
 
