@@ -16,11 +16,13 @@ from form_refresh_on_comet			import FormRefreshOnComet
 # Mise en place d'un DOM pour la gestion comet
 from i_dom_tree					import IDomTree
 
-from i_dynamic_component_provider		import IDynamicComponentProvider	
+from i_dynamic_component_provider		import IDynamicComponentProvider, cached_component_for_dom
 
 from pprint					import pprint, pformat
 
 from debug 					import CloudmgrwebDebug
+
+from colorama					import Fore, Back, Style
 
 
 class Cloudmgrweb( 
@@ -32,9 +34,12 @@ class Cloudmgrweb(
 
    def __init__(
           self,
+          l_static_init_params = [],
+          *args,
+          **kwargs
       ):
 
-      default_appcode = ''
+      default_appcode = 'L01'
 
 
       ICloudMgrResolvers.__init__( 
@@ -57,8 +62,10 @@ class Cloudmgrweb(
 
       IDomTree.__init__( 
          self, 
-         dom_storage 	= None, 
-         dom_father 	= None 
+         dom_storage 		= None, 
+         dom_father 		= None,
+         l_static_init_params	= l_static_init_params,
+         **kwargs
       )
 
       # Définition des composants dynamiques
@@ -82,26 +89,31 @@ class Cloudmgrweb(
          create_cp_menu_control
       )
 
-      # affichage des zones
-      def create_cp_aeras_viewer():
-         with self.cloudmap_resolver:
-            return component.Component(
-                      KnownDiv(
-                         component.Component( 
-                            AerasViewer(
-                               appcode 		= default_appcode,
-                               resolvers 	= self,
-                               dom_storage 	= self,
-                               dom_father 	= self,
-                            )
-                         )
-                      )
-                   )
 
-      self.create_dynamic_component(
-         'cp_aeras_viewer',
-         create_cp_aeras_viewer
-      ) 
+      # Défintion du composant définissant les zones
+      init_params 		= {
+                                     'appcode': default_appcode,
+                    		  }
+
+      l_static_init_params 	= []
+
+      @cached_component_for_dom(
+         self,
+         component_name		= 'cp_aeras_viewer',
+         object_class		= AerasViewer,
+         l_static_init_params 	= l_static_init_params,
+         **init_params
+      )
+      def create_cp_aeras_viewer(
+             **kwargs
+          ):
+         with self.cloudmap_resolver:
+            return AerasViewer(
+                      resolvers             = self,
+                      dom_storage           = self,
+                      dom_father            = self,
+                      **kwargs
+                   ) 
 
       # Formulaire pour les rechargements
       # suite à un message comet
@@ -160,19 +172,19 @@ def render(
 
       # Initialisation locale des composants
       # utilisés
-      self.create_cp_menu_control()
-      self.create_cp_aeras_viewer()
-      self.create_cp_form_refresh_on_comet()
-      self.create_cp_debug()
+      #self.create_cp_menu_control()
+      #self.create_cp_aeras_viewer()
+      #self.create_cp_form_refresh_on_comet()
+      #self.create_cp_debug()
 
       # Création des DIV
-      cp_div_menu_control	   = self.cp_menu_control 
+      #cp_div_menu_control	   = self.cp_menu_control 
 
-      cp_div_aeras_viewer	   = self.cp_aeras_viewer 
+      cp_div_aeras_viewer	   = self.cp_aeras_viewer
 
-      cp_div_form_refresh_on_comet = self.cp_form_refresh_on_comet 
+      #cp_div_form_refresh_on_comet = self.cp_form_refresh_on_comet 
 
-      cp_div_debug                 = self.cp_debug
+      #cp_div_debug                 = self.cp_debug
 
       # Rendu
       h.head.css_url( 
@@ -184,29 +196,36 @@ def render(
          'cloudmgrweb_comet.js' 
       )
 
-      h << component.Component( 
-              self.comet_channel 
-           )
+      #h << component.Component( 
+      #        self.comet_channel 
+      #     )
 
-      h << cp_div_form_refresh_on_comet
+      #h << cp_div_form_refresh_on_comet
+
+      ## DEBUG ##
+      ## VVVVV ##
+      with h.form:
+         h << h.input( type = 'submit', value = 'recharger' )
+      ## ^^^^^ ##
+      ## DEBUG ##
 
       with h.div( 
                class_ = 'app' 
            ):
 
-         h << h.div( 
-                 cp_div_menu_control, 
-                 class_ = 'menu_control_struct' 
-              )
+         #h << h.div( 
+         #        cp_div_menu_control, 
+         #        class_ = 'menu_control_struct' 
+         #     )
 
          h << h.div( 
                  cp_div_aeras_viewer, 
                  class_ = 'aeras_viewer_struct' 
               )
 
-      h << h.div(
-              cp_div_debug
-           )
+      #h << h.div(
+      #        cp_div_debug
+      #     )
 
       h << h.br
       h << h.br
