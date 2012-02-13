@@ -26,10 +26,10 @@ class AeraViewer(
 
    def __init__( 
            self, 
-           resolvers 	= None, 
-           dom_storage 	= None,
-           dom_father 	= None,
-           *args,
+           resolvers 			= None, 
+           dom_storage 			= None,
+           dom_father 			= None,
+           l_static_init_params   	= [],
            **kwargs
        ):
 
@@ -40,8 +40,10 @@ class AeraViewer(
 
       IDomTree.__init__(
                   self,
-                  dom_storage = dom_storage,
-                  dom_father = dom_father,
+                  dom_storage 		= dom_storage,
+                  dom_father 		= dom_father,
+                  l_static_init_params 	= l_static_init_params,
+                  **kwargs
                )
 
       IDynamicComponentProvider.__init__(
