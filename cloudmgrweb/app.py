@@ -91,18 +91,18 @@ class Cloudmgrweb(
 
 
       # Défintion du composant définissant les zones
-      init_params 		= {
-                                     'appcode': default_appcode,
-                    		  }
-
-      l_static_init_params 	= []
+      #cp_aeras_viewer_d_init_params		= {
+      #                                                'appcode': default_appcode,
+      #              		          	}
+      # 
+      #cp_aeras_viewer_l_static_init_params 	= []
 
       @cached_component_for_dom(
          self,
          component_name		= 'cp_aeras_viewer',
          object_class		= AerasViewer,
-         l_static_init_params 	= l_static_init_params,
-         **init_params
+         l_static_init_params 	= [],
+         **{ 'appcode': default_appcode, }
       )
       def create_cp_aeras_viewer(
              **kwargs
@@ -172,13 +172,12 @@ def render(
 
       # Initialisation locale des composants
       # utilisés
-      #self.create_cp_menu_control()
-      #self.create_cp_aeras_viewer()
+      self.create_cp_menu_control()
       #self.create_cp_form_refresh_on_comet()
       #self.create_cp_debug()
 
       # Création des DIV
-      #cp_div_menu_control	   = self.cp_menu_control 
+      p_div_menu_control	   = self.cp_menu_control 
 
       cp_div_aeras_viewer	   = self.cp_aeras_viewer
 
@@ -196,11 +195,11 @@ def render(
          'cloudmgrweb_comet.js' 
       )
 
-      #h << component.Component( 
-      #        self.comet_channel 
-      #     )
+      h << component.Component( 
+              self.comet_channel 
+           )
 
-      #h << cp_div_form_refresh_on_comet
+      h << cp_div_form_refresh_on_comet
 
       ## DEBUG ##
       ## VVVVV ##
@@ -213,10 +212,10 @@ def render(
                class_ = 'app' 
            ):
 
-         #h << h.div( 
-         #        cp_div_menu_control, 
-         #        class_ = 'menu_control_struct' 
-         #     )
+         h << h.div( 
+                 cp_div_menu_control, 
+                 class_ = 'menu_control_struct' 
+              )
 
          h << h.div( 
                  cp_div_aeras_viewer, 
