@@ -202,7 +202,7 @@ class IDomTree( object ):
                                                                                     )
                 ] if self.dom_childs else [ None ] 
 
-     assert( len( l_childs ) == 1 ), u'%s doit renvoyer renvoyer au plus un fils' % get_child_with_static_init_params
+     assert( len( l_childs ) == 1 ), u'%s.%s doit renvoyer renvoyer au plus un fils' % ( __name__, self.get_child_with_static_init_params )
 
      return l_childs[ 0 ]
  
