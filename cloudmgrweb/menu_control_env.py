@@ -4,6 +4,8 @@ from __future__ import with_statement
 from nagare                                     import presentation, component
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
+#import cloudmgrlib.m_cmgr_cloudmap_resolver
+from cloudmgrlib.m_cmgr_cloudmap_resolver	import with_cloudmap_resolver
 import i_getter
 
 from counter_servers				import CounterServers
@@ -50,19 +52,19 @@ class MenuControlEnv(
       )
 
       # Définition des composants dynamiques
-      def create_cp_counter_by_appcode_by_env():
-         with self.cloudmap_resolver:
-            return component.Component(
-                      CounterServers( 
-                         appcode 	= lambda: self.appcode, 
-                         env 		= lambda: self.env, 
-                         aera		= '*',
-                         appcomp	= '*',
-                         resolvers 	= self, 
-                         dom_storage 	= self,
-                         dom_father 	= self, 
-                      ) 
-                   )
+      @with_cloudmap_resolver( self )
+      def create_cp_counter_by_appcode_by_env( *args, **kwargs ):
+         return component.Component(
+                   CounterServers( 
+                      appcode 		= lambda: self.appcode, 
+                      env 		= lambda: self.env, 
+                      aera		= '*',
+                      appcomp		= '*',
+                      resolvers 	= self, 
+                      dom_storage 	= self,
+                      dom_father 	= self, 
+                   ) 
+                )
 
       self.create_dynamic_component(
          'cp_counter_by_appcode_by_env',
@@ -70,19 +72,19 @@ class MenuControlEnv(
       )
 
 
-      def create_cp_counter_by_env():
-         with self.cloudmap_resolver:
-            return component.Component( 
-                      CounterServers( 
-                         appcode	= '*',
-                         env 		= lambda: self.env, 
-                         aera		= '*',
-                         appcomp	= '*',
-                         resolvers 	= self, 
-                         dom_storage 	= self,
-                         dom_father 	= self, 
-                      ) 
-                   )
+      @with_cloudmap_resolver( self )
+      def create_cp_counter_by_env( *args, **kwargs ):
+         return component.Component( 
+                   CounterServers( 
+                      appcode		= '*',
+                      env 		= lambda: self.env, 
+                      aera		= '*',
+                      appcomp		= '*',
+                      resolvers 	= self, 
+                      dom_storage 	= self,
+                      dom_father 	= self, 
+                   ) 
+                )
  
       self.create_dynamic_component(
          'cp_counter_by_env',
@@ -90,113 +92,113 @@ class MenuControlEnv(
       )
 
 
+@with_cloudmap_resolver
 @presentation.render_for( MenuControlEnv )
 def render(
        self, 
        h, 
        comp, 
-       *args
+       *args,
+       **kwargs
     ):
 
-   with self.cloudmap_resolver:
+   # Suppression des précédents fils
+   # dans le modèle DOM
+   self.reset_in_dom(
+           comp
+   )
 
-      # Suppression des précédents fils
-      # dans le modèle DOM
-      self.reset_in_dom(
-              comp
-      )
+   # Initialisation locale des composants
+   # utilisés
+   self.create_cp_counter_by_appcode_by_env()
+   self.create_cp_counter_by_env()
 
-      # Initialisation locale des composants
-      # utilisés
-      self.create_cp_counter_by_appcode_by_env()
-      self.create_cp_counter_by_env()
+   with h.div( 
+           class_='menu_control_env %s' % ( self.env ) 
+        ):
 
-      with h.div( 
-              class_='menu_control_env %s' % ( self.env ) 
-           ):
+      h << h.div( 
+              '%s ' % ( self.env_resolver.get_env_desc( self.env ) ), 
+              class_ = 'description' 
+           )
 
-         h << h.div( 
-                 '%s ' % ( self.env_resolver.get_env_desc( self.env ) ), 
-                 class_ = 'description' 
-              )
+      h << h.div( 
+              component.Component( 
+                 KnownDiv( 
+                    self.cp_counter_by_appcode_by_env 
+                 ) 
+              ), 
+              class_ = 'counter_appcomps_struct'
+           )
 
-         h << h.div( 
-                 component.Component( 
-                    KnownDiv( 
-                       self.cp_counter_by_appcode_by_env 
-                    ) 
-                 ), 
-                 class_ = 'counter_appcomps_struct'
-              )
+      h << h.div( 
+              ' / ', 
+              class_ = 'counter_appcomps_struct separator' 
+           )
 
-         h << h.div( 
-                 ' / ', 
-                 class_ = 'counter_appcomps_struct separator' 
-              )
-
-         h << h.div( 
-                 component.Component( 
-                    KnownDiv( 
-                       self.cp_counter_by_env 
-                    ) 
-                 ), 
-                 class_ = 'counter_appcomps_struct' 
-              )
+      h << h.div( 
+              component.Component( 
+                 KnownDiv( 
+                    self.cp_counter_by_env 
+                 ) 
+              ), 
+              class_ = 'counter_appcomps_struct' 
+           )
 
    return h.root
 
+@with_cloudmap_resolver
 @presentation.render_for( MenuControlEnv, model = '*' )
 def render(
        self, 
        h, 
        comp, 
-       *args
+       *args,
+       **kwargs
     ):
 
-   with self.cloudmap_resolver:
+   # Suppression des précédents fils
+   # dans le modèle DOM
+   self.reset_in_dom(
+           comp
+   )
 
-      # Suppression des précédents fils
-      # dans le modèle DOM
-      self.reset_in_dom(
-              comp
-      )
+   # Initialisation locale des composants
+   # utilisés
+   self.create_cp_counter_by_appcode_by_env()
+   self.create_cp_counter_by_env()
 
-      # Initialisation locale des composants
-      # utilisés
-      self.create_cp_counter_by_appcode_by_env()
-      self.create_cp_counter_by_env()
+   with h.div( 
+           class_='menu_control_env SUM' 
+        ):
 
-      with h.div( 
-              class_='menu_control_env SUM' 
-           ):
+     h << h.div( 
+             'Total ', 
+             class_ = 'description' 
+          )
 
-        h << h.div( 
-                'Total ', 
-                class_ = 'description' 
-             )
+     h << h.div( 
+              component.Component( 
+                 KnownDiv( 
+                    self.cp_counter_by_appcode_by_env 
+                 ) 
+              ), 
+              class_ = 'counter_appcomps_struct' 
+          )
 
-        h << h.div( 
-                 component.Component( 
-                    KnownDiv( 
-                       self.cp_counter_by_appcode_by_env 
-                    ) 
-                 ), 
-                 class_ = 'counter_appcomps_struct' 
-             )
+     h << h.div( 
+             ' / ', 
+             class_ = 
+             'counter_appcomps_struct separator'
+          )
 
-        h << h.div( 
-                ' / ', 
-                class_ = 
-                'counter_appcomps_struct separator'
-             )
+     h << h.div( 
+             component.Component( 
+                KnownDiv( 
+                   self.cp_counter_by_env 
+                ) 
+             ), 
+             class_ = 'counter_appcomps_struct' 
+          )
 
-        h << h.div( 
-                component.Component( 
-                   KnownDiv( 
-                      self.cp_counter_by_env 
-                   ) 
-                ), 
-                class_ = 'counter_appcomps_struct' 
-             )
-
-   return h.root
+      return h.root
