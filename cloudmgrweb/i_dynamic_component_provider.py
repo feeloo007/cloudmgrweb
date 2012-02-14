@@ -7,6 +7,11 @@ from pprint import pprint
 import nagare
 import ajax_x_components
 
+from pprint 	import pprint, pformat
+
+from colorama 	import Fore, Back, Style
+
+
 class IDynamicComponentProvider( object ):
 
    def __init__( self ):
@@ -93,6 +98,7 @@ def cached_component_for_dom(
               )
 
           if not o:
+             print( '%s %s %s' % ( object_class, pformat( init_params ), pformat( l_static_init_params ) ) )
              o = fct(
                     l_static_init_params	= l_static_init_params,
                     **d_all_params

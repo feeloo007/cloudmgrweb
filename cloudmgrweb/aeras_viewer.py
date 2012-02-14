@@ -9,7 +9,7 @@ import i_getter
 
 from i_dom_tree					import IDomTree
 
-from i_dynamic_component_provider               import IDynamicComponentProvider
+from i_dynamic_component_provider               import IDynamicComponentProvider, cached_component_for_dom
 
 from pprint					import pprint
 
@@ -50,28 +50,50 @@ class AerasViewer(
          **kwargs
       )
 
+      self.__d_all_le_cp_aeras_viewer = {}
 
-      # Définition des composants dynamiques
-      # Menu de controle
-      def create_all_cp_aeras_viewer():
-         with self.cloudmap_resolver:
-            d_all_cp_aeras_viewer = {}
-            for aera in self.aera_resolver.all_aeras:
-               d_all_cp_aeras_viewer[ aera ] = component.Component( 
-                                                 AeraViewer( 
-                                                    aera 		= aera, 
-                                                    appcode	 	= lambda: self.appcode, 
-                                                    resolvers 		= self, 
-                                                    dom_storage 	= self,
-                                                    dom_father 		= self,
-                                                 ) 
-                                              )
-         return d_all_cp_aeras_viewer
 
-      self.create_dynamic_component(
-         'all_cp_aeras_viewer',
-         create_all_cp_aeras_viewer
-      )
+   def get_all_cp_aeras_viewer(
+          self
+      ):
+
+      d_all_cp_aeras_viewer = {}
+
+      with self.cloudmap_resolver:
+
+         for aera in self.aera_resolver.all_aeras:
+
+            if not self.__d_all_le_cp_aeras_viewer.has_key( aera ):
+
+               @cached_component_for_dom(
+                  self,
+                  object_class         	= AeraViewer,
+                  l_static_init_params 	= [ 'aera' ],
+                  **{ 
+                        'appcode'	: self.appcode,
+                        'aera'		: aera 		
+                    }
+               )
+               def create_cp_aera(
+                      **kwargs
+                   ):
+
+                  with self.cloudmap_resolver:
+
+                     return AeraViewer( 
+                        resolvers 	= self, 
+                        dom_storage     = self,
+                        dom_father      = self,
+                        **kwargs
+                     ) 
+
+               self.__d_all_le_cp_aeras_viewer[ aera ] = create_cp_aera
+
+            d_all_cp_aeras_viewer[ aera ] = self.__d_all_le_cp_aeras_viewer[ aera ]()
+
+      return d_all_cp_aeras_viewer
+
+   all_cp_aeras_viewer = property( get_all_cp_aeras_viewer )
 
 
 @presentation.render_for( AerasViewer )
@@ -108,8 +130,6 @@ def render(
          appcode 		= '*',
       )
 
-
-
       with h.div( 
               class_ = 'aeras_viewer' 
            ):
@@ -121,10 +141,6 @@ def render(
                     class_='appcodes message' 
                  )
          else:
-
-            # Initialisation locale des composants
-            # utilisés
-            self.create_all_cp_aeras_viewer()
 
             d_order = self.aera_resolver.order_for_aeras.copy()
 

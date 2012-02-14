@@ -79,6 +79,7 @@ class Cloudmgrweb(
       def create_cp_menu_control(
              **kwargs
           ):
+
          with self.cloudmap_resolver:
             return MenuControl(
                       dom_storage     = self,
@@ -97,6 +98,7 @@ class Cloudmgrweb(
       def create_cp_aeras_viewer(
              **kwargs
           ):
+
          with self.cloudmap_resolver:
             return AerasViewer(
                       resolvers             = self,
@@ -117,6 +119,7 @@ class Cloudmgrweb(
       def create_cp_form_refresh_on_comet(
              **kwargs
           ):
+
          return FormRefreshOnComet(
                    dom_storage        = self,
                    dom_father         = self,
@@ -136,6 +139,7 @@ class Cloudmgrweb(
       def create_cp_debug(
              **kwargs
           ):
+
          with self.cloudmap_resolver:
             return CloudmgrwebDebug(
                       dom_storage        = self,
@@ -177,13 +181,6 @@ def render(
            )
 
       h << self.cp_form_refresh_on_comet
-
-      ## DEBUG ##
-      ## VVVVV ##
-      with h.form:
-         h << h.input( type = 'submit', value = 'recharger' )
-      ## ^^^^^ ##
-      ## DEBUG ##
 
       with h.div( 
                class_ = 'app' 
