@@ -6,7 +6,7 @@ from appcode_selector				import AppcodeSelector
 from menu_control_envs	 			import MenuControlEnvs
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
-from cloudmgrlib.m_cmgr_cloudmap_resolver       import with_cloudmap_resolver
+from cloudmgrlib.m_cmgr_cloudmap_resolver       import with_cloudmap_resolver, with_cloudmap_resolver_for_render
 
 import i_getter
 
@@ -89,8 +89,8 @@ class MenuControl(
          create_cp_menu_control_envs,
       ) 
       
-@with_cloudmap_resolver
 @presentation.render_for(MenuControl)
+@with_cloudmap_resolver_for_render
 def render(
        self, 
        h, 
