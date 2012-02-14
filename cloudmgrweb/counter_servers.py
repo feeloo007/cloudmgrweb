@@ -4,7 +4,7 @@ from __future__ import with_statement
 from nagare                                     import presentation, component, ajax
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers		import ICloudMgrResolvers
-from cloudmgrlib.m_cmgr_cloudmap_resolver       import with_cloudmap_resolver
+from cloudmgrlib.m_cmgr_cloudmap_resolver       import with_cloudmap_resolver, with_cloudmap_resolver_for_render
 import i_getter
 from cloudmgrlib.sequential_ops			import SequentialOps
 
@@ -134,8 +134,8 @@ class CounterServers(
          ] 
       )
 
-@with_cloudmap_resolver
 @presentation.render_for( CounterServers )
+@with_cloudmap_resolver_for_render
 def render(
        self, 
        h, 

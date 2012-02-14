@@ -5,7 +5,7 @@ from nagare                                     import presentation, component
 from ajax_x_components				import KnownDiv
 from menu_control_env				import MenuControlEnv
 from cloudmgrlib.i_cmgr_resolvers		import ICloudMgrResolvers
-from cloudmgrlib.m_cmgr_cloudmap_resolver       import with_cloudmap_resolver
+from cloudmgrlib.m_cmgr_cloudmap_resolver       import with_cloudmap_resolver, with_cloudmap_resolver_for_render
 import i_getter
 
 from i_dom_tree					import IDomTree
@@ -96,8 +96,8 @@ class MenuControlEnvs(
       )
 
 
-@with_cloudmap_resolver
 @presentation.render_for( MenuControlEnvs )
+@with_cloudmap_resolver_for_render
 def render(
        self, 
        h, 
