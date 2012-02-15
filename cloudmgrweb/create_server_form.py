@@ -4,6 +4,7 @@ from __future__ import with_statement
 from nagare                                     import presentation, component, ajax, util
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers		import ICloudMgrResolvers
+from cloudmgrlib.m_cmgr_cloudmap_resolver       import with_cloudmap_resolver, with_cloudmap_resolver_for_render
 import i_getter
 from cloudmgrlib.m_cmgr_manage_virtual_stack    import create_next_dhcp_file_for, create_vm
 from ajax_x_components                          import XComponentsUpdates
@@ -61,184 +62,186 @@ class CreateServerForm(
       
 
 @presentation.render_for( CreateServerForm )
+@with_cloudmap_resolver_for_render
 def render(
        self, 
        h, 
        comp, 
-       *args
+       *args,
+       **kwargs
     ):
 
    self.reset_in_dom(
            comp
    )
 
-   with self.cloudmap_resolver:
+   with h.div( 
+          '', 
+          class_ = 'create_server_form %s %s %s' % ( self.aera, self.env, self.appcomp ) 
+        ):
 
-      with h.div( 
-             '', 
-             class_ = 'create_server_form %s %s %s' % ( self.aera, self.env, self.appcomp ) 
-           ):
+      if not self.appcode:
 
-         if not self.appcode:
+         h << h.div( 
+                 u'Veuillez selectionner un code application', 
+                 class_ = 'appcodes message' 
+              )
 
-            h << h.div( 
-                    u'Veuillez selectionner un code application', 
-                    class_ = 'appcodes message' 
-                 )
+      elif not self.aera:
 
-         elif not self.aera:
+         h << h.div( 
+                 u'Veuillez selectionner une zone', 
+                 class_ = 'aeras message' 
+              )
 
-            h << h.div( 
-                    u'Veuillez selectionner une zone', 
-                    class_ = 'aeras message' 
-                 )
+      elif not self.env:
 
-         elif not self.env:
+         h << h.div( 
+                 u'Veuillez selectionner un environnement', 
+                 class_ = 'envs message' 
+              )
 
-            h << h.div( 
-                    u'Veuillez selectionner un environnement', 
-                    class_ = 'envs message' 
-                 )
+      elif not self.appcomp:
 
-         elif not self.appcomp:
+         h << h.div( 
+                 u'Veuillez selectionner un composant applicatif', 
+                 class_ = 'appcomps message' 
+              )
 
-            h << h.div( 
-                    u'Veuillez selectionner un composant applicatif', 
-                    class_ = 'appcomps message' 
-                 )
+      else:
 
-         else:
+          with h.form():
 
-             with h.form():
+             def to_validation_step():
 
-                def to_validation_step():
+                try:
+                   comp.answer()
+                except:
+                    pass
 
-                   try:
-                      comp.answer()
-                   except:
-                       pass
-
-                h << h.input( 
-                        type='submit', 
-                        class_ = 'message %s %s %s' % ( self.aera, self.env, self.appcomp ), 
-                        value=u'Créer un serveur %s en %s pour %s' % ( 
-                           self.appcomp_resolver.get_appcomp_desc( self.appcomp ), 
-                           self.env_resolver.get_env_desc( self.env ).lower(), 
-                           self.appcode 
-                        ) 
-                     ).action( lambda: to_validation_step() )
+             h << h.input( 
+                     type='submit', 
+                     class_ = 'message %s %s %s' % ( self.aera, self.env, self.appcomp ), 
+                     value=u'Créer un serveur %s en %s pour %s' % ( 
+                        self.appcomp_resolver.get_appcomp_desc( self.appcomp ), 
+                        self.env_resolver.get_env_desc( self.env ).lower(), 
+                        self.appcode 
+                     ) 
+                  ).action( lambda: to_validation_step() )
 
    return h.root
 
 @presentation.render_for( CreateServerForm, model = 'splash_for_creation_first_time' )
+@with_cloudmap_resolver_for_render
 def render(
        self,
        h,
        comp,
-       *args
+       *args,
+       **kwargs
     ):
 
    self.reset_in_dom(
            comp
    )
 
-   with self.cloudmap_resolver:
-      h << u'Demande de création'
+   h << u'Demande de création'
 
    return h.root
 
 @presentation.render_for( CreateServerForm, model = 'validate' )
+@with_cloudmap_resolver_for_render
 def render(
         self, 
         h, 
         comp, 
-        *args
+        *args,
+        **kwargs
     ):
    
-   with self.cloudmap_resolver:
 
-      with h.div( 
-             '', 
-             class_ = 'create_server_form %s %s %s' % ( self.aera, self.env, self.appcomp ) 
-           ):
+   with h.div( 
+          '', 
+          class_ = 'create_server_form %s %s %s' % ( self.aera, self.env, self.appcomp ) 
+        ):
 
-         if not self.appcode:
+      if not self.appcode:
 
-            h << h.div( 
-                    u'Veuillez selectionner un code application', 
-                    class_ = 'appcodes message' 
-            )
+         h << h.div( 
+                 u'Veuillez selectionner un code application', 
+                 class_ = 'appcodes message' 
+         )
 
-         elif not self.aera:
+      elif not self.aera:
 
-            h << h.div( 
-                    u'Veuillez selectionner une zone', 
-                    class_ = 'aeras message' 
+         h << h.div( 
+                 u'Veuillez selectionner une zone', 
+                 class_ = 'aeras message' 
+              )
+
+      elif not self.env:
+
+         h << h.div( 
+                 u'Veuillez selectionner un environnement', 
+                 class_ = 'envs message' 
+              )
+
+      elif not self.appcomp:
+
+         h << h.div( 
+                 u'Veuillez selectionner un composant applicatif', 
+                 class_ = 'appcomps message' 
+              )
+
+      else:
+
+         with h.form():
+
+            def create_and_get_next_dhcp_file():
+
+               self._creating_hostname = create_next_dhcp_file_for( 
+                                            appcode 	= self.appcode, 
+                                            aera 	= self.aera, 
+                                            env 	= self.env, 
+                                            appcomp 	= self.appcomp 
+                                         )
+
+               try:
+                  comp.answer( True )
+               except:
+                  pass
+
+            h << h.input( 
+                    type='submit', 
+                    class_ = 'message valid %s %s %s' % ( self.aera, self.env, self.appcomp ),
+                    value=u'Confirmer' 
+                 ).action( 
+                    XComponentsUpdates( 
+                       # Supprimer pour ne pas être redondant avec le message comet
+                       #le_l_knowndiv = lambda: self.dom_storage.get_l_known_div_for_change(
+                       #                           'REFRESH_ON_CREATION_SERVER_DEMAND',
+                       #                           appcode 	= self.appcode,
+                       #                           aera 	= self.aera,
+                       #                           env 	= self.env,
+                       #                           appcomp 	= self.appcomp,
+                       #                        ), 
+                       update_himself = True, 
+                       action = lambda: create_and_get_next_dhcp_file() 
+                    ) 
                  )
 
-         elif not self.env:
+            def cancel():
 
-            h << h.div( 
-                    u'Veuillez selectionner un environnement', 
-                    class_ = 'envs message' 
-                 )
+               try:
+                  comp.answer( False )
+               except:
+                  pass
 
-         elif not self.appcomp:
-
-            h << h.div( 
-                    u'Veuillez selectionner un composant applicatif', 
-                    class_ = 'appcomps message' 
-                 )
-
-         else:
-
-            with h.form():
-
-               def create_and_get_next_dhcp_file():
-
-                  self._creating_hostname = create_next_dhcp_file_for( 
-                                               appcode 	= self.appcode, 
-                                               aera 	= self.aera, 
-                                               env 	= self.env, 
-                                               appcomp 	= self.appcomp 
-                                            )
-
-                  try:
-                     comp.answer( True )
-                  except:
-                     pass
-
-               h << h.input( 
-                       type='submit', 
-                       class_ = 'message valid %s %s %s' % ( self.aera, self.env, self.appcomp ),
-                       value=u'Confirmer' 
-                    ).action( 
-                       XComponentsUpdates( 
-                          # Supprimer pour ne pas être redondant avec le message comet
-                          #le_l_knowndiv = lambda: self.dom_storage.get_l_known_div_for_change(
-                          #                           'REFRESH_ON_CREATION_SERVER_DEMAND',
-                          #                           appcode 	= self.appcode,
-                          #                           aera 	= self.aera,
-                          #                           env 	= self.env,
-                          #                           appcomp 	= self.appcomp,
-                          #                        ), 
-                          update_himself = True, 
-                          action = lambda: create_and_get_next_dhcp_file() 
-                       ) 
-                    )
-
-               def cancel():
-
-                  try:
-                     comp.answer( False )
-                  except:
-                     pass
-
-               h << h.input( 
-                       type='submit', 
-                       class_ = 'message cancel %s %s %s' % ( self.aera, self.env, self.appcomp ), 
-                       value=u'Annuler' 
-                    ).action( lambda: cancel() )
+            h << h.input( 
+                    type='submit', 
+                    class_ = 'message cancel %s %s %s' % ( self.aera, self.env, self.appcomp ), 
+                    value=u'Annuler' 
+                 ).action( lambda: cancel() )
 
    return h.root
 
@@ -278,7 +281,11 @@ class CreateServerTask(
                                    self
                                 )
 
-      def create_cp_create_server_form():
+      @with_cloudmap_resolver( self )
+      def create_cp_create_server_form(
+             *args,
+             **kwargs
+          ):
          return component.Component( 
                    CreateServerForm( 
                       appcode 		= lambda: self.appcode, 
