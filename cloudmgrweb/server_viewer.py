@@ -4,6 +4,7 @@ from __future__ import with_statement
 from nagare                                     import presentation, component
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
+from cloudmgrlib.m_cmgr_cloudmap_resolver       import with_cloudmap_resolver, with_cloudmap_resolver_for_render
 import i_getter
 
 from i_dom_tree                                 import IDomTree
@@ -44,8 +45,8 @@ class ServerViewer(
 
       IDomTree.__init__(
          self,
-         dom_storage = dom_storage,
-         dom_father = dom_father,
+         dom_storage 	= dom_storage,
+         dom_father 	= dom_father,
       )
 
       IDynamicComponentProvider.__init__(
@@ -65,21 +66,27 @@ class ServerViewer(
 
 
 @presentation.render_for( ServerViewer )
-def render(self, h, comp, *args):
+@with_cloudmap_resolver_for_render
+def render(
+       self, 
+       h, 
+       comp, 
+       *args,
+       **kwargs
+   ):
 
    self.reset_in_dom(
            comp
    )
 
-   with self.cloudmap_resolver as cloudmap_resolver:
-      with h.div( class_='component %s %s %s %s' % ( self.aera, self.env, self.appcomp, self.servername ) ):
-         with h.table():
-            with h.tr():
-               with h.td(): 
-                  with h.div( class_ = 'description' ):
-                     h << '%s' % ( self.servername )
-            with h.tr():
-               with h.td(): 
-                  with h.div():
-                     pass
+   with h.div( class_='component %s %s %s %s' % ( self.aera, self.env, self.appcomp, self.servername ) ):
+      with h.table():
+         with h.tr():
+            with h.td(): 
+               with h.div( class_ = 'description' ):
+                  h << '%s' % ( self.servername )
+         with h.tr():
+            with h.td(): 
+               with h.div():
+                  pass
    return h.root
