@@ -4,6 +4,7 @@ from __future__ import with_statement
 from nagare                                     import presentation, component
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
+from cloudmgrlib.m_cmgr_cloudmap_resolver       import with_cloudmap_resolver, with_cloudmap_resolver_for_render
 import i_getter
 from servers_control				import ServersControl
 
@@ -49,7 +50,11 @@ class AppCompViewer(
          self
       )
 
-      def create_cp_servers_control():
+      @with_cloudmap_resolver( self )
+      def create_cp_servers_control(
+             *args,
+             **kwargs
+          ):
          return component.Component( 
                              ServersControl( 
                                 appcode 	= lambda: self.appcode, 
@@ -68,41 +73,41 @@ class AppCompViewer(
       )
 
 @presentation.render_for( AppCompViewer )
+@with_cloudmap_resolver_for_render
 def render(
        self, 
        h, 
        comp, 
-       *args
+       *args,
+       **kwargs
     ):
 
-   with self.cloudmap_resolver:
+   # Suppression des précédents fils
+   # dans le modèle DOM
+   self.reset_in_dom(
+           comp
+   )
 
-      # Suppression des précédents fils
-      # dans le modèle DOM
-      self.reset_in_dom(
-              comp
+   # Initialisation locale des composants
+   # utilisés
+   self.create_cp_servers_control()
+
+   with h.div( 
+           class_='appcomp_viewer %s %s %s' % ( self.aera, self.env, self.appcomp ) 
+        ):
+
+      h << h.div( 
+              self.appcomp_resolver.get_appcomp_desc( self.appcomp ), 
+              class_ = 'description' 
       )
 
-      # Initialisation locale des composants
-      # utilisés
-      self.create_cp_servers_control()
-
-      with h.div( 
-              class_='appcomp_viewer %s %s %s' % ( self.aera, self.env, self.appcomp ) 
-           ):
-
-         h << h.div( 
-                 self.appcomp_resolver.get_appcomp_desc( self.appcomp ), 
-                 class_ = 'description' 
-         )
-
-         h << h.div( 
-                 component.Component( 
-                    KnownDiv( 
-                       self.cp_servers_control 
-                    ) 
-                 ), 
-                 class_ = 'appcomp %s %s %s' % ( self.aera, self.env, self.appcomp ) 
-              )
+      h << h.div( 
+              component.Component( 
+                 KnownDiv( 
+                    self.cp_servers_control 
+                 ) 
+              ), 
+              class_ = 'appcomp %s %s %s' % ( self.aera, self.env, self.appcomp ) 
+           )
 
    return h.root
