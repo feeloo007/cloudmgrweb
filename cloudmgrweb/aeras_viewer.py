@@ -5,6 +5,7 @@ from nagare                                     import presentation, component
 from ajax_x_components				import KnownDiv
 from aera_viewer				import AeraViewer
 from cloudmgrlib.i_cmgr_resolvers		import ICloudMgrResolvers
+from cloudmgrlib.m_cmgr_cloudmap_resolver       import with_cloudmap_resolver, with_cloudmap_resolver_for_render
 import i_getter
 
 from i_dom_tree					import IDomTree
@@ -51,19 +52,22 @@ class AerasViewer(
 
       # Définition des composants dynamiques
       # Menu de controle
-      def create_all_cp_aeras_viewer():
-         with self.cloudmap_resolver:
-            d_all_cp_aeras_viewer = {}
-            for aera in self.aera_resolver.all_aeras:
-               d_all_cp_aeras_viewer[ aera ] = component.Component( 
-                                                 AeraViewer( 
-                                                    aera 		= aera, 
-                                                    appcode	 	= lambda: self.appcode, 
-                                                    resolvers 		= self, 
-                                                    dom_storage 	= self,
-                                                    dom_father 		= self,
-                                                 ) 
-                                              )
+      @with_cloudmap_resolver( self )
+      def create_all_cp_aeras_viewer(
+             *args,
+             **kwargs
+          ):
+         d_all_cp_aeras_viewer = {}
+         for aera in self.aera_resolver.all_aeras:
+            d_all_cp_aeras_viewer[ aera ] = component.Component( 
+                                               AeraViewer( 
+                                                  aera 		= aera, 
+                                                  appcode	= lambda: self.appcode, 
+                                                  resolvers 	= self, 
+                                                  dom_storage 	= self,
+                                                  dom_father 	= self,
+                                               ) 
+                                            )
          return d_all_cp_aeras_viewer
 
       self.create_dynamic_component(
@@ -73,7 +77,14 @@ class AerasViewer(
 
 
 @presentation.render_for( AerasViewer )
-def render(self, h, comp, *args):
+@with_cloudmap_resolver_for_render
+def render(
+       self, 
+       h, 
+       comp, 
+       *args,
+       **kwargs
+    ):
 
    with self.cloudmap_resolver:
 
