@@ -31,6 +31,7 @@ class AerasViewer(
           dom_storage 		= None, 
           dom_father 		= None, 
           l_static_init_params 	= [],
+          *args,
           **kwargs
        ):
 
