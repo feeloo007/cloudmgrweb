@@ -5,7 +5,6 @@ import os
 from nagare                                     import component, presentation
 from menu_control				import MenuControl
 from aeras_viewer				import AerasViewer
-from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
 from cloudmgrlib.m_cmgr_cloudmap_resolver       import with_cloudmap_resolver
 
