@@ -4,7 +4,6 @@ from __future__ import with_statement
 from nagare                                     import component, presentation
 from appcode_selector				import AppcodeSelector
 from menu_control_envs	 			import MenuControlEnvs
-from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
 from cloudmgrlib.m_cmgr_cloudmap_resolver       import with_cloudmap_resolver
 
@@ -13,7 +12,7 @@ import i_getter
 # Mise en place d'un DOM pour la gestion comet
 from i_dom_tree					import IDomTree
 
-from i_dynamic_component_provider               import IDynamicComponentProvider
+from i_dynamic_component_provider               import IDynamicComponentProvider, cached_component_for_dom
 
 from pprint					import pprint
 
@@ -52,6 +51,13 @@ class MenuControl(
 
       # Définition des composants dynamiques
       # Menu de controle
+      @cached_component_for_dom(
+         self,
+         component_name         = 'cp_appcode_selector',
+         object_class           = AppcodeSelector,
+         l_static_init_params   = [],
+         **{ 'appcode': self.appcode, }
+      )
       @with_cloudmap_resolver( self )
       def create_cp_appcode_selector(
              *args,
@@ -61,15 +67,19 @@ class MenuControl(
             AppcodeSelector(
                dom_storage 	= self,
                dom_father 	= self,
-               appcode		= self.appcode,
+               *args,
+               **kwargs
             )
          )
 
-      self.create_dynamic_component(
-         'cp_appcode_selector',
-         create_cp_appcode_selector,
-      )
 
+      @cached_component_for_dom(
+         self,
+         component_name         = 'cp_menu_control_envs',
+         object_class           = MenuControlEnvs,
+         l_static_init_params   = [],
+         **{ 'appcode': self.appcode, }
+      )
       @with_cloudmap_resolver( self )
       def create_cp_menu_control_envs(
              *args,
@@ -77,18 +87,15 @@ class MenuControl(
           ):
          return component.Component(
                    MenuControlEnvs(
-                      appcode 	= self.appcode,
                       resolvers 	= self,
                       dom_storage 	= self,
                       dom_father 	= self,
+                      *args,
+                      **kwargs
                    )
                 )
 
-      self.create_dynamic_component(
-         'cp_menu_control_envs',
-         create_cp_menu_control_envs,
-      ) 
-      
+
 @presentation.render_for(MenuControl)
 @with_cloudmap_resolver()
 def render(
@@ -106,30 +113,12 @@ def render(
            comp
    )
 
-   # Initialisation locale des composants
-   # utilisés
-   self.create_cp_appcode_selector()
-   self.create_cp_menu_control_envs()
-
-   # Création des DIV
-   cp_div_appcode_selector	= component.Component( 
-                                  KnownDiv( 
-                                     self.cp_appcode_selector 
-                                  ) 
-                               )
-
-   cp_div_menu_control_envs	= component.Component( 
-                                  KnownDiv( 
-                                     self.cp_menu_control_envs 
-                                  ) 
-                               )
-
    with h.div( 
            class_ = 'menu_control' 
         ):
 
       h << h.div( 
-              cp_div_appcode_selector,
+              self.cp_appcode_selector,
               class_ = 'menu_control_struct APPCODE' 
            )
 
@@ -139,7 +128,7 @@ def render(
            )
 
       h << h.div( 
-              cp_div_menu_control_envs, 
+              self.cp_menu_control_envs, 
               class_ = 'menu_control_struct ENVS' 
            )
 
