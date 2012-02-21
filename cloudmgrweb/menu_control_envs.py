@@ -10,7 +10,7 @@ import i_getter
 
 from i_dom_tree					import IDomTree
 
-from i_dynamic_component_provider               import IDynamicComponentProvider
+from i_dynamic_component_provider               import IDynamicComponentProvider, cached_component_for_dom
 
 from pprint					import pprint
 
@@ -45,31 +45,35 @@ class MenuControlEnvs(
       IDomTree.__init__( 
          self, 
          dom_storage = dom_storage, 
-         dom_father = dom_father 
+         dom_father = dom_father,
+         **kwargs
       )
 
       # Définition des composants dynamiques
       # Filtre uniquement sur le code application
+      @cached_component_for_dom(
+         self,
+         component_name         = 'cp_menu_all_envs',
+         object_class           = MenuControlEnv,
+         l_static_init_params   = [ 'env' ],
+         model                  = '*',
+         **{ 
+               'appcode'	: self.appcode,
+               'env'		: '*'
+           }
+      )
       @with_cloudmap_resolver( self )
       def create_cp_menu_all_envs(
              *args,
              **kwargs
           ):
-         return component.Component(
-                   MenuControlEnv( 
-                      env 		= '*', 
-                      appcode 		= lambda: self.appcode, 
-                      resolvers 	= self, 
-                      dom_storage 	= self,
-                      dom_father 	= self, 
-                   ),
-                   model = '*' 
+         return MenuControlEnv( 
+                   resolvers 	= self, 
+                   dom_storage 	= self,
+                   dom_father 	= self, 
+                   *args,
+                   **kwargs
                 ) 
-
-      self.create_dynamic_component(
-         'cp_menu_all_envs',
-         create_cp_menu_all_envs
-      )
 
       # filtre environnement par environnnement
       @with_cloudmap_resolver( self )
@@ -132,7 +136,6 @@ def render(
 
    # Initialisation locale des composants
    # utilisés
-   self.create_cp_menu_all_envs()
    self.create_d_cp_menu_by_envs()
 
    with h.div( 
@@ -162,11 +165,7 @@ def render(
               )
 
       h << h.div( 
-              component.Component( 
-                 KnownDiv( 
-                    self.cp_menu_all_envs 
-                 ) 
-              ), 
+              self.cp_menu_all_envs, 
               class_ = 'menu_control_envs_struct SUM' 
            )
 
