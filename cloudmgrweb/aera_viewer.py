@@ -83,34 +83,32 @@ def render(
        **kwargs
     ):
 
-   with self.cloudmap_resolver:
+   # Suppression des précédents fils
+   # dans le modèle DOM
+   self.reset_in_dom(
+           comp
+   )
 
-      # Suppression des précédents fils
-      # dans le modèle DOM
-      self.reset_in_dom(
-              comp
-      )
+   # Initialisation locale des composants
+   # utilisés
+   self.create_cp_envs_viewer()
 
-      # Initialisation locale des composants
-      # utilisés
-      self.create_cp_envs_viewer()
+   with h.div( 
+           class_ = 'aera_viewer %s' % ( self.aera )
+        ):
 
-      with h.div( 
-              class_='aera_viewer %s' % ( self.aera )
-           ):
+      h << h.div( 
+              self.aera_resolver.get_aera_desc( self.aera ), 
+              class_ = 'description' 
+           )
 
-         h << h.div( 
-                 self.aera_resolver.get_aera_desc( self.aera ), 
-                 class_ = 'description' 
-              )
-
-         h << h.div( 
-                 component.Component( 
-                    KnownDiv( 
-                       self.cp_envs_viewer
-                    ) 
-                 ), 
-                 class_ = 'aera %s' % ( self.aera ) 
-            )
+      h << h.div( 
+              component.Component( 
+                 KnownDiv( 
+                    self.cp_envs_viewer
+                 ) 
+              ), 
+              class_ = 'aera %s' % ( self.aera ) 
+         )
 
    return h.root
