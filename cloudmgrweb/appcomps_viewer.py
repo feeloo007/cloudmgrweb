@@ -4,7 +4,7 @@ from __future__ import with_statement
 from nagare                                     import presentation, component
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers		import ICloudMgrResolvers
-from cloudmgrlib.m_cmgr_cloudmap_resolver       import with_cloudmap_resolver, with_cloudmap_resolver_for_render
+from cloudmgrlib.m_cmgr_cloudmap_resolver       import with_cloudmap_resolver
 import i_getter
 
 from appcomp_viewer 				import AppCompViewer
@@ -79,7 +79,7 @@ class AppCompsViewer(
    
 
 @presentation.render_for( AppCompsViewer )
-@with_cloudmap_resolver_for_render
+@with_cloudmap_resolver()
 def render(
        self, 
        h, 

@@ -4,7 +4,7 @@ from __future__ import with_statement
 from nagare                                     import presentation, component, ajax
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers		import ICloudMgrResolvers
-from cloudmgrlib.m_cmgr_cloudmap_resolver       import with_cloudmap_resolver, with_cloudmap_resolver_for_render
+from cloudmgrlib.m_cmgr_cloudmap_resolver       import with_cloudmap_resolver
 import i_getter
 from cloudmgrlib.m_cmgr_manage_virtual_stack    import create_next_dhcp_file_for, create_vm
 from create_server_form				import CreateServerTask
@@ -103,7 +103,7 @@ class ServersControl(
       )
 
 @presentation.render_for( ServersControl )
-@with_cloudmap_resolver_for_render
+@with_cloudmap_resolver()
 def render(
        self, 
        h, 
