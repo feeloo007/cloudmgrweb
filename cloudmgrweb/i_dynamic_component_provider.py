@@ -76,6 +76,7 @@ def cached_component_for_dom(
        component_name 		= None,
        object_class		= None.__class__,
        l_static_init_params 	= [],
+       model			= 0,
        **init_params
     ):
 
@@ -84,6 +85,7 @@ def cached_component_for_dom(
    def fct_create_component_if_needed_wrapper( fct ):
 
       def fct_create_component_if_needed_wrapped(
+             *args,
              **kwargs
           ):
 
@@ -107,7 +109,8 @@ def cached_component_for_dom(
           return nagare.component.Component(
                     ajax_x_components.KnownDiv(
                        nagare.component.Component( 
-                          o
+                          o,
+                          model = model
                        )
                     )
                  )
