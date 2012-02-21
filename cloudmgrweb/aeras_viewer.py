@@ -129,8 +129,10 @@ def render(
       'LOCAL_REFRESH_ON_APPCODE_SELECTED',
       self,
       le_callback_update 	= update_on_LOCAL_REFRESH_ON_APPCODE_SELECTED,
-      appcode 		= '*',
+      appcode 			= '*',
    )
+
+
 
    with h.div( 
            class_ = 'aeras_viewer' 
@@ -140,7 +142,7 @@ def render(
 
          h << h.div( 
                  u'Veuillez selectionner un code application', 
-                 class_='appcodes message' 
+                 class_ = 'appcodes message' 
               )
       else:
 
@@ -148,8 +150,8 @@ def render(
 
          for aera, cp_aera_viewer in sorted( 
                                         self.all_cp_aeras_viewer.items(), 
-                                        key = lambda e: d_order[ e[ 0 ] ], 
-                                        reverse = False 
+                                        key 		= lambda e: d_order[ e[ 0 ] ], 
+                                        reverse 	= False 
                                      ):
 
             h << h.div( 
