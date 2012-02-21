@@ -7,6 +7,7 @@ from menu_control				import MenuControl
 from aeras_viewer				import AerasViewer
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
+from cloudmgrlib.m_cmgr_cloudmap_resolver       import with_cloudmap_resolver
 
 # Interaction comet
 from i_comet					import ICloudMgrComet
@@ -76,16 +77,18 @@ class Cloudmgrweb(
          l_static_init_params   = [],
          **{ 'appcode': default_appcode, }
       )
+      @with_cloudmap_resolver( self )
       def create_cp_menu_control(
+             *args,
              **kwargs
           ):
 
-         with self.cloudmap_resolver:
-            return MenuControl(
-                      dom_storage     = self,
-                      dom_father      = self,
-                      **kwargs
-                   )
+         return MenuControl(
+                   dom_storage     = self,
+                   dom_father      = self,
+                   *args,
+                   **kwargs
+                )
 
       # Défintion du composant définissant les zones
       @cached_component_for_dom(
@@ -95,17 +98,19 @@ class Cloudmgrweb(
          l_static_init_params 	= [],
          **{ 'appcode': default_appcode, }
       )
+      @with_cloudmap_resolver( self )
       def create_cp_aeras_viewer(
+             *args,
              **kwargs
           ):
 
-         with self.cloudmap_resolver:
-            return AerasViewer(
-                      resolvers             = self,
-                      dom_storage           = self,
-                      dom_father            = self,
-                      **kwargs
-                   ) 
+         return AerasViewer(
+                   resolvers             = self,
+                   dom_storage           = self,
+                   dom_father            = self,
+                   *args,
+                   **kwargs
+                ) 
 
 
       # Défintion du composant permettant les mise à jour suite à un message comet
@@ -117,12 +122,14 @@ class Cloudmgrweb(
          **{}
       )
       def create_cp_form_refresh_on_comet(
+             *args,
              **kwargs
           ):
 
          return FormRefreshOnComet(
                    dom_storage        = self,
                    dom_father         = self,
+                   *args,
                    **kwargs
                 )
 
@@ -136,97 +143,99 @@ class Cloudmgrweb(
          l_static_init_params   = [],
          **{}
       )
+      @with_cloudmap_resolver( self )
       def create_cp_debug(
+             *args,
              **kwargs
           ):
 
-         with self.cloudmap_resolver:
-            return CloudmgrwebDebug(
-                      dom_storage        = self,
-                      dom_father         = self,
-                      cloudmgrweb        = self,
-                      **kwargs
-            )
+         return CloudmgrwebDebug(
+                   dom_storage        = self,
+                   dom_father         = self,
+                   cloudmgrweb        = self,
+                   *args,
+                   **kwargs
+         )
          
 
 
 @presentation.render_for(Cloudmgrweb)
+@with_cloudmap_resolver()
 def render(
        self, 
        h,
        comp, 
-       *args
+       *args,
+       **kwargs
     ):
 
-   with self.cloudmap_resolver:
+   # Suppression des précédents fils
+   # dans le modèle DOM
+   self.reset_in_dom(
+           comp
+   )
 
-      # Suppression des précédents fils
-      # dans le modèle DOM
-      self.reset_in_dom(
-              comp
-      )
+   # Rendu
+   h.head.css_url( 
+      'cloudmgrweb.css' 
+   )
 
-      # Rendu
-      h.head.css_url( 
-         'cloudmgrweb.css' 
-      )
+   # Interaction comet
+   h.head.javascript_url( 
+      'cloudmgrweb_comet.js' 
+   )
 
-      # Interaction comet
-      h.head.javascript_url( 
-         'cloudmgrweb_comet.js' 
-      )
+   h << component.Component( 
+           self.comet_channel 
+        )
 
-      h << component.Component( 
-              self.comet_channel 
+   h << self.cp_form_refresh_on_comet
+
+   with h.div( 
+            class_ = 'app' 
+        ):
+
+      h << h.div( 
+              self.cp_menu_control,
+              class_ = 'menu_control_struct' 
            )
 
-      h << self.cp_form_refresh_on_comet
-
-      with h.div( 
-               class_ = 'app' 
-           ):
-
-         h << h.div( 
-                 self.cp_menu_control,
-                 class_ = 'menu_control_struct' 
-              )
-
-         h << h.div( 
-                 self.cp_aeras_viewer,
-                 class_ = 'aeras_viewer_struct' 
-              )
-
-      h << h.div(
-              self.cp_debug
+      h << h.div( 
+              self.cp_aeras_viewer,
+              class_ = 'aeras_viewer_struct' 
            )
 
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
-      h << h.br
+   h << h.div(
+           self.cp_debug
+        )
+
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
+   h << h.br
 
    return h.root
 
