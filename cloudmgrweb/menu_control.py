@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 from __future__ import with_statement
 
-from nagare                                     import component, presentation
+from nagare                                     import presentation
 from appcode_selector				import AppcodeSelector
 from menu_control_envs	 			import MenuControlEnvs
 from cloudmgrlib.i_cmgr_resolvers               import ICloudMgrResolvers
@@ -64,14 +64,12 @@ class MenuControl(
              *args,
              **kwargs
           ):
-         return component.Component(
-            AppcodeSelector(
-               dom_storage 	= self,
-               dom_father 	= self,
-               *args,
-               **kwargs
-            )
-         )
+         return AppcodeSelector(
+                   dom_storage	= self,
+                   dom_father 	= self,
+                   *args,
+                   **kwargs
+                )
 
 
       @cached_component_for_dom(
@@ -86,14 +84,12 @@ class MenuControl(
              *args,
              **kwargs
           ):
-         return component.Component(
-                   MenuControlEnvs(
-                      resolvers 	= self,
-                      dom_storage 	= self,
-                      dom_father 	= self,
-                      *args,
-                      **kwargs
-                   )
+         return MenuControlEnvs(
+                   resolvers 	= self,
+                   dom_storage 	= self,
+                   dom_father 	= self,
+                   *args,
+                   **kwargs
                 )
 
 
