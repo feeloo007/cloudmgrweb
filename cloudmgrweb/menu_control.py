@@ -124,26 +124,23 @@ def render(
                                   ) 
                                )
 
-   # Interaction comet
-   with self.cloudmap_resolver:
+   with h.div( 
+           class_ = 'menu_control' 
+        ):
 
-      with h.div( 
-              class_ = 'menu_control' 
-           ):
+      h << h.div( 
+              cp_div_appcode_selector,
+              class_ = 'menu_control_struct APPCODE' 
+           )
 
-         h << h.div( 
-                 cp_div_appcode_selector,
-                 class_ = 'menu_control_struct APPCODE' 
-              )
+      h << h.div( 
+              '', 
+              class_ = 'menu_control_struct spacer' 
+           )
 
-         h << h.div( 
-                 '', 
-                 class_ = 'menu_control_struct spacer' 
-              )
-
-         h << h.div( 
-                 cp_div_menu_control_envs, 
-                 class_ = 'menu_control_struct ENVS' 
-              )
+      h << h.div( 
+              cp_div_menu_control_envs, 
+              class_ = 'menu_control_struct ENVS' 
+           )
 
    return h.root
