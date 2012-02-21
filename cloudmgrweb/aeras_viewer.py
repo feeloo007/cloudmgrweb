@@ -86,70 +86,68 @@ def render(
        **kwargs
     ):
 
-   with self.cloudmap_resolver:
+   # Suppression des précédents fils
+   # dans le modèle DOM
+   self.reset_in_dom(
+           comp
+   )
 
-      # Suppression des précédents fils
-      # dans le modèle DOM
-      self.reset_in_dom(
-              comp
-      )
+   # définition de la fonction à appeler
+   # pour l'évènement LOCAL_REFRESH_ON_APPCODE_SELECTED
+   def update_on_LOCAL_REFRESH_ON_APPCODE_SELECTED( **kwargs ):
+      assert( kwargs.has_key( 'appcode' ) ), u'appcode doit exister %s.%s' % ( 
+                                                __name__,
+                                                update_on_LOCAL_REFRESH_ON_APPCODE_SELECTED
+                                             )
+      self.appcode = kwargs[ 'appcode' ]
 
-      # définition de la fonction à appeler
-      # pour l'évènement LOCAL_REFRESH_ON_APPCODE_SELECTED
-      def update_on_LOCAL_REFRESH_ON_APPCODE_SELECTED( **kwargs ):
-         assert( kwargs.has_key( 'appcode' ) ), u'appcode doit exister %s.%s' % ( 
-                                                   __name__,
-                                                   update_on_LOCAL_REFRESH_ON_APPCODE_SELECTED
-                                                )
-         self.appcode = kwargs[ 'appcode' ]
-
-      # Ajout du selecteur d'évènements associés à la fonction
-      # de mise à jour
-      self.add_event_for_knowndiv(
-         'LOCAL_REFRESH_ON_APPCODE_SELECTED',
-         self,
-         le_callback_update 	= update_on_LOCAL_REFRESH_ON_APPCODE_SELECTED,
-         appcode 		= '*',
-      )
+   # Ajout du selecteur d'évènements associés à la fonction
+   # de mise à jour
+   self.add_event_for_knowndiv(
+      'LOCAL_REFRESH_ON_APPCODE_SELECTED',
+      self,
+      le_callback_update 	= update_on_LOCAL_REFRESH_ON_APPCODE_SELECTED,
+      appcode 			= '*',
+   )
 
 
 
-      with h.div( 
-              class_ = 'aeras_viewer' 
-           ):
+   with h.div( 
+           class_ = 'aeras_viewer' 
+        ):
 
-         if not self.appcode:
+      if not self.appcode:
+
+         h << h.div( 
+                 u'Veuillez selectionner un code application', 
+                 class_ = 'appcodes message' 
+              )
+      else:
+
+         # Initialisation locale des composants
+         # utilisés
+         self.create_all_cp_aeras_viewer()
+
+         d_order = self.aera_resolver.order_for_aeras.copy()
+
+         for aera, cp_aera_viewer in sorted( 
+                                        self.all_cp_aeras_viewer.items(), 
+                                        key 		= lambda e: d_order[ e[ 0 ] ], 
+                                        reverse 	= False 
+                                     ):
 
             h << h.div( 
-                    u'Veuillez selectionner un code application', 
-                    class_='appcodes message' 
+                    component.Component( 
+                       KnownDiv( 
+                          cp_aera_viewer
+                       ) 
+                    ), 
+                    class_ = 'aeras_viewer_struct %s' % aera 
                  )
-         else:
 
-            # Initialisation locale des composants
-            # utilisés
-            self.create_all_cp_aeras_viewer()
-
-            d_order = self.aera_resolver.order_for_aeras.copy()
-
-            for aera, cp_aera_viewer in sorted( 
-                                           self.all_cp_aeras_viewer.items(), 
-                                           key = lambda e: d_order[ e[ 0 ] ], 
-                                           reverse = False 
-                                        ):
-
-               h << h.div( 
-                       component.Component( 
-                          KnownDiv( 
-                             cp_aera_viewer
-                          ) 
-                       ), 
-                       class_ = 'aeras_viewer_struct %s' % aera 
-                    )
-
-               h << h.div(  
-                       h.div, 
-                       class_ = 'aeras_viewer_struct spacer' 
-               )
+            h << h.div(  
+                    h.div, 
+                    class_ = 'aeras_viewer_struct spacer' 
+            )
 
    return h.root
