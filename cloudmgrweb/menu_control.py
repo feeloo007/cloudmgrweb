@@ -46,7 +46,8 @@ class MenuControl(
       IDomTree.__init__( 
          self, 
          dom_storage 	= dom_storage, 
-         dom_father 	= dom_father 
+         dom_father 	= dom_father,
+         **kwargs
       )
 
       # Définition des composants dynamiques
