@@ -53,7 +53,7 @@ class AerasViewer(
 
       self.__d_all_le_cp_aeras_viewer = {}
 
-   @with_cloudmap_resolver_for_render
+   @with_cloudmap_resolver()
    def get_all_cp_aeras_viewer(
           self,
           *args,
