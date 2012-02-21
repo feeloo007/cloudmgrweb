@@ -4,6 +4,7 @@ from __future__ import with_statement
 from nagare                                     import presentation, component
 from ajax_x_components				import KnownDiv
 from cloudmgrlib.i_cmgr_resolvers		import ICloudMgrResolvers
+from cloudmgrlib.m_cmgr_cloudmap_resolver       import with_cloudmap_resolver, with_cloudmap_resolver_for_render
 import i_getter
 
 from appcomp_viewer 				import AppCompViewer
@@ -51,22 +52,25 @@ class AppCompsViewer(
                                 )
 
 
-      def create_all_cp_appcomps_viewer():
-         with self.cloudmap_resolver:
-            d_all_cp_appcomps = {}
-            for appcomp in self.appcomp_resolver.get_all_appcomps_for_aera( self.aera ):
-               d_all_cp_appcomps[ appcomp ] = component.Component( 
-                                                 AppCompViewer( 
-                                                    appcode 	= lambda: self.appcode, 
-                                                    aera 	= lambda: self.aera, 
-                                                    env 	= lambda: self.env, 
-                                                    appcomp 	= appcomp, 
-                                                    resolvers 	= self, 
-                                                    dom_storage = self,
-                                                    dom_father 	= self,
-                                                 ) 
-                                              )
-            return d_all_cp_appcomps
+      @with_cloudmap_resolver( self )
+      def create_all_cp_appcomps_viewer(
+             *args,
+             **kwargs
+          ):
+         d_all_cp_appcomps = {}
+         for appcomp in self.appcomp_resolver.get_all_appcomps_for_aera( self.aera ):
+            d_all_cp_appcomps[ appcomp ] = component.Component( 
+                                              AppCompViewer( 
+                                                 appcode 	= lambda: self.appcode, 
+                                                 aera 		= lambda: self.aera, 
+                                                 env 		= lambda: self.env, 
+                                                 appcomp 	= appcomp, 
+                                                 resolvers 	= self, 
+                                                 dom_storage 	= self,
+                                                 dom_father 	= self,
+                                              ) 
+                                           )
+         return d_all_cp_appcomps
 
       self.create_dynamic_component(
          'all_cp_appcomps_viewer',
@@ -75,66 +79,66 @@ class AppCompsViewer(
    
 
 @presentation.render_for( AppCompsViewer )
+@with_cloudmap_resolver_for_render
 def render(
        self, 
        h, 
        comp, 
-       *args
+       *args,
+       **kwargs
     ):
 
-   with self.cloudmap_resolver:
+   # Suppression des précédents fils
+   # dans le modèle DOM
+   self.reset_in_dom(
+           comp
+   )
 
-      # Suppression des précédents fils
-      # dans le modèle DOM
-      self.reset_in_dom(
-              comp
-      )
+   with h.div( 
+           class_ = 'appcomps_viewer %s %s' % ( self.aera, self.env ) 
+        ):
 
-      with h.div( 
-              class_ = 'appcomps_viewer %s %s' % ( self.aera, self.env ) 
-           ):
+      if not self.appcode:
 
-         if not self.appcode:
+          h << h.div( 
+                  u'Veuillez selectionner un code application', 
+                  class_ = 'appcodes message' 
+               )
 
-             h << h.div( 
-                     u'Veuillez selectionner un code application', 
-                     class_ = 'appcodes message' 
-                  )
+      elif not self.aera:
 
-         elif not self.aera:
+         h << h.div( 
+                 u'Veuillez selectionner une zone', 
+                 class_ = 'aeras message' 
+         )
+
+      elif not self.env:
+
+         h << h.div( u'Veuillez selectionner un environnement', class_ = 'envs message' )
+
+      else:
+
+         self.create_all_cp_appcomps_viewer()
+
+         d_order = self.appcomp_resolver.order_for_appcomps.copy()
+         for appcomp, cp_appcomp_viewer in sorted( 
+                                       self.all_cp_appcomps_viewer.items(), 
+                                       key = lambda e: d_order[ e[ 0 ] ], 
+                                       reverse = False 
+                                    ):
 
             h << h.div( 
-                    u'Veuillez selectionner une zone', 
-                    class_ = 'aeras message' 
-            )
-
-         elif not self.env:
-
-            h << h.div( u'Veuillez selectionner un environnement', class_ = 'envs message' )
-
-         else:
-
-            self.create_all_cp_appcomps_viewer()
-
-            d_order = self.appcomp_resolver.order_for_appcomps.copy()
-            for appcomp, cp_appcomp_viewer in sorted( 
-                                          self.all_cp_appcomps_viewer.items(), 
-                                          key = lambda e: d_order[ e[ 0 ] ], 
-                                          reverse = False 
-                                       ):
-
-               h << h.div( 
-                       component.Component( 
-                          KnownDiv( 
-                             cp_appcomp_viewer
-                          ) 
-                       ), 
-                       class_ = 'appcomps_viewer_struct appcomp %s %s %s' % ( self.aera, self.env, appcomp ) 
-                    )
+                    component.Component( 
+                       KnownDiv( 
+                          cp_appcomp_viewer
+                       ) 
+                    ), 
+                    class_ = 'appcomps_viewer_struct appcomp %s %s %s' % ( self.aera, self.env, appcomp ) 
+                 )
  
-               h << h.div( 
-                       h.div, 
-                       class_ = 'appcomps_viewer_struct spacer' 
-                    )
+            h << h.div( 
+                    h.div, 
+                    class_ = 'appcomps_viewer_struct spacer' 
+                 )
  
    return h.root
